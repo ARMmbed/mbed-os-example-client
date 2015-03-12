@@ -1,0 +1,23 @@
+{
+  "name": "lwm2m-client-example",
+  "version": "0.0.0",
+  "description": "LWM2M Client Example",
+  "keywords": [
+    "lwm2m-client"
+  ],
+  "author": "yogesh.pande@arm.com",
+  "licenses": [
+    {
+      "url": "https://spdx.org/licenses/Apache-2.0",
+      "type": "Apache-2.0"
+    }
+  ],
+  "extraIncludes": [
+  ],
+  "dependencies": {
+    "mbed": "ARMmbed/mbed-sdk",
+    "lwm2m-client" : "ARMmbed/lwm2m-client#master"
+  },
+  "targetDependencies": {},
+  "bin": "./source/"
+}
