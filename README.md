@@ -77,9 +77,9 @@ The above steps will power up node. Now node application will start bootstrap pr
 
 After registration, you can see your endpoint in mbed Device Server through web UI. Open web UI and select tab "End-points"
 You can also see resources registered from that endpoint. 
-![Node registered](https://github.com/ARMmbed/lwm2m-client-example/master/img/registered.jpg)
+![Node registered](https://github.com/ARMmbed/lwm2m-client-example/blob/master/img/registered.jpg)
 
 You can click endpoint name to open view to see your registered resources. However, making request to resources is not implemented in this release.
-![Resource list](https://github.com/ARMmbed/lwm2m-client-example/master/img/endpoint_resources.jpg)
+![Resource list](https://github.com/ARMmbed/lwm2m-client-example/blob/master/img/endpoint_resources.jpg)
 
 Pressing button SW2 will cause endpoint to send unregister message to device server. After successful unregistration, led D12 starts blinking indicating that application has successfully completed and endpoint will disappear from endpoint list in web UI.
