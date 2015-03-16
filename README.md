@@ -5,7 +5,10 @@ This document describes briefly the steps required to start use of LWM2M Client 
 ## Required hardware
 
 This demo uses Freescale FRDM-K64F board
-* [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/)
+* [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/)* 
+An ethernet connection to the internet
+An ethernet cable
+A micro-USB cable
 
 ## Required software
 
@@ -31,21 +34,24 @@ Go to downloads/Evaluation product/SEN00 – Sensinode/Development tools/Nanoser
 ## Build instructions
 
 ### Installing and building
-
-1. Install Yotta. See instructions from http://docs.yottabuild.org/#installing
-2. Install needed toolchains (arm-none-eabi-gcc). Refer to the yotta installation page (in step 1 above) for instructions on how do install the toolchains.
-3. Clone **lwm2m-client-example** from https://github.com/ARMmbed/lwm2m-client-example
-4. `cd ` **lwm2m-client-example**
-5. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of  `<xxx.xxx.xxx.xxx>` and `<port>` in `coap://<xxx.xxx.xxx.xxx>:<port>` so that it looks something like this `coap://192.168.0.1:5693`
-5. Set up target device, `yotta target frdm-k64f-gcc`
-6. Type `yotta build`
+1. Connect the frdm-k64f to the internet using the ethernet cable
+2. Connect the frdm-k64f to the computer with the micro-USB cable, being careful to use the micro-usb port labled "OpenSDA"
+3. Install Yotta. See instructions from http://docs.yottabuild.org/#installing
+4. Install needed toolchains (arm-none-eabi-gcc). Refer to the yotta installation page (in step 1 above) for instructions on how do install the toolchains.
+5. Clone **lwm2m-client-example** from https://github.com/ARMmbed/lwm2m-client-example
+6. `cd ` **lwm2m-client-example**
+7. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of  `<xxx.xxx.xxx.xxx>` and `<port>` in `coap://<xxx.xxx.xxx.xxx>:<port>` so that it looks something like this `coap://192.168.0.1:5693`
+8. Set up target device, `yotta target frdm-k64f-gcc`
+9. Type `yotta build`
 
 Binary file will be created to /build/frdm-k64f-gcc/source/ - folder
 
 ### Flashing to target device
 
+You need to plug in the USB cable on J26 port on the K64F borad and other end into  USB port of your computer. 
 Supported mbed board have drag&drop flashing capability. All you need to do is to copy the binary file to
 board's usb mass storage device and it will be automatically flashed to target MCU after reset.
+You can find the binary file from `cd lwm2m-client-example/build/frdm-k64f-gcc/test/helloworld-lwm2mclient/` with following name `lwm2m-client-example-test-helloworld-lwm2mclient.bin`
 
 ## Testing
 
@@ -65,13 +71,15 @@ Update OMA LWM2M bootstrap server address and port from main.cpp. These values s
 
 ### Testing OMA lwm2m device with mbed Device Server
 
-Start mbed Device erver, bootstrap server and web UI software, for example lighting. See mbed Device Server documentation for more information.
+Start mbed Device server, bootstrap server and web UI software, for example lighting. See mbed Device Server documentation for more information.
 
-Power up node. Now node application will start bootstrap process with OMA LWM2M bootstrap server. After received needed information application will send CoAP registration message to mbed Device Server.
+The above steps will power up node. Now node application will start bootstrap process with OMA LWM2M bootstrap server. After received needed information application will send CoAP registration message to mbed Device Server.
 
 After registration, you can see your endpoint in mbed Device Server through web UI. Open web UI and select tab "End-points"
-You can also see resources registered from that endpoint. Making request to resources is not implemented in this release.
-**TODO: update pics**
-![Node registered](https://github.com/ARMmbed/mbed-coap-example/blob/master/img/registered.jpg)
+You can also see resources registered from that endpoint. 
+![Node registered](https://github.com/ARMmbed/lwm2m-client-example/master/img/registered.jpg)
 
-Pressing button SW2 will cause endpoint to send unregister message to device server. After sucessfull unregistration, led D12 turns on indicating that application has successfully completed and endpoint will disappear from endpoint list in web UI.
+You can click endpoint name to open view to see your registered resources. However, making request to resources is not implemented in this release.
+![Resource list](https://github.com/ARMmbed/lwm2m-client-example/master/img/endpoint_resources.jpg)
+
+Pressing button SW2 will cause endpoint to send unregister message to device server. After successful unregistration, led D12 starts blinking indicating that application has successfully completed and endpoint will disappear from endpoint list in web UI.

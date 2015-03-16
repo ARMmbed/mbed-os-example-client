@@ -1,6 +1,6 @@
 {
   "name": "lwm2m-client-example",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "LWM2M Client Example",
   "keywords": [
     "lwm2m-client"
