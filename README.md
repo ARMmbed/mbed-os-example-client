@@ -72,6 +72,7 @@ Update OMA LWM2M bootstrap server address and port from main.cpp. These values s
 ### Testing OMA lwm2m device with mbed Device Server
 
 Start mbed Device server, bootstrap server and web UI software, for example lighting. See mbed Device Server documentation for more information.
+Remember, that you will need to add your end-point name for e.g: `lwm2m-endpoint` as defined in the example application to the accepted list in bootstrap server and provide your mbed Device Server address to the bootstrap server in following format `coap://<xxx.xxx.xxx.xxx>:<Port>` where `<xxx.xxx.xxx.xxx>` is Ipv4 address of mbed Device Server.
 
 The above steps will power up node. Now node application will start bootstrap process with OMA LWM2M bootstrap server. After received needed information application will send CoAP registration message to mbed Device Server.
 
