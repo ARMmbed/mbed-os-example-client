@@ -3,25 +3,30 @@
 This document describes briefly the steps required to start use of LWM2M Client example application on mbed OS. LWM2M Client example application demonstrates how to perform OMA LWM2M bootstrap with bootstrap server and how to register and unregister to mbed Device Server.
 
 ## Required hardware
+* A [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board
+* An ethernet connection to the internet
+* An ethernet cable
+* A micro-USB cable
 
-This demo uses Freescale FRDM-K64F board
-- [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/)
-- An ethernet connection to the internet
-- An ethernet cable
-- A micro-USB cable
+## Required Software
 
-## Required software
+* [Yotta](http://docs.yottabuild.org/#installing) - to build example programs
+* [mbed Device Server](#user-content-mbed-device-server-mds) - server example program will connect to.
 
-* Yotta
-* [Wireshark](https://www.wireshark.org/) (optional nework debugging tool)
-* mbed Device Server
+## Optional Software
+* [Wireshark](https://www.wireshark.org/) - for packet inspection / network debugging
 
 ## Setting up the environment
+There are 3 main phases to this example:
+- Download and run mDS server on computer
+- Configure example mbed program with server address, build with yotta, load onto board, plug board into ethernet
+- Verify board talks to server
 
 ### IP address setup
 
-mbed Client example uses ethernet and IPv4 to communicate with mbed Devce Server.
-You must ensure that you have a working IPv4 enabled wired ethernet/internet connection which have DHCP resolving capability plugged directly into RJ45 port of the board so that there is no need to setup static IP address.
+This example uses IPV4 to talk to the mbed Device Server(mDS). The example program should automatically grab an IPV4 address from the router when connected via ethernet.
+
+If your network does not have DHCP enabled you will have to manually assign a static IP to the board. We recommend having DHCP enabled to make everything run smoothly.
 
 ### Download Bootstrap Server and mbed Device Server (mDS)
 
