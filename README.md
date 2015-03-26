@@ -125,9 +125,9 @@ You should see the endpoint comeplete the OMA LWM2M bootstrap process with the b
 
 ### Testing OMA lwm2m device with mbed Device Server
 
-Ensure that mDS, the bootstrap server, and the WebUI are all running. These services must be started and configured before the mbed is powered up. See [Setting up the environment](/#setting-up-the-environment) to set up these services.
+Ensure that mDS, the bootstrap server, and the WebUI are all running. These services must be started and configured before the mbed is powered up. See [Setting up the environment](#setting-up-the-environment) to set up these services.
 
-Power up your mbed. Ensure that you have flashed the program ([Flashing to target device](/#flashing-to-target-device)). Press the reset button to start the program.
+Power up your mbed. Ensure that you have flashed the program ([Flashing to target device](#flashing-to-target-device)). Press the reset button to start the program.
 
 1. Open the WebUI by navigating to http://localhost:8083.
     - If you're working from a remote machine, you'll need to use the host machine's IP address instead of "localhost".
