@@ -97,7 +97,7 @@ This will start the WebUI on your system.
 4. Install needed toolchains (arm-none-eabi-gcc). Refer to the yotta installation page (in step 1 above) for instructions on how do install the toolchains.
 5. Clone **lwm2m-client-example** from https://github.com/ARMmbed/lwm2m-client-example
 6. `cd ` **lwm2m-client-example**
-7. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of  `<xxx.xxx.xxx.xxx>` and `<port>` in `coap://<xxx.xxx.xxx.xxx>:<port>` so that it looks something like this `coap://192.168.0.1:5693`
+7. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:<port>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5693`
 8. Set up target device, `yotta target frdm-k64f-gcc`
 9. Type `yotta build`
 
