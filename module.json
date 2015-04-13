@@ -15,7 +15,7 @@
   "extraIncludes": [
   ],
   "dependencies": {
-    "mbed": "ARMmbed/mbed-sdk",
+    "mbed": "ARMmbed/mbed-sdk-private",
     "lwm2m-client" : "ARMmbed/lwm2m-client#master"
   },
   "targetDependencies": {},

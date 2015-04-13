@@ -10,12 +10,12 @@
 #include "lwm2m-client/m2minterface.h"
 #include "lwm2m-client/m2mobjectinstance.h"
 
-
 #include "lwipv4_init.h"
 
 // Enter your mbed Device Server's IPv4 address and Port number in
-// mentioned format like 192.168.0.1:5693
-const String &BOOTSTRAP_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>:<port>";
+// mentioned format like 192.168.0.1:5683
+const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>:5683";
+
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";
 const String &MODEL_NUMBER = "2015";
@@ -39,9 +39,6 @@ public:
         if(_interface) {
             delete _interface;
         }
-        if( _register_security){
-            delete _register_security;
-        }
     }
 
     void create_interface() {
@@ -59,10 +56,6 @@ public:
                                                   "");
     }
 
-    bool bootstrap_successful() {
-        return _bootstrapped;
-    }
-
     bool register_successful() {
         return _registered;
     }
@@ -71,23 +64,15 @@ public:
         return _unregistered;
     }
 
-    M2MSecurity* create_bootstrap_object() {
-        // Creates bootstrap server object with Bootstrap server address and other parameters
-        // required for client to connect to bootstrap server.
-        M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::Bootstrap);
+    M2MSecurity* create_register_object() {
+        // Creates register server object with mbed device server address and other parameters
+        // required for client to connect to mbed device server.
+        M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::M2MServer);
         if(security) {
-            security->set_resource_value(M2MSecurity::M2MServerUri, BOOTSTRAP_SERVER_ADDRESS);
-            security->set_resource_value(M2MSecurity::BootstrapServer, 1);
+            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
         }
         return security;
-    }
-
-    void test_bootstrap(M2MSecurity *security) {
-        if(_interface) {
-             // Bootstrap function.
-            _interface->bootstrap(security);
-        }
     }
 
     M2MDevice* create_device_object() {
@@ -103,10 +88,10 @@ public:
         return device;
     }
 
-    void test_register(M2MObjectList object_list){
+    void test_register(M2MSecurity *register_object, M2MObjectList object_list){
         if(_interface) {
             // Register function
-            _interface->register_object(_register_security, object_list);
+            _interface->register_object(register_object, object_list);
         }
     }
 
@@ -122,8 +107,7 @@ public:
     // which will be used for registering the resources to
     // mbed Device server.
     void bootstrap_done(M2MSecurity *server_object){
-    if(server_object) {
-            _register_security = server_object;
+        if(server_object) {
             _bootstrapped = true;
             _error = false;
             printf("\nBootstrapped\n");
@@ -162,7 +146,6 @@ public:
 private:
 
     M2MInterface    	*_interface;
-    M2MSecurity         *_register_security;
     volatile bool       _bootstrapped;
     volatile bool       _error;
     volatile bool       _registered;
@@ -191,20 +174,12 @@ int main() {
     // will call unregister API towards mbed Device Server
     button.fall(&lwm2mclient,&M2MLWClient::test_unregister);
 
-    // Create LWM2M Client API interface to manage bootstrap,
-    // register and unregister
+    // Create LWM2M Client API interface to manage register and unregister
     lwm2mclient.create_interface();
 
-    // Create LWM2M bootstrap object specifying bootstrap server
+    // Create LWM2M server object specifying mbed device server
     // information.
-    M2MSecurity* security_object = lwm2mclient.create_bootstrap_object();
-
-    // Issue bootstrap command.
-    lwm2mclient.test_bootstrap(security_object);
-
-    // Wait till the bootstrap callback is called successfully.
-    // Callback comes in bootstrap_done()
-    while (!lwm2mclient.bootstrap_successful()) { __WFI(); }
+    M2MSecurity* register_object = lwm2mclient.create_register_object();
 
     // Create LWM2M device object specifying device resources
     // as per OMA LWM2M specification.
@@ -216,7 +191,7 @@ int main() {
     object_list.push_back(device_object);
 
     // Issue register command.
-    lwm2mclient.test_register(object_list);
+    lwm2mclient.test_register(register_object, object_list);
 
     // Wait till the register callback is called successfully.
     // Callback comes in object_registered()
@@ -230,12 +205,11 @@ int main() {
     // This will turn on the LED on the board specifying that
     // the application has run successfully.
     notify_completion(lwm2mclient.unregister_successful() &&
-                      lwm2mclient.register_successful() &&
-                      lwm2mclient.bootstrap_successful());
+                      lwm2mclient.register_successful() );
 
-    // Delete security object created for bootstrapping
-    if(security_object) {
-        delete security_object;
+    // Delete security object created for registration
+    if(register_object) {
+        delete register_object;
     }
 
     // Delete device object created for registering device
