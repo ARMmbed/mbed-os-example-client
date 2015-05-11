@@ -14,15 +14,18 @@
 
 // Enter your mbed Device Server's IPv4 address and Port number in
 // mentioned format like 192.168.0.1:5683
-const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>:5683";
+const String &MBED_SERVER_ADDRESS = "coap://10.45.3.10:5683";
 
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";
 const String &MODEL_NUMBER = "2015";
 const String &SERIAL_NUMBER = "12345";
 
+const uint8_t STATIC_VALUE[] = "Static value";
+
 #if defined(TARGET_K64F)
-#define APP_BUTTON SW2
+#define OBS_BUTTON SW2
+#define UNREG_BUTTON SW3
 #endif
 
 class M2MLWClient: public M2MInterfaceObserver {
@@ -33,11 +36,17 @@ public:
         _error = false;
         _registered = false;
         _unregistered = false;
+        _register_security = NULL;
+        _value = 0;
+        _object = NULL;
     }
 
     ~M2MLWClient() {
         if(_interface) {
             delete _interface;
+        }
+        if(_register_security){
+            delete _register_security;
         }
     }
 
@@ -86,6 +95,44 @@ public:
             device->create_resource(M2MDevice::SerialNumber,SERIAL_NUMBER);
         }
         return device;
+    }
+
+    M2MObject* create_generic_object() {
+        _object = M2MInterfaceFactory::create_object("Test");
+        if(_object) {
+            M2MObjectInstance* inst = _object->create_object_instance();
+            if(inst) {
+                    M2MResource* res = inst->create_dynamic_resource("D","ResourceTest",true);
+                    char buffer[20];
+                    int size = sprintf(buffer,"%d",_value);
+                    res->set_operation(M2MBase::GET_PUT_ALLOWED);
+                    res->set_value((const uint8_t*)buffer,
+                                   (const uint32_t)size);
+                    _value++;
+
+                    inst->create_static_resource("S",
+                                                 "ResourceTest",
+                                                 STATIC_VALUE,
+                                                 sizeof(STATIC_VALUE)-1);
+            }
+        }
+        return _object;
+    }
+
+    void update_resource() {
+        if(_object) {
+            M2MObjectInstance* inst = _object->object_instance();
+            if(inst) {
+                    M2MResource* res = inst->resource("D");
+
+                    char buffer[20];
+                    int size = sprintf(buffer,"%d",_value);
+                    res->set_value((const uint8_t*)buffer,
+                                   (const uint32_t)size,
+                                   true);
+                    _value++;
+                }
+        }
     }
 
     void test_register(M2MSecurity *register_object, M2MObjectList object_list){
@@ -143,13 +190,24 @@ public:
         printf("\nError occured\n");
     }
 
+    //Callback from mbed client stack if any value has changed
+    // during PUT operation. Object and its type is passed in
+    // the callback.
+    void value_updated(M2MBase *base, M2MBase::BaseType type) {
+        printf("\nValue updated of Object name %s and Type %d\n",
+               base->name().c_str(), type);
+    }
+
 private:
 
     M2MInterface    	*_interface;
+    M2MSecurity         *_register_security;
+    M2MObject           *_object;
     volatile bool       _bootstrapped;
     volatile bool       _error;
     volatile bool       _registered;
     volatile bool       _unregistered;
+    int                 _value;
 };
 
 int main() {
@@ -162,17 +220,21 @@ int main() {
 
     lwipv4_socket_init();
 
-
     // Instantiate the class which implements
     // LWM2M Client API
     M2MLWClient lwm2mclient;
 
     // Set up Hardware interrupt button.
-    InterruptIn button(APP_BUTTON);
+    InterruptIn obs_button(OBS_BUTTON);
+    InterruptIn unreg_button(UNREG_BUTTON);
+
+    // On press of SW3 button on K64F board, example application
+    // will call unregister API towards mbed Device Server
+    unreg_button.fall(&lwm2mclient,&M2MLWClient::test_unregister);
 
     // On press of SW2 button on K64F board, example application
-    // will call unregister API towards mbed Device Server
-    button.fall(&lwm2mclient,&M2MLWClient::test_unregister);
+    // will send observation towards mbed Device Server
+    obs_button.fall(&lwm2mclient,&M2MLWClient::update_resource);
 
     // Create LWM2M Client API interface to manage register and unregister
     lwm2mclient.create_interface();
@@ -185,10 +247,14 @@ int main() {
     // as per OMA LWM2M specification.
     M2MDevice* device_object = lwm2mclient.create_device_object();
 
+    // Create Generic object specifying custom resources
+    M2MObject* generic_object = lwm2mclient.create_generic_object();
+
     // Add all the objects that you would like to register
     // into the list and pass the list for register API.
     M2MObjectList object_list;
     object_list.push_back(device_object);
+    object_list.push_back(generic_object);
 
     // Issue register command.
     lwm2mclient.test_register(register_object, object_list);
@@ -216,6 +282,12 @@ int main() {
     // resources.
     if(device_object) {
         delete device_object;
+    }
+
+    // Delete generic object created for registering custom
+    // resources.
+    if(generic_object) {
+        delete generic_object;
     }
 
     // Disconnect the connect and teardown the network interface

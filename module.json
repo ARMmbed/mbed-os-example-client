@@ -1,7 +1,7 @@
 {
   "name": "lwm2m-client-example",
-  "version": "0.0.1",
-  "description": "LWM2M Client Example",
+  "version": "0.1.0",
+  "description": "LWM2M Client Example for mbed",
   "keywords": [
     "lwm2m-client"
   ],
@@ -15,8 +15,7 @@
   "extraIncludes": [
   ],
   "dependencies": {
-    "mbed": "ARMmbed/mbed-sdk-private",
-    "lwm2m-client" : "ARMmbed/lwm2m-client#master"
+    "lwm2m-client" : "~0.1.1"
   },
   "targetDependencies": {},
   "bin": "./source/"
