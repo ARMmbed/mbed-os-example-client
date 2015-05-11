@@ -1,5 +1,5 @@
 <h1 id="getting-started-on-lwm2m-client-example">Getting started on LWM2M Client Example</h1>
-<p>This document describes briefly the steps required to start use of LWM2M Client example application on mbed OS. LWM2M Client example application demonstrates how to register and unregister on mbed Device Server.</p>
+<p>This document describes briefly the steps required to start use of LWM2M Client example application on mbed OS. LWM2M Client example application demonstrates how to register, unregister, read resource values and send resource observations onto mbed Device Server.</p>
 <h2 id="required-hardware">Required hardware</h2>
 <ul>
 <li>A <a href="http://developer.mbed.org/platforms/frdm-k64f/">FRDM-K64F</a> board</li>
@@ -20,7 +20,7 @@
 <p>There are 3 main phases to this example:</p>
 <ul>
 <li>Download and run mDS server on computer</li>
-<li>Configure helloworld-lwm2mclient example program with server address, build with yotta, load onto board, plug board into ethernet</li>
+<li>Configure lwm2m-client-example program with server address, build with yotta, load onto board, plug board into ethernet</li>
 <li>Verify board talks to server</li>
 </ul>
 <p>Note: You might need to open UDP port 5683 in your computer's firewall for mDS to communicate with this example application.</p>
@@ -43,7 +43,7 @@ Ref Apps.tar.gz</code></pre></li>
 <ol style="list-style-type: decimal">
 <li>Connect the frdm-k64f to the internet using an ethernet cable</li>
 <li>Connect the frdm-k64f to your computer with a micro-USB cable, being careful to use the micro-usb port labled &quot;OpenSDA&quot; on the bottom of the board.</li>
-<li>Find the binary file named <code>lwm2m-client-example-test-helloworld-lwm2mclient.bin</code> in the folder <code>lwm2m-client-example/build/frdm-k64f-gcc/test/</code>. Drag and drop the file onto the &quot;MBED&quot; drive on your computer.</li>
+<li>Find the binary file named <code>lwm2m-client-example.bin</code> in the folder <code>lwm2m-client-example/build/frdm-k64f-gcc/source/</code>. Drag and drop the file onto the &quot;MBED&quot; drive on your computer.</li>
 </ol>
 <p>The board will be programmed when the LED stops flashing. Press the reset button to run the program.</p>
 <h2 id="testing">Testing</h2>
@@ -61,7 +61,7 @@ Ref Apps.tar.gz</code></pre></li>
 <li>Power up your mbed board and press the reset button.</li>
 </ol>
 <p>You should see the endpoint after it has registered with the mbed Device Server.</p>
-<h3 id="testing-lwm2m-example-application-with-mbed-device-server">Testing lwm2m example application with mbed Device Server</h3>
+<h3 id="testing-lwm2m-client-example-application-with-mbed-device-server">Testing lwm2m client example application with mbed Device Server</h3>
 <p>Ensure that mDS and the WebUI are running (see <a href="#setting-up-the-environment">Setting up the environment</a>). Also, ensure that you have flashed the program to your mbed (see <a href="#flashing-to-target-device">Flashing to target device</a>).</p>
 <ol style="list-style-type: decimal">
 <li>Open the WebUI by navigating to http://localhost:8082.
@@ -75,9 +75,28 @@ Ref Apps.tar.gz</code></pre></li>
 <img src="img/registered.jpg" alt="Node registered" /><p class="caption">Node registered</p>
 </div>
 <ol start="4" style="list-style-type: decimal">
-<li>Click the endpoint name to view the registered resources. In this release, making requests to resources is not currently implemented.</li>
+<li>Click the endpoint name to view the registered resources.</li>
 </ol>
 <div class="figure">
 <img src="img/endpoint_resources.jpg" alt="Resource list" /><p class="caption">Resource list</p>
 </div>
-<p>Pressing button SW2 will cause endpoint to send unregister message to device server. After successful unregistration, led D12 starts blinking indicating that application has successfully completed and endpoint will disappear from endpoint list in web UI.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>You can make CoAP request to node resources by pressing &quot;Read&quot; - button.</li>
+</ol>
+<div class="figure">
+<img src="img/read_resources.jpg" alt="Read resources" /><p class="caption">Read resources</p>
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li><p>In /Test - tab is resources demonstrating Dynamic and Static resource functionality.</p></li>
+<li><p>/Test/0/D represents dynamic resource which is observed by mbed Device Server. It is linked with SW2 button on the FRDM board. The value starts from zero and every time SW2 button is being pressed, node sends counter value to mbed Device server, and it is updated to UI without need to press &quot;read&quot;.</p></li>
+</ol>
+<div class="figure">
+<img src="img/dynamic_resource.jpg" alt="Dynamic Resource" /><p class="caption">Dynamic Resource</p>
+</div>
+<ol start="8" style="list-style-type: decimal">
+<li>/Test/0/S represents static resource which is fixed value set in mbed Client. You can make CoAP request to node resources by pressing &quot;Read&quot; - button. This returns the fixed value of &quot;Static value&quot;.</li>
+</ol>
+<div class="figure">
+<img src="img/static_resource.jpg" alt="Static Resource" /><p class="caption">Static Resource</p>
+</div>
+<p>Pressing button SW3 will cause endpoint to send unregister message to device server. After successful unregistration, led D12 starts blinking indicating that application has successfully completed and endpoint will disappear from endpoint list in web UI.</p>
