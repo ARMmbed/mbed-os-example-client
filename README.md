@@ -32,9 +32,9 @@ To set up the environment, you will need to do the following:
 
 This example uses IPV4 to communicate with the mbed Device Server(mDS). The example program should automatically get an IPV4 address from the router when connected via ethernet.
 
-If your network does not have DHCP enabled you will have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
+If your network does not have DHCP enabled, you will have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
-### Download mbed Device Server (mDS)
+### Downloading mbed Device Server (mDS)
 
 The example application will register to mbed Device Server. Install mDS on your local computer.
 
@@ -61,7 +61,7 @@ The board will be programmed when the LED stops flashing. Press the reset button
 
 ## Testing
 
-### Log network traffic (optional)
+### Logging network traffic (optional)
 
 1. Start Wireshark on the computer where the mbed Device Server is running.
 2. Select your ethernet interface, usually "Local Area Connection".
