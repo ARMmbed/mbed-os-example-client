@@ -49,12 +49,12 @@ Ref Apps.tar.gz
 
 ### Starting the mbed Device Server (mDS)
 
-1. Go to the `bin` folder in the device server package that you downloaded.
+1. Go to the `bin` folder of the Device Server package that you downloaded.
 2. Run the start script:
     - If you are using Linux OS, run the `runDS.sh` in a new shell.
     - If you are using Windows, run the `runDS.bat` in a new command prompt.
 		
--This will start the mbed Device Server on your system.
+This will start the mbed Device Server on your system.
 		
 ### Starting the WebUI ("Lighting" reference app)		
 1. Go to the `bin` folder in the lighting reference app that you downloaded.
@@ -62,20 +62,20 @@ Ref Apps.tar.gz
     - If you are using Linux OS, run the `runLighting.sh` in a new shell.	
     - If you are using Windows, run the `runLighting.bat` in a new command prompt.	
 		
--This will start the WebUI on your system.	
+This will start the WebUI on your system.	
 		
 ## mbed Build instructions		
 		
 ### Building		
-1. Connect the frdm-k64f to the internet using the ethernet cable.	
-2. Connect the frdm-k64f to the computer with the micro-USB cable, being careful to use the micro-usb port labled "OpenSDA".	
-3. Install Yotta. See instructions from http://docs.yottabuild.org/#installing .
-4. Install needed toolchains (arm-none-eabi-gcc). Refer to the yotta installation page (in step 1 above) for instructions on how do install the toolchains.
-5. Clone **lwm2m-client-example** from https://github.com/ARMmbed/lwm2m-client-example .
-6. `cd ` **lwm2m-client-example**
-7. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
-8. Set up target device, `yotta target frdm-k64f-gcc`.
-9. Type `yotta build`The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+1. Connect the FRDM-K64F board to the internet using the ethernet cable.	
+2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled "OpenSDA".	
+3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
+4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
+5. Clone the **lwm2m-client-example** [repository](https://github.com/ARMmbed/lwm2m-client-example) to your local file system.
+6. In the command prompt, `cd` **lwm2m-client-example**.
+7. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
+8. Set up the target device, `yotta target frdm-k64f-gcc`.
+9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
 
 ### Flashing to target device
 
@@ -83,7 +83,7 @@ Ref Apps.tar.gz
 2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled "OpenSDA", on the bottom of the board.
 3. Find the binary file named `lwm2m-client-example.bin` in the folder `lwm2m-client-example/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
 
-The board will be programmed when the LED stops flashing. Press the **RESET**  button to run the program.
+The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
 
 ## Testing
 
@@ -94,7 +94,7 @@ The board will be programmed when the LED stops flashing. Press the **RESET**  b
 3. Click **Start**.
 4. Select the "Filter" field in the toolbar and add a filter to correspond to your mbed Device Server. Press Enter after you have entered the expression to activate the filter.
   - For example, if your server's IP address is `123.123.123.123`, you would enter `ip.addr == 123.123.123.123` and press Enter.
-5. Power up your mbed board and press the reset button.
+5. Power up your mbed board and press the **RESET** button.
 
 You should see the endpoint after it has registered with the mbed Device Server.
 
@@ -129,4 +129,4 @@ The **/Test/0/S** represents the static resource that is a fixed value set in th
 
 ![Static Resource](img/static_resource.jpg)
 
-If you press the **SW3** button, the endpoint will send an unregister message to mbed Device Server. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task and the endpoint will disappear from endpoint list in Web UI.
+If you press the **SW3** button, the endpoint will send an unregister message to mbed Device Server. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task and the endpoint will disappear from endpoint list in WebUI.
