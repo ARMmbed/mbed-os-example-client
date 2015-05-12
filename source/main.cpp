@@ -14,7 +14,7 @@
 
 // Enter your mbed Device Server's IPv4 address and Port number in
 // mentioned format like 192.168.0.1:5683
-const String &MBED_SERVER_ADDRESS = "coap://10.45.3.10:5683";
+const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>:5683";
 
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";

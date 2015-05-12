@@ -11,7 +11,7 @@ This document describes briefly the steps required to start using the LWM2M Clie
 ## Required software
 
 * [Yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
-* [mbed Device Server (mDS)](#download-mbed-device-server-mds) - server example program will connect to. (needs rephrasing)
+* [mbed Device Server (mDS)](#download-mbed-device-server-mds) - mbed Device Server, where LWM2M client example connects. 
 
 ## Optional software
 * [Wireshark](https://www.wireshark.org/) - for packet inspection/network debugging.
@@ -49,7 +49,33 @@ Ref Apps.tar.gz
 
 ### Starting the mbed Device Server (mDS)
 
-The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+1. Go to the `bin` folder in the device server package that you downloaded.
+2. Run the start script:
+    - If you are using Linux OS, run the `runDS.sh` in a new shell.
+    - If you are using Windows, run the `runDS.bat` in a new command prompt.
+		
+-This will start the mbed Device Server on your system.
+		
+### Starting the WebUI ("Lighting" reference app)		
+1. Go to the `bin` folder in the lighting reference app that you downloaded.
+2. Run the start script:	
+    - If you are using Linux OS, run the `runLighting.sh` in a new shell.	
+    - If you are using Windows, run the `runLighting.bat` in a new command prompt.	
+		
+-This will start the WebUI on your system.	
+		
+## mbed Build instructions		
+		
+### Building		
+1. Connect the frdm-k64f to the internet using the ethernet cable.	
+2. Connect the frdm-k64f to the computer with the micro-USB cable, being careful to use the micro-usb port labled "OpenSDA".	
+3. Install Yotta. See instructions from http://docs.yottabuild.org/#installing .
+4. Install needed toolchains (arm-none-eabi-gcc). Refer to the yotta installation page (in step 1 above) for instructions on how do install the toolchains.
+5. Clone **lwm2m-client-example** from https://github.com/ARMmbed/lwm2m-client-example .
+6. `cd ` **lwm2m-client-example**
+7. Open file main.cpp, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
+8. Set up target device, `yotta target frdm-k64f-gcc`.
+9. Type `yotta build`The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
 
 ### Flashing to target device
 
@@ -57,7 +83,7 @@ The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
 2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled "OpenSDA", on the bottom of the board.
 3. Find the binary file named `lwm2m-client-example.bin` in the folder `lwm2m-client-example/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
 
-The board will be programmed when the LED stops flashing. Press the reset button to run the program.
+The board will be programmed when the LED stops flashing. Press the **RESET**  button to run the program.
 
 ## Testing
 
@@ -76,7 +102,7 @@ You should see the endpoint after it has registered with the mbed Device Server.
 
 Ensure that the mDS and the WebUI are running (see [Setting up the environment](#setting-up-the-environment)). Also, ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-Step 1: To open the WebUI, navigate to `http://localhost:8082`.
+Step 1: To open the WebUI, navigate to `http://localhost:8083`.
     - If you are working from a remote machine, you need to use the host machine's IP address instead of "localhost".
 
 Step 2: Enter `demo` as both the username and password.
@@ -93,7 +119,7 @@ Step 5: To make a CoAP request to node resources, click **Read**.
 
 ![Read resources](img/read_resources.jpg)
 
-The **In/Test** tab contains resources demonstrating dynamic and static resource functionality. 
+The **/Test** tab contains resources demonstrating dynamic and static resource functionality. 
 
 The **/Test/0/D** represents the dynamic resource observed by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node sends a counter value to the mbed Device server, and it is updated to the UI without a need to press **Read**.
 
@@ -103,4 +129,4 @@ The **/Test/0/S** represents the static resource that is a fixed value set in th
 
 ![Static Resource](img/static_resource.jpg)
 
-If you press the **SW3** button, the endpoint will send an unregister message to mbed Device Server. After a successful unregistration, LED D12 starts blinking indicating that the application has successfully completed the task and the endpoint will disappear from endpoint list in Web UI.
+If you press the **SW3** button, the endpoint will send an unregister message to mbed Device Server. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task and the endpoint will disappear from endpoint list in Web UI.
