@@ -8,12 +8,12 @@ This document describes briefly the steps required to start using the LWM2M Clie
 * An ethernet cable
 * A micro-USB cable
 
-## Required Software
+## Required software
 
 * [Yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
 * [mbed Device Server (mDS)](#download-mbed-device-server-mds) - server example program will connect to. (needs rephrasing)
 
-## Optional Software
+## Optional software
 * [Wireshark](https://www.wireshark.org/) - for packet inspection/network debugging.
 
 ## Setting up the environment
