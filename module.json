@@ -1,6 +1,6 @@
 {
   "name": "lwm2m-client-example",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "LWM2M Client Example for mbed",
   "private": true,
   "keywords": [
@@ -15,7 +15,7 @@
   ],
   "extraIncludes": [],
   "dependencies": {
-    "lwm2m-client": "~0.1.4"
+    "lwm2m-client": "~0.1.5"
   },
   "targetDependencies": {},
   "bin": "./source/"

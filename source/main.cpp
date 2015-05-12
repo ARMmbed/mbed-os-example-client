@@ -58,7 +58,7 @@ public:
                                                   "lwm2m-endpoint",
                                                   "test",
                                                   3600,
-                                                  8000,
+                                                  5683,
                                                   "",
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
