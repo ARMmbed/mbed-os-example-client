@@ -56,11 +56,11 @@ Ref Apps.tar.gz
 		
 This will start the mbed Device Server on your system.
 		
-### Starting the WebUI ("Lighting" reference app)		
-1. Go to the `bin` folder in the lighting reference app that you downloaded.
+### Starting the WebUI ("Connected home" reference app)		
+1. Go to the `bin` folder in the Connected-home-trial reference app that you downloaded.
 2. Run the start script:	
-    - If you are using Linux OS, run the `runLighting.sh` in a new shell.	
-    - If you are using Windows, run the `runLighting.bat` in a new command prompt.	
+    - If you are using Linux OS, run the `runConnectedHome.sh` in a new shell.	
+    - If you are using Windows, run the `runConnectedHome.bat` in a new command prompt.	
 		
 This will start the WebUI on your system.	
 		
@@ -71,11 +71,10 @@ This will start the WebUI on your system.
 2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled "OpenSDA".	
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-5. Clone the **lwm2m-client-example** [repository](https://github.com/ARMmbed/lwm2m-client-example) to your local file system.
-6. In the command prompt, `cd` **lwm2m-client-example**.
-7. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
-8. Set up the target device, `yotta target frdm-k64f-gcc`.
-9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+5. In the command prompt, `cd` **examples** and **lwm2m-client-example**.
+6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
+7. Set up the target device, `yotta target frdm-k64f-gcc`.
+8. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
 
 ### Flashing to target device
 
