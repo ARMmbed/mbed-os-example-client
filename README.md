@@ -66,15 +66,39 @@ This will start the WebUI on your system.
 		
 ## mbed Build instructions		
 		
-### Building		
-1. Connect the FRDM-K64F board to the internet using the ethernet cable.	
+### Building
+There are currently 3 ways to use this example: Non-secure connection, DTLS PSK and DTLS Certificate modes.
+General instructions are same for all modes and the connection mode (step 7.) is split
+
+#### General 
+1. Connect the FRDM-K64F board to the internet using the ethernet cable.
 2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled "OpenSDA".	
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 5. In the command prompt, `cd` **examples** and **lwm2m-client-example**.
-6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>:5683`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1:5683`.
-7. Set up the target device, `yotta target frdm-k64f-gcc`.
-8. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
+7. Select connection mode from below
+8. Set up the target device, `yotta target frdm-k64f-gcc`.
+9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+
+NOTE!: If Device server does not respond to "Client hello" in secure connection modes, check your settings and restart Device server and WebUI.
+
+#### Non-secure
+1. Find CONN_MODE and set its value to M2MSecurity::NoSecurity
+2. Find and modify MBED_SERVER_PORT=5683
+
+#### DTLS PSK (Pre Shared Key)
+1. Find CONN_MODE and set its value to M2MSecurity::Psk
+2. Find and modify MBED_SERVER_PORT=5684
+
+#### DTLS Certificate
+1. Find CONN_MODE and set its value to M2MSecurity::Certificate
+2. Find and modify MBED_SERVER_PORT=5684
+3. Close WebUI and Device server and navigate to <Device server>/conf/ 
+4. Edit deviceserver.properties find "coap.dtls.psk" and set it to false
+5. restart Device server and WebUI
+6. Navigate to https://localhost:8081/security.html give admin as username and passsword
+7. Open tab Security and upload source/cert.pem to "Trusted certificates" list
 
 ### Flashing to target device
 

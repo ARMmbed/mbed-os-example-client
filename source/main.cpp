@@ -9,12 +9,20 @@
 #include "lwm2m-client/m2minterfaceobserver.h"
 #include "lwm2m-client/m2minterface.h"
 #include "lwm2m-client/m2mobjectinstance.h"
+#include "security.h"
 
 #include "lwipv4_init.h"
 
+// Select connection mode: Psk, Certificate or NoSecurity
+M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
+
 // Enter your mbed Device Server's IPv4 address and Port number in
-// mentioned format like 192.168.0.1:5683
-const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>:5683";
+// mentioned format like coap://192.168.0.1
+const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
+//If you use secure connection port is 5684, for non-secure port is 5683
+const int &MBED_SERVER_PORT = 5683;
+
+const String &ENDPOINT_NAME = "lwm2m-endpoint";
 
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";
@@ -27,6 +35,7 @@ const uint8_t STATIC_VALUE[] = "Static value";
 #define OBS_BUTTON SW2
 #define UNREG_BUTTON SW3
 #endif
+
 
 class M2MLWClient: public M2MInterfaceObserver {
 public:
@@ -55,10 +64,10 @@ public:
         // setup its name, resource type, life time, connection mode,
         // Currently only LwIPv4 is supported.
         _interface = M2MInterfaceFactory::create_interface(*this,
-                                                  "lwm2m-endpoint",
+                                                  ENDPOINT_NAME,
                                                   "test",
                                                   3600,
-                                                  5683,
+                                                  MBED_SERVER_PORT,
                                                   "",
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
@@ -78,7 +87,14 @@ public:
         // required for client to connect to mbed device server.
         M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::M2MServer);
         if(security) {
-            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
+            char buffer[6];
+            sprintf(buffer,"%d",MBED_SERVER_PORT);
+            m2m::String port(buffer);
+
+            m2m::String addr = MBED_SERVER_ADDRESS;
+            addr.append(":", 1);
+            addr.append(port.c_str(), size_t(port.size()) );
+            security->set_resource_value(M2MSecurity::M2MServerUri, addr);
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
         }
         return security;
@@ -243,6 +259,20 @@ int main() {
     // information.
     M2MSecurity* register_object = lwm2mclient.create_register_object();
 
+    if( CONN_MODE == M2MSecurity::Certificate ){
+        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
+        register_object->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
+        register_object->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
+        register_object->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
+    }else if( CONN_MODE == M2MSecurity::Psk ){
+        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Psk);
+        register_object->set_resource_value(M2MSecurity::ServerPublicKey,PSK_IDENTITY,sizeof(PSK_IDENTITY));
+        register_object->set_resource_value(M2MSecurity::PublicKey,PSK_IDENTITY,sizeof(PSK_IDENTITY));
+        register_object->set_resource_value(M2MSecurity::Secretkey,PSK,sizeof(PSK));
+    }else{
+        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
+    }
+
     // Create LWM2M device object specifying device resources
     // as per OMA LWM2M specification.
     M2MDevice* device_object = lwm2mclient.create_device_object();
@@ -281,7 +311,7 @@ int main() {
     // Delete device object created for registering device
     // resources.
     if(device_object) {
-        delete device_object;
+        M2MDevice::delete_instance();
     }
 
     // Delete generic object created for registering custom
