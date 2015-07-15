@@ -1,6 +1,6 @@
 {
   "name": "lwm2m-client-example",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "LWM2M Client Example for mbed",
   "private": true,
   "keywords": [
