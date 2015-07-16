@@ -73,7 +73,7 @@ You can use this example in any of the following three connection modes:
 2. DTLS PSK mode
 3. DTLS Certificate mode
 
- The general instructions for all modes are the same. The only difference comes in step 7, when selecting the mode.
+The general instructions for all modes are the same. The only difference comes in step 7, when selecting the mode.
 
 #### General 
 1. Connect the FRDM-K64F board to the internet using the ethernet cable.
