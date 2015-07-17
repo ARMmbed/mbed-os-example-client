@@ -26,7 +26,7 @@ To set up the environment, you will need to do the following:
 5. Plug the ethernet cable to the board.
 6. Verify that the board communicates with the server.
 
-**Note:** You might need to open UDP port 5683 in your computer firewall for mDS to communicate with this example application.
+**Note:** You might need to open UDP port 5683 and 5684 in your computer firewall for mDS to communicate with this example application.
 
 ### IP address setup
 
@@ -40,6 +40,7 @@ The example application will register to mbed Device Server. Install mDS on your
 
 1. The free developer version of the mbed Device Server is used with this example. Download it from [ARM silver](https://silver.arm.com/browse/SEN00).
 2. Unzip the package on your local computer. You should see the following files:
+NOTE: These instructions have been made for Device Server 2.4 release!
 ```
 Device Server.tar.gz
 Device Server Clients.tar.gz
@@ -76,7 +77,7 @@ General instructions are same for all modes and the connection mode (step 7.) is
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 5. In the command prompt, `cd` **examples** and **lwm2m-client-example**.
-6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address and port number in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
+6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
 7. Select connection mode from below
 8. Set up the target device, `yotta target frdm-k64f-gcc`.
 9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
