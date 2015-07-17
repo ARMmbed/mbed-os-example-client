@@ -32,7 +32,7 @@ To set up the environment, you will need to do the following:
 
 This example uses IPV4 to communicate with the mbed Device Server(mDS). The example program should automatically get an IPV4 address from the router when connected via ethernet.
 
-If your network does not have DHCP enabled, you will have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
+If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
 ### Downloading mbed Device Server (mDS)
 
@@ -55,25 +55,30 @@ Ref Apps.tar.gz
     - If you are using Linux OS, run the `runDS.sh` in a new shell.
     - If you are using Windows, run the `runDS.bat` in a new command prompt.
 		
-This will start the mbed Device Server on your system.
+This starts the mbed Device Server on your system.
 		
-### Starting the WebUI ("Connected home" reference app)		
-1. Go to the `bin` folder in the Connected-home-trial reference app that you downloaded.
+### Starting the WebUI (_Connected home_ reference app)		
+1. Go to the `bin` folder in the `Connected-home-trial` reference app that you downloaded.
 2. Run the start script:	
     - If you are using Linux OS, run the `runConnectedHome.sh` in a new shell.	
     - If you are using Windows, run the `runConnectedHome.bat` in a new command prompt.	
 		
-This will start the WebUI on your system.	
+This starts the WebUI on your system.	
 		
 ## mbed Build instructions		
 		
 ### Building
-There are currently 3 ways to use this example: Non-secure connection, DTLS PSK and DTLS Certificate modes.
-General instructions are same for all modes and the connection mode (step 7.) is split
+You can use this example in any of the following three connection modes:
+
+1. Non-secure mode
+2. DTLS PSK mode
+3. DTLS Certificate mode
+
+The general instructions for all modes are the same. The only difference comes in step 7, when selecting the mode.
 
 #### General 
 1. Connect the FRDM-K64F board to the internet using the ethernet cable.
-2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled "OpenSDA".	
+2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled **OpenSDA**.	
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 5. In the command prompt, `cd` **examples** and **lwm2m-client-example**.
@@ -82,29 +87,29 @@ General instructions are same for all modes and the connection mode (step 7.) is
 8. Set up the target device, `yotta target frdm-k64f-gcc`.
 9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
 
-NOTE!: If Device server does not respond to "Client hello" in secure connection modes, check your settings and restart Device server and WebUI.
+**Note:** If the Device Server does not respond to _Client hello_ in secure connection modes, check your settings and restart the Device Server and the WebUI.
 
 #### Non-secure
-1. Find CONN_MODE and set its value to M2MSecurity::NoSecurity
-2. Find and modify MBED_SERVER_PORT=5683
+1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
+2. Set `MBED_SERVER_PORT` to `5683`.
 
-#### DTLS PSK (Pre Shared Key)
-1. Find CONN_MODE and set its value to M2MSecurity::Psk
-2. Find and modify MBED_SERVER_PORT=5684
+#### DTLS PSK
+1. Set the `CONN_MODE` value to `M2MSecurity::Psk`.
+2. Set `MBED_SERVER_PORT` to `5684`.
 
 #### DTLS Certificate
-1. Find CONN_MODE and set its value to M2MSecurity::Certificate
-2. Find and modify MBED_SERVER_PORT=5684
-3. Close WebUI and Device server and navigate to <Device server>/conf/ 
-4. Edit deviceserver.properties find "coap.dtls.psk" and set it to false
-5. restart Device server and WebUI
-6. Navigate to https://localhost:8081/security.html give admin as username and passsword
-7. Open tab Security and upload source/cert.pem to "Trusted certificates" list
+1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
+2. Set `MBED_SERVER_PORT` to `5684`.
+3. Close the WebUI and Device Server and go to `<Device server>/conf/ `.
+4. In the `deviceserver.properties` file, set `coap.dtls.psk` to `false`.
+5. Restart the Device Server and WebUI.
+6. In the browser, navigate to `https://localhost:8081/security.html` and give **admin** both as the username and the passsword.
+7. Open the **Security** tab and upload `source/cert.pem` to the **Trusted certificates** list.
 
 ### Flashing to target device
 
 1. Connect the FRDM-K64F board to the internet using an ethernet cable
-2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled "OpenSDA", on the bottom of the board.
+2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled **OpenSDA**, on the bottom of the board.
 3. Find the binary file named `lwm2m-client-example.bin` in the folder `lwm2m-client-example/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
 
 The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
@@ -114,9 +119,9 @@ The board will be programmed when the LED stops flashing. Press the **RESET** bu
 ### Logging network traffic (optional)
 
 1. Start Wireshark on the computer where the mbed Device Server is running.
-2. Select your ethernet interface, usually "Local Area Connection".
+2. Select your ethernet interface, usually **Local Area Connection**.
 3. Click **Start**.
-4. Select the "Filter" field in the toolbar and add a filter to correspond to your mbed Device Server. Press Enter after you have entered the expression to activate the filter.
+4. Select the **Filter** field in the toolbar and add a filter to correspond to your mbed Device Server. Press Enter after you have entered the expression to activate the filter.
   - For example, if your server's IP address is `123.123.123.123`, you would enter `ip.addr == 123.123.123.123` and press Enter.
 5. Power up your mbed board and press the **RESET** button.
 
@@ -126,20 +131,20 @@ You should see the endpoint after it has registered with the mbed Device Server.
 
 Ensure that the mDS and the WebUI are running (see [Setting up the environment](#setting-up-the-environment)). Also, ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-Step 1: To open the WebUI, navigate to `http://localhost:8083`.
-    - If you are working from a remote machine, you need to use the host machine's IP address instead of "localhost".
+**Step 1**: To open the WebUI, navigate to `http://localhost:8083`.
+    - If you are working from a remote machine, you need to use the host machine's IP address instead of `localhost`.
 
-Step 2: Enter `demo` as both the username and password.
+**Step 2**: Enter `demo` as both the username and password.
 
-Step 3: Go to the **End-points** tab. After a short time your device should appear in the list (refresh the page to update the list).
+**Step 3**: Go to the **End-points** tab. After a short time your device should appear in the list (refresh the page to update the list).
 
 ![Node registered](img/registered.jpg)
 
-Step 4: Click the endpoint name to view the registered resources. 
+**Step 4**: Click the endpoint name to view the registered resources. 
 
 ![Resource list](img/endpoint_resources.jpg)
 
-Step 5: To make a CoAP request to node resources, click **Read**.
+**Step 5**: To make a CoAP request to node resources, click **Read**.
 
 ![Read resources](img/read_resources.jpg)
 
@@ -149,8 +154,8 @@ The **/Test/0/D** represents the dynamic resource observed by the mbed Device Se
 
 ![Dynamic Resource](img/dynamic_resource.jpg)
 
-The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. To make a CoAP request to the node resources, click **Read**. This returns the fixed value of "Static value".
+The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. To make a CoAP request to the node resources, click **Read**. This returns the fixed value of _Static value_.
 
 ![Static Resource](img/static_resource.jpg)
 
-If you press the **SW3** button, the endpoint will send an unregister message to mbed Device Server. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task and the endpoint will disappear from endpoint list in WebUI.
+If you press the **SW3** button, the endpoint sends an unregister message to mbed Device Server. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task and the endpoint disappears from the endpoint list of the WebUI.
