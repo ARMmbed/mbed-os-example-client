@@ -9,6 +9,7 @@
 #include "lwm2m-client/m2minterfaceobserver.h"
 #include "lwm2m-client/m2minterface.h"
 #include "lwm2m-client/m2mobjectinstance.h"
+#include "lwm2m-client/m2mresource.h"
 #include "security.h"
 
 #include "lwipv4_init.h"
