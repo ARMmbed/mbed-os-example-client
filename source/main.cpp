@@ -20,7 +20,7 @@ M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::Certificate;
 
 // Enter your mbed Device Server's IPv4 address and Port number in
 // mentioned format like coap://192.168.0.1
-const String &MBED_SERVER_ADDRESS = "coap://10.45.3.10"; //<xxx.xxx.xxx.xxx>
+const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5684;
 
@@ -294,27 +294,11 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     object_list.push_back(generic_object);
 
     // Issue register command.
-  //  lwm2mclient.test_register(register_object, object_list);
 
     FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&lwm2mclient, &M2MLWClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
 
     minar::Scheduler::start();
-
-
-    // Wait till the register callback is called successfully.
-    // Callback comes in object_registered()
-//    while (!lwm2mclient.register_successful()) { __WFI(); }
-
-    // Wait for the unregister successful callback,
-    // Callback comes in object_unregsitered(), this will be
-    // waiting for user to press SW2 button on K64F board.
-//    while (!lwm2mclient.unregister_successful()) { __WFI(); }
-
-    // This will turn on the LED on the board specifying that
-    // the application has run successfully.
-//    notify_completion(lwm2mclient.unregister_successful() &&
-//                      lwm2mclient.register_successful() );
 
     // Delete security object created for registration
     if(register_object) {
