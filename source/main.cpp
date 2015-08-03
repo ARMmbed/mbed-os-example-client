@@ -10,18 +10,19 @@
 #include "lwm2m-client/m2minterface.h"
 #include "lwm2m-client/m2mobjectinstance.h"
 #include "lwm2m-client/m2mresource.h"
+#include "minar/minar.h"
 #include "security.h"
 
 #include "lwipv4_init.h"
 
 // Select connection mode: Psk, Certificate or NoSecurity
-M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
+M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::Certificate;
 
 // Enter your mbed Device Server's IPv4 address and Port number in
 // mentioned format like coap://192.168.0.1
-const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
+const String &MBED_SERVER_ADDRESS = "coap://10.45.3.10"; //<xxx.xxx.xxx.xxx>
 //If you use secure connection port is 5684, for non-secure port is 5683
-const int &MBED_SERVER_PORT = 5683;
+const int &MBED_SERVER_PORT = 5684;
 
 const String &ENDPOINT_NAME = "lwm2m-endpoint";
 
@@ -119,7 +120,10 @@ public:
         if(_object) {
             M2MObjectInstance* inst = _object->create_object_instance();
             if(inst) {
-                    M2MResource* res = inst->create_dynamic_resource("D","ResourceTest",true);
+                    M2MResource* res = inst->create_dynamic_resource("D",
+                                                                     "ResourceTest",
+                                                                     M2MResourceInstance::INTEGER,
+                                                                     true);
                     char buffer[20];
                     int size = sprintf(buffer,"%d",_value);
                     res->set_operation(M2MBase::GET_PUT_ALLOWED);
@@ -129,6 +133,7 @@ public:
 
                     inst->create_static_resource("S",
                                                  "ResourceTest",
+                                                 M2MResourceInstance::STRING,
                                                  STATIC_VALUE,
                                                  sizeof(STATIC_VALUE)-1);
             }
@@ -145,8 +150,7 @@ public:
                     char buffer[20];
                     int size = sprintf(buffer,"%d",_value);
                     res->set_value((const uint8_t*)buffer,
-                                   (const uint32_t)size,
-                                   true);
+                                   (const uint32_t)size);
                     _value++;
                 }
         }
@@ -193,6 +197,8 @@ public:
     void object_unregistered(M2MSecurity */*server_object*/){
         _unregistered = true;
         _registered = false;
+        notify_completion(_unregistered);
+        minar::Scheduler::stop();
         printf("\nUnregistered\n");
     }
 
@@ -227,7 +233,7 @@ private:
     int                 _value;
 };
 
-int main() {
+void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // This sets up the network interface configuration which will be used
     // by LWM2M Client API to communicate with mbed Device server.
@@ -288,21 +294,27 @@ int main() {
     object_list.push_back(generic_object);
 
     // Issue register command.
-    lwm2mclient.test_register(register_object, object_list);
+  //  lwm2mclient.test_register(register_object, object_list);
+
+    FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&lwm2mclient, &M2MLWClient::test_register);
+    minar::Scheduler::postCallback(fp.bind(register_object,object_list));
+
+    minar::Scheduler::start();
+
 
     // Wait till the register callback is called successfully.
     // Callback comes in object_registered()
-    while (!lwm2mclient.register_successful()) { __WFI(); }
+//    while (!lwm2mclient.register_successful()) { __WFI(); }
 
     // Wait for the unregister successful callback,
     // Callback comes in object_unregsitered(), this will be
     // waiting for user to press SW2 button on K64F board.
-    while (!lwm2mclient.unregister_successful()) { __WFI(); }
+//    while (!lwm2mclient.unregister_successful()) { __WFI(); }
 
     // This will turn on the LED on the board specifying that
     // the application has run successfully.
-    notify_completion(lwm2mclient.unregister_successful() &&
-                      lwm2mclient.register_successful() );
+//    notify_completion(lwm2mclient.unregister_successful() &&
+//                      lwm2mclient.register_successful() );
 
     // Delete security object created for registration
     if(register_object) {
@@ -323,7 +335,5 @@ int main() {
 
     // Disconnect the connect and teardown the network interface
     eth.disconnect();
-
-    return 0;
 }
 
