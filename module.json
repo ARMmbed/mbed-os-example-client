@@ -7,12 +7,7 @@
     "lwm2m-client"
   ],
   "author": "yogesh.pande@arm.com",
-  "licenses": [
-    {
-      "url": "https://spdx.org/licenses/Apache-2.0",
-      "type": "Apache-2.0"
-    }
-  ],
+  "license": "Apache-2.0",
   "extraIncludes": [],
   "dependencies": {
     "lwm2m-client": "~0.2.0"
