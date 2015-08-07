@@ -16,25 +16,25 @@
 #include "mbed-net-sockets/UDPSocket.h"
 #include "EthernetInterface.h"
 #include "test_env.h"
-#include "lwm2m-client/m2minterfacefactory.h"
-#include "lwm2m-client/m2mdevice.h"
-#include "lwm2m-client/m2minterfaceobserver.h"
-#include "lwm2m-client/m2minterface.h"
-#include "lwm2m-client/m2mobjectinstance.h"
-#include "lwm2m-client/m2mresource.h"
+#include "mbed-client/m2minterfacefactory.h"
+#include "mbed-client/m2mdevice.h"
+#include "mbed-client/m2minterfaceobserver.h"
+#include "mbed-client/m2minterface.h"
+#include "mbed-client/m2mobjectinstance.h"
+#include "mbed-client/m2mresource.h"
 #include "minar/minar.h"
 #include "security.h"
 
 #include "lwipv4_init.h"
 
 // Select connection mode: Psk, Certificate or NoSecurity
-M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::Certificate;
+M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
 // Enter your mbed Device Server's IPv4 address and Port number in
 // mentioned format like coap://192.168.0.1
 const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
 //If you use secure connection port is 5684, for non-secure port is 5683
-const int &MBED_SERVER_PORT = 5684;
+const int &MBED_SERVER_PORT = 5683;
 
 const String &ENDPOINT_NAME = "lwm2m-endpoint";
 
@@ -51,9 +51,9 @@ const uint8_t STATIC_VALUE[] = "Static value";
 #endif
 
 
-class M2MLWClient: public M2MInterfaceObserver {
+class MbedClient: public M2MInterfaceObserver {
 public:
-    M2MLWClient(){
+    MbedClient(){
         _interface = NULL;
         _bootstrapped = false;
         _error = false;
@@ -64,7 +64,7 @@ public:
         _object = NULL;
     }
 
-    ~M2MLWClient() {
+    ~MbedClient() {
         if(_interface) {
             delete _interface;
         }
@@ -257,7 +257,7 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // Instantiate the class which implements
     // LWM2M Client API
-    M2MLWClient lwm2mclient;
+    MbedClient mbed_client;
 
     // Set up Hardware interrupt button.
     InterruptIn obs_button(OBS_BUTTON);
@@ -265,18 +265,18 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Server
-    unreg_button.fall(&lwm2mclient,&M2MLWClient::test_unregister);
+    unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
 
     // On press of SW2 button on K64F board, example application
     // will send observation towards mbed Device Server
-    obs_button.fall(&lwm2mclient,&M2MLWClient::update_resource);
+    obs_button.fall(&mbed_client,&MbedClient::update_resource);
 
     // Create LWM2M Client API interface to manage register and unregister
-    lwm2mclient.create_interface();
+    mbed_client.create_interface();
 
     // Create LWM2M server object specifying mbed device server
     // information.
-    M2MSecurity* register_object = lwm2mclient.create_register_object();
+    M2MSecurity* register_object = mbed_client.create_register_object();
 
     if( CONN_MODE == M2MSecurity::Certificate ){
         register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
@@ -294,10 +294,10 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // Create LWM2M device object specifying device resources
     // as per OMA LWM2M specification.
-    M2MDevice* device_object = lwm2mclient.create_device_object();
+    M2MDevice* device_object = mbed_client.create_device_object();
 
     // Create Generic object specifying custom resources
-    M2MObject* generic_object = lwm2mclient.create_generic_object();
+    M2MObject* generic_object = mbed_client.create_generic_object();
 
     // Add all the objects that you would like to register
     // into the list and pass the list for register API.
@@ -307,7 +307,7 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // Issue register command.
 
-    FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&lwm2mclient, &M2MLWClient::test_register);
+    FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&mbed_client, &MbedClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
 
     minar::Scheduler::start();

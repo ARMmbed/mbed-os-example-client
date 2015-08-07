@@ -1,6 +1,6 @@
-# Getting started on LWM2M Client Example
+# Getting started on mbed Client Example
 
-This document describes briefly the steps required to start using the LWM2M Client example application on mbed OS. The LWM2M Client example application demonstrates how to register, unregister, read resource values and send resource observations to the mbed Device Server.
+This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register, unregister, read resource values and send resource observations to the mbed Device Server.
 
 ## Required hardware
 * An [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board
@@ -11,7 +11,7 @@ This document describes briefly the steps required to start using the LWM2M Clie
 ## Required software
 
 * [Yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
-* [mbed Device Server (mDS)](#download-mbed-device-server-mds) - mbed Device Server, where LWM2M client example connects. 
+* [mbed Device Server (mDS)](#download-mbed-device-server-mds) - mbed Device Server, where mbed client example connects. 
 
 ## Optional software
 * [Wireshark](https://www.wireshark.org/) - for packet inspection/network debugging.
@@ -20,7 +20,7 @@ This document describes briefly the steps required to start using the LWM2M Clie
 To set up the environment, you will need to do the following:
 
 1. Download and run mDS server on computer.
-2. Configure the LWM2M Client example program with the server address.
+2. Configure the mbed Client example program with the server address.
 3. Build the application with Yotta.
 4. Load the application to the FRDM-K64F board.
 5. Plug the ethernet cable to the board.
@@ -81,7 +81,7 @@ The general instructions for all modes are the same. The only difference comes i
 2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled **OpenSDA**.	
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-5. In the command prompt, `cd` **examples** and **lwm2m-client-example**.
+5. In the command prompt, `cd` **examples** and **mbed-client-examples**.
 6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
 7. Select connection mode from below
 8. Set up the target device, `yotta target frdm-k64f-gcc`.
@@ -110,7 +110,7 @@ The general instructions for all modes are the same. The only difference comes i
 
 1. Connect the FRDM-K64F board to the internet using an ethernet cable
 2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled **OpenSDA**, on the bottom of the board.
-3. Find the binary file named `lwm2m-client-example.bin` in the folder `lwm2m-client-example/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
+3. Find the binary file named `mbed-client-examples.bin` in the folder `mbed-client-examples/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
 
 The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
 
@@ -127,7 +127,7 @@ The board will be programmed when the LED stops flashing. Press the **RESET** bu
 
 You should see the endpoint after it has registered with the mbed Device Server.
 
-### Testing the LWM2M Client example application with the mbed Device Server
+### Testing the mbed Client example application with the mbed Device Server
 
 Ensure that the mDS and the WebUI are running (see [Setting up the environment](#setting-up-the-environment)). Also, ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 

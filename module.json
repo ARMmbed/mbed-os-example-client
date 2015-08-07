@@ -1,10 +1,10 @@
 {
   "name": "mbed-client-examples",
   "version": "0.2.0",
-  "description": "LWM2M Client Example for mbed",
+  "description": "mbed Client Example for mbed",
   "private": true,
   "keywords": [
-    "lwm2m-client"
+    "mbed-client"
   ],
   "author": "yogesh.pande@arm.com",
   "license": "Apache-2.0",
