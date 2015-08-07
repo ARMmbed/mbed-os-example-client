@@ -71,8 +71,8 @@ This starts the WebUI on your system.
 You can use this example in any of the following three connection modes:
 
 1. Non-secure mode
-2. DTLS PSK mode
-3. DTLS Certificate mode
+2. DTLS PSK mode (**NOT SUPPORTED in this release**)
+3. DTLS Certificate mode (**NOT SUPPORTED in this release**)
 
 The general instructions for all modes are the same. The only difference comes in step 7, when selecting the mode.
 
@@ -93,11 +93,11 @@ The general instructions for all modes are the same. The only difference comes i
 1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
 2. Set `MBED_SERVER_PORT` to `5683`.
 
-#### DTLS PSK
+#### DTLS PSK (NOT SUPPORTED in this release)
 1. Set the `CONN_MODE` value to `M2MSecurity::Psk`.
 2. Set `MBED_SERVER_PORT` to `5684`.
 
-#### DTLS Certificate
+#### DTLS Certificate (NOT SUPPORTED in this release)
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
 3. Close the WebUI and Device Server and go to `<Device server>/conf/ `.
