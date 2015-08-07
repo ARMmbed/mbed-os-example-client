@@ -1,5 +1,5 @@
 {
-  "name": "lwm2m-client-example",
+  "name": "mbed-client-examples",
   "version": "0.2.0",
   "description": "LWM2M Client Example for mbed",
   "private": true,
@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "extraIncludes": [],
   "dependencies": {
-    "lwm2m-client": "~0.2.0"
+    "mbed-client": "~0.2.0"
   },
   "targetDependencies": {},
   "bin": "./source/"
