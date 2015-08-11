@@ -11,7 +11,7 @@ This document describes briefly the steps required to start using the mbed Clien
 ## Required software
 
 * [Yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
-* [mbed Device Server (mDS)](#download-mbed-device-server-mds) - mbed Device Server, where mbed client example connects. 
+* [mbed Device Server (mDS)](#downloading-mbed-device-server-mds) - mbed Device Server, where mbed client example connects. 
 
 ## Optional software
 * [Wireshark](https://www.wireshark.org/) - for packet inspection/network debugging.
@@ -40,7 +40,7 @@ The example application will register to mbed Device Server. Install mDS on your
 
 1. The free developer version of the mbed Device Server is used with this example. Download it from [ARM silver](https://silver.arm.com/browse/SEN00).
 2. Unzip the package on your local computer. You should see the following files:
-NOTE: These instructions have been made for Device Server 2.4 release!
+NOTE: These instructions have been made for Device Server 2.2 release!
 ```
 Device Server.tar.gz
 Device Server Clients.tar.gz
@@ -81,8 +81,8 @@ The general instructions for all modes are the same. The only difference comes i
 2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled **OpenSDA**.	
 3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-5. In the command prompt, `cd` **examples** and **mbed-client-examples**.
-6. Open file `main.cpp`, edit your mbed Device Server's Ipv4 address in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
+5. In the command prompt, go to **mbed-client-examples** directory.
+6. Open file `main.cpp` under `source` folder, edit your mbed Device Server's Ipv4 address in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
 7. Select connection mode from below
 8. Set up the target device, `yotta target frdm-k64f-gcc`.
 9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
@@ -131,8 +131,10 @@ You should see the endpoint after it has registered with the mbed Device Server.
 
 Ensure that the mDS and the WebUI are running (see [Setting up the environment](#setting-up-the-environment)). Also, ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-**Step 1**: To open the WebUI, navigate to `http://localhost:8083`.
+**Step 1**: To open the WebUI, navigate to `http://localhost:8082`.
     - If you are working from a remote machine, you need to use the host machine's IP address instead of `localhost`.
+
+**NOTE:** In case you are using virtual machine, then network adapter settings should be changed from NAT to bridge mode.
 
 **Step 2**: Enter `demo` as both the username and password.
 
