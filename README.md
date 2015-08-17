@@ -50,17 +50,17 @@ Ref Apps.tar.gz
 
 ### Starting the mbed Device Server (mDS)
 
-1. Go to the `bin` folder of the Device Server package that you downloaded.
+1. Go to the `Device Server/bin` folder of the `Device Server.tar.gz` archive that you extracted.
 2. Run the start script:
-    - If you are using Linux OS, run the `runDS.sh` in a new shell.
+    - If you are using Mac OS X or Linux, run the `runDS.sh` in a new shell.
     - If you are using Windows, run the `runDS.bat` in a new command prompt.
 		
 This starts the mbed Device Server on your system.
 		
 ### Starting the WebUI (_Connected home_ reference app)		
-1. Go to the `bin` folder in the `Connected-home-trial` reference app that you downloaded.
+1. Go to the `connected-home-trial-x.x.x-xxx/bin` folder of the `Ref Apps.tar.gz` archive that you extracted.
 2. Run the start script:	
-    - If you are using Linux OS, run the `runConnectedHome.sh` in a new shell.	
+    - If you are using Max OS X or Linux, run the `runConnectedHome.sh` in a new shell.	
     - If you are using Windows, run the `runConnectedHome.bat` in a new command prompt.	
 		
 This starts the WebUI on your system.	
@@ -85,7 +85,7 @@ The general instructions for all modes are the same. The only difference comes i
 6. Open file `main.cpp` under `source` folder, edit your mbed Device Server's Ipv4 address in place of `coap://<xxx.xxx.xxx.xxx>`. For example, if your server's IP address is `192.168.0.1`, you would enter `coap://192.168.0.1`.
 7. Select connection mode from below
 8. Set up the target device, `yotta target frdm-k64f-gcc`.
-9. In the command prompt, type `yotta build`. The binary file will be created to `/build/frdm-k64f-gcc/source/` folder.
+9. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
 **Note:** If the Device Server does not respond to _Client hello_ in secure connection modes, check your settings and restart the Device Server and the WebUI.
 
@@ -111,8 +111,7 @@ The general instructions for all modes are the same. The only difference comes i
 1. Connect the FRDM-K64F board to the internet using an ethernet cable
 2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled **OpenSDA**, on the bottom of the board.
 3. Find the binary file named `mbed-client-examples.bin` in the folder `mbed-client-examples/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
-
-The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
+4. The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
 
 ## Testing
 
