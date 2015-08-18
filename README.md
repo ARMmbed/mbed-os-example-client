@@ -1,6 +1,6 @@
 # Getting started on mbed Client Example
 
-This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register, unregister, read resource values and send resource observations to the mbed Device Connector.
+This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register, unregister and read resource values to mbed Device Connector.
 
 ## Required hardware
 * An [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board
@@ -33,7 +33,7 @@ If your network does not have DHCP enabled, you have to manually assign a static
 You can use this example in the following connection modes:
 
 - Non-secure mode
-- DTLS Certificate mode
+- Certificate mode
 
 The general instructions for all modes are the same. The only difference comes in step 6, when selecting the mode.
 
@@ -43,21 +43,21 @@ The general instructions for all modes are the same. The only difference comes i
 3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 4. In the command prompt, go to **mbed-client-examples** directory.
 5. Select connection mode from below
-6. Open main.cpp with your code editor to set registration domain, **you must use your mbed username as a domain name**. Domain is set as a parameter to M2MInterfaceFactory::create_interface object. Replace string "domain" with your mbed  user name. 
+7. Open main.cpp with your code editor to set registration domain, you **must** use your **mbed developer account username** as a domain name. Domain is set as a parameter to M2MInterfaceFactory::create_interface object. Enter your **mbed developer account username** as domain in `MBED_USER_NAME_DOMAIN`.
 7. Set up the target device, `yotta target frdm-k64f-gcc`.
 8. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
-#### Setting non-secure - connection
+#### Setting Non-secure mode
 1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
 2. Set `MBED_SERVER_PORT` to `5683`.
 
-#### Setting DTLS Certificate - connection
+#### Setting Certificate mode
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
 3. Go to  [Device Connector website](connector-test.dev.mbed.com)
 4. Navigate to *Security credentials* under *My devices*.
 5. Click *GET MY DEVICE SECURITY CREDENTIALS*
-6. Copy created security credentials to sources/security.h
+6. Copy created security credentials to `sources/security.h`
 
 ### Flashing to target device
 
@@ -82,7 +82,7 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource observed by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node sends a counter value to the mbed Device Connecor.
+The **/Test/0/D** represents the dynamic resource which can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases counter value by 1. To make a CoAP request to the node resources to get latest value, click **Read**. This returns the latest value of **/Test/0/D**. 
 
 For more information about mbed Device Connector rest API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
 

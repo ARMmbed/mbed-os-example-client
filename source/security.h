@@ -18,9 +18,6 @@
 
 #include <inttypes.h>
 
-const unsigned char PSK[] = {0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x31,0x32,0x33,0x34,0x35,0x36};
-const unsigned char PSK_IDENTITY[] = {0x0F,0x0F};
-
 const uint8_t SERVER_CERT[] = "-----BEGIN CERTIFICATE-----\r\n"
 "MIIBmDCCAT6gAwIBAgIEVUCA0jAKBggqhkjOPQQDAjBLMQswCQYDVQQGEwJGSTEN\r\n"
 "MAsGA1UEBwwET3VsdTEMMAoGA1UECgwDQVJNMQwwCgYDVQQLDANJb1QxETAPBgNV\r\n"
