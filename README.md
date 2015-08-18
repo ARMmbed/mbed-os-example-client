@@ -38,26 +38,25 @@ You can use this example in the following connection modes:
 The general instructions for all modes are the same. The only difference comes in step 6, when selecting the mode.
 
 #### General 
-1. Connect the FRDM-K64F board to the internet using the ethernet cable.
-2. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled **OpenSDA**.	
-3. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
-4. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-5. In the command prompt, go to **mbed-client-examples** directory.
-6. Select connection mode from below
-7. Open main.cpp with your code editor to set registration domain, you **must** use your mbed username as a domain name. Domain is set as a parameter to M2MInterfaceFactory::create_interface object. Replace string "domain" with your user name. 
-8. Set up the target device, `yotta target frdm-k64f-gcc`.
-9. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
+1. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labled **OpenSDA**.
+2. Install Yotta. See instructions [here](http://docs.yottabuild.org/#installing).
+3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
+4. In the command prompt, go to **mbed-client-examples** directory.
+5. Select connection mode from below
+6. Open main.cpp with your code editor to set registration domain, **you must use your mbed username as a domain name**. Domain is set as a parameter to M2MInterfaceFactory::create_interface object. Replace string "domain" with your mbed  user name. 
+7. Set up the target device, `yotta target frdm-k64f-gcc`.
+8. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
-#### Non-secure
+#### Setting non-secure - connection
 1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
 2. Set `MBED_SERVER_PORT` to `5683`.
 
-#### DTLS Certificate (NOT SUPPORTED in this release)
+#### Setting DTLS Certificate - connection
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
 3. Go to  [Device Connector website](connector-test.dev.mbed.com)
-4. Navigate to Security credentials under My devices.
-5. Click **GET MY DEVICE SECURITY CREDENTIALS"
+4. Navigate to *Security credentials* under *My devices*.
+5. Click *GET MY DEVICE SECURITY CREDENTIALS*
 6. Copy created security credentials to sources/security.h
 
 ### Flashing to target device
@@ -77,17 +76,14 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 **Step 2**: Log in using your mbed account.
 
-**Step 3**: Click the **Connected devices ** link under **My devices** to see your mbed Client example device
+**Step 3**: Click the *Connected devices* link under *My devices* to see your registered mbed Client example device.
 
-**Step 4**: You can send requests to mbed Client device with Device Connector API. To do that, click API Console under Device Connector. Click URL to create request. For example:
-`http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S`
-makes get request to static **/Test/0/S** resource.
+**Step 4**: You can send requests to mbed Client device with Device Connector API. To do that, click *API Console* under *Device Connector*. Click URL to create request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S`creates GET request to static **/Test/0/S** resource.
 
-The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. To make a CoAP request to the node resources, click **Read**. This returns the fixed value of _Static value_.
+The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
 The **/Test/0/D** represents the dynamic resource observed by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node sends a counter value to the mbed Device Connecor.
 
+For more information about mbed Device Connector rest API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
+
 **Step 5**: If you press the **SW3** button, the endpoint sends an unregister message to mbed Device Connector. After a successful unregistration, LED **D12** starts blinking indicating that the application has successfully completed the task.
-
-
-
