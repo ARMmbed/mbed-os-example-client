@@ -27,12 +27,11 @@
 
 #include "lwipv4_init.h"
 
-// Select connection mode: Psk, Certificate or NoSecurity
+// Select connection mode: Certificate or NoSecurity
 M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
-// Enter your mbed Device Server's IPv4 address and Port number in
-// mentioned format like coap://192.168.0.1
-const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = "coap://ds-test.dev.mbed.com";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5683;
 
@@ -82,7 +81,7 @@ public:
                                                   "test",
                                                   3600,
                                                   MBED_SERVER_PORT,
-                                                  "",
+                                                  "domain",
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
                                                   "");
