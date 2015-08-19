@@ -35,10 +35,8 @@ const String &MBED_SERVER_ADDRESS = "coap://ds-test.dev.mbed.com";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5683;
 
-// Enter your mbed developer account username as domain.
-const String &MBED_USER_NAME_DOMAIN = "";
-
-const String &ENDPOINT_NAME = "lwm2m-endpoint";
+const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
+const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
 
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";

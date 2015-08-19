@@ -43,20 +43,21 @@ The general instructions for all modes are the same. The only difference comes i
 3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 4. In the command prompt, go to **mbed-client-examples** directory.
 5. Select connection mode from below
-7. Open main.cpp with your code editor to set registration domain, you **must** use your **mbed developer account username** as a domain name. Domain is set as a parameter to M2MInterfaceFactory::create_interface object. Enter your **mbed developer account username** as domain in `MBED_USER_NAME_DOMAIN`.
-7. Set up the target device, `yotta target frdm-k64f-gcc`.
-8. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
+6. Set up the target device, `yotta target frdm-k64f-gcc`.
+7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
 #### Setting Non-secure mode
 1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
 2. Set `MBED_SERVER_PORT` to `5683`.
+3. Open `sources/security.h` with your code editor to set registration domain, you **must** use your **mbed developer account username** as a domain name. Enter your **mbed developer account username** as domain in `MBED_DOMAIN`.
+4. Endpoint registration name is defined as MBED_ENDPOINT_NAME in `sources/security.h`. You can change it by modifying it with your code editor.
 
 #### Setting Certificate mode
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
 3. Go to  [Device Connector website](connector-test.dev.mbed.com)
 4. Navigate to *Security credentials* under *My devices*.
-5. Click *GET MY DEVICE SECURITY CREDENTIALS*
+5. Click *GET MY DEVICE SECURITY CREDENTIALS* You will get needed certificate information as well as endpoint name and domain.
 6. Copy created security credentials to `sources/security.h`
 
 ### Flashing to target device
