@@ -27,16 +27,16 @@
 
 #include "lwipv4_init.h"
 
-// Select connection mode: Psk, Certificate or NoSecurity
+// Select connection mode: Certificate or NoSecurity
 M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
-// Enter your mbed Device Server's IPv4 address and Port number in
-// mentioned format like coap://192.168.0.1
-const String &MBED_SERVER_ADDRESS = "coap://<xxx.xxx.xxx.xxx>";
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = "coap://ds-test.dev.mbed.com";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5683;
 
-const String &ENDPOINT_NAME = "lwm2m-endpoint";
+const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
+const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
 
 const String &MANUFACTURER = "manufacturer";
 const String &TYPE = "type";
@@ -82,7 +82,7 @@ public:
                                                   "test",
                                                   3600,
                                                   MBED_SERVER_PORT,
-                                                  "",
+                                                  MBED_USER_NAME_DOMAIN,
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
                                                   "");
@@ -283,12 +283,7 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
         register_object->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
         register_object->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
         register_object->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
-    }else if( CONN_MODE == M2MSecurity::Psk ){
-        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Psk);
-        register_object->set_resource_value(M2MSecurity::ServerPublicKey,PSK_IDENTITY,sizeof(PSK_IDENTITY));
-        register_object->set_resource_value(M2MSecurity::PublicKey,PSK_IDENTITY,sizeof(PSK_IDENTITY));
-        register_object->set_resource_value(M2MSecurity::Secretkey,PSK,sizeof(PSK));
-    }else{
+    } else{
         register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
     }
 
