@@ -55,7 +55,7 @@ The general instructions for both modes are the same. The only difference comes 
 #### Setting Certificate mode
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
-3. Go to  [Device Connector website](connector-test.dev.mbed.com).
+3. Go to  [Device Connector website](http://connector-test.dev.mbed.com).
 4. Navigate to **Security credentials** under **My devices**.
 5. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
 6. Copy the created security credentials to `sources/security.h`
@@ -73,7 +73,7 @@ The general instructions for both modes are the same. The only difference comes 
 
 Ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-**Step 1**: Go to [Device Connector website](connector-test.dev.mbed.com).
+**Step 1**: Go to [Device Connector website](http://connector-test.dev.mbed.com).
 
 **Step 2**: Log in using your mbed account.
 
