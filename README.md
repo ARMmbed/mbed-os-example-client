@@ -15,7 +15,7 @@ This document describes briefly the steps required to start using the mbed Clien
 ## Setting up the environment
 To set up the environment, you need to do the following:
 
-1. Go to [Device Connector website](connector-test.dev.mbed.com) and log in with your mbed.org account.
+1. Go to [Device Connector website](http://connector-test.dev.mbed.com) and log in with your mbed.org account.
 2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-Build-instructions) chapter for more information.
 3. Build the application with yotta.
 4. Plug the Ethernet cable to the board.
@@ -83,7 +83,7 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. To make a CoAP request to the node resources to get the latest value, click **Read**. This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
 For more information on the mbed Device Connector REST API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
 
