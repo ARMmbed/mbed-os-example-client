@@ -1,5 +1,7 @@
 # Getting started on mbed Client Example
 
+**DISCLAIMER**: This example application connects to [Device Connector server](http://api.connector.mbed.com) which will be hosted by ARM. You can test this example application through [Device Connector Service](http://connector.mbed.com) Web UI , also hosted by ARM. However, the service may not go-live by the time you are testing this application. In that case, please look out for < Link in mbed.com for announcement>  Device Connector release announcements.
+
 This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register and read resource values to mbed Device Connector and deregister from it.
 
 ## Required hardware
@@ -15,8 +17,8 @@ This document describes briefly the steps required to start using the mbed Clien
 ## Setting up the environment
 To set up the environment, you need to do the following:
 
-1. Go to [Device Connector website](http://connector-test.dev.mbed.com) and log in with your mbed.org account.
-2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-Build-instructions) chapter for more information.
+1. Go to [Device Connector website](http://connector.mbed.com) and log in with your mbed.org account.
+2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
 3. Build the application with yotta.
 4. Plug the Ethernet cable to the board.
 5. Load the application to the FRDM-K64F board.
@@ -73,18 +75,20 @@ The general instructions for both modes are the same. The only difference comes 
 
 Ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-**Step 1**: Go to [Device Connector website](http://connector-test.dev.mbed.com).
+**Step 1**: Go to [Device Connector website](http://connector.mbed.com).
 
 **Step 2**: Log in using your mbed account.
 
 **Step 3**: Click the **Connected devices** link under **My devices** to see your registered mbed Client example device.
 
-**Step 4**: You can send requests to mbed Client device with Device Connector API. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
+**Step 4**: You can send requests to mbed Client device with Device Connector API. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
-For more information on the mbed Device Connector REST API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
+NOTE: Remember to select the `sync=true` option while making the REST URL query for the resource value else the API will return error.
+
+For more information on the mbed Device Connector REST API, see [help pages](http://connector.mbed.com/#help-rest-api).
 
 **Step 5**: If you press the **SW3** button, the endpoint sends a deregister message to the mbed Device Connector. After a successful deregistration, LED **D12** starts blinking indicating that the application has successfully completed the task.
