@@ -233,6 +233,18 @@ public:
                base->name().c_str(), type);
     }
 
+    void test_update_register() {
+        if (_registered) {
+            _interface->update_registration(_register_security, 3600);
+        }
+    }
+
+   void set_register_object(M2MSecurity *register_object) {
+        if (_register_security == NULL) {
+            _register_security = register_object;
+        }
+    }
+
 private:
 
     M2MInterface    	*_interface;
@@ -300,17 +312,16 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     object_list.push_back(device_object);
     object_list.push_back(generic_object);
 
-    // Issue register command.
+    mbed_client.set_register_object(register_object);
 
+    Ticker ticker;
+    ticker.attach(&mbed_client,&MbedClient::test_update_register, 20.0);
+
+    // Issue register command.
     FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&mbed_client, &MbedClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
 
     minar::Scheduler::start();
-
-    // Delete security object created for registration
-    if(register_object) {
-        delete register_object;
-    }
 
     // Delete device object created for registering device
     // resources.
