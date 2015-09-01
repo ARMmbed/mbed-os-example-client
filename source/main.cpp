@@ -77,11 +77,16 @@ public:
         // Creates M2MInterface using which endpoint can
         // setup its name, resource type, life time, connection mode,
         // Currently only LwIPv4 is supported.
+
+	// Randomizing listening port for Certificate mode connectivity
+	srand(time(NULL));
+	uint16_t port = rand() % 65535 + 12345;
+
         _interface = M2MInterfaceFactory::create_interface(*this,
                                                   ENDPOINT_NAME,
                                                   "test",
                                                   3600,
-                                                  MBED_SERVER_PORT,
+                                                  port,
                                                   MBED_USER_NAME_DOMAIN,
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
