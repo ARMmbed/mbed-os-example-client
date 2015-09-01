@@ -58,11 +58,11 @@ The general instructions for both modes are the same. The only difference comes 
 3. Go to  [Device Connector website](http://connector-test.dev.mbed.com).
 4. Navigate to **Security credentials** under **My devices**.
 5. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
-6. Copy the created security credentials to `sources/security.h`
+6. Copy the created security credentials to `sources/security.h`.
 
 ### Flashing to target device
 
-1. Connect the FRDM-K64F board to the internet using an Ethernet cable
+1. Connect the FRDM-K64F board to the internet using an Ethernet cable.
 2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled **OpenSDA**, on the bottom of the board.
 3. Find the binary file named `mbed-client-examples.bin` in the folder `mbed-client-examples/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
 4. The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
@@ -83,7 +83,7 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server (mDS). It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
 For more information on the mbed Device Connector REST API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
 
