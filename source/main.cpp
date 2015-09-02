@@ -31,7 +31,7 @@
 M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://connector.mbed.com";
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5683;
 
@@ -77,11 +77,16 @@ public:
         // Creates M2MInterface using which endpoint can
         // setup its name, resource type, life time, connection mode,
         // Currently only LwIPv4 is supported.
+
+	// Randomizing listening port for Certificate mode connectivity
+	srand(time(NULL));
+	uint16_t port = rand() % 65535 + 12345;
+
         _interface = M2MInterfaceFactory::create_interface(*this,
                                                   ENDPOINT_NAME,
                                                   "test",
                                                   3600,
-                                                  MBED_SERVER_PORT,
+                                                  port,
                                                   MBED_USER_NAME_DOMAIN,
                                                   M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
@@ -233,6 +238,18 @@ public:
                base->name().c_str(), type);
     }
 
+    void test_update_register() {
+        if (_registered) {
+            _interface->update_registration(_register_security, 3600);
+        }
+    }
+
+   void set_register_object(M2MSecurity *register_object) {
+        if (_register_security == NULL) {
+            _register_security = register_object;
+        }
+    }
+
 private:
 
     M2MInterface    	*_interface;
@@ -300,17 +317,16 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     object_list.push_back(device_object);
     object_list.push_back(generic_object);
 
-    // Issue register command.
+    mbed_client.set_register_object(register_object);
 
+    Ticker ticker;
+    ticker.attach(&mbed_client,&MbedClient::test_update_register, 20.0);
+
+    // Issue register command.
     FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&mbed_client, &MbedClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
 
     minar::Scheduler::start();
-
-    // Delete security object created for registration
-    if(register_object) {
-        delete register_object;
-    }
 
     // Delete device object created for registering device
     // resources.
