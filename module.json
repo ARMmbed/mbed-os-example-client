@@ -1,6 +1,6 @@
 {
   "name": "mbed-client-examples",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "mbed Client Example for mbed",
   "private": true,
   "keywords": [
