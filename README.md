@@ -83,9 +83,9 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D?sync=true` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **Device Connector**. Click the URL to create a request. For example: `http://ds-test.dev.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D?sync=true` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
-**NOTE:** In case you are getting error like Server Response : 410(Gone) or other such error, try clearing cache of your browser, logout and login again and then try.
+**NOTE:** In case you get an error like `Server Response:410(Gone)` or other such error, try clearing the cache of your browser, and log out and log in again.
 
 For more information on the mbed Device Connector REST API, see [help pages](http://connector-test.dev.mbed.com/#help-rest-api).
 
