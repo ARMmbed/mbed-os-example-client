@@ -27,6 +27,8 @@
 
 #include "lwipv4_init.h"
 
+using namespace mbed::util;
+
 // Select connection mode: Certificate or NoSecurity
 M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
