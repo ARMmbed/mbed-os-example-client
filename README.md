@@ -29,6 +29,10 @@ This example uses IPV4 to communicate with the [mbed Device Connector Server](ht
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
+#### Setting socket type
+
+By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket.
+
 ## mbed Build instructions		
 		
 ### Building
