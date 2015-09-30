@@ -17,7 +17,7 @@ This document describes briefly the steps required to start using the mbed Clien
 ## Setting up the environment
 To set up the environment, you need to do the following:
 
-1. Go to [mbed Device Connector website](https://connector.mbed.com) and log in with your mbed.org account.
+1. Go to [mbed Device Connector website](https://connector-test.dev.mbed.com) and log in with your mbed.org account.
 2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
 3. Build the application with yotta.
 4. Plug the Ethernet cable to the board.
@@ -25,13 +25,9 @@ To set up the environment, you need to do the following:
 
 ### IP address setup
 
-This example uses IPV4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com). The example program should automatically get an IPV4 address from the router when connected via Ethernet.
+This example uses IPV4 to communicate with the [mbed Device Connector Server](https://ds-test.dev.mbed.com). The example program should automatically get an IPV4 address from the router when connected via Ethernet.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
-
-#### Setting socket type
-
-By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket.
 
 ## mbed Build instructions		
 		
@@ -40,6 +36,12 @@ You can use this example in the following connection modes:
 
 - Non-secure mode
 - Certificate mode
+
+#### Setting socket type
+
+Apart from different secure mode, you can also connect in different socket mode.
+By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket. 
+Below instructions remain same irrespective of the socket mode you choose.
 
 The general instructions for both modes are the same. The only difference comes in step 5, when selecting the mode.
 
@@ -61,7 +63,7 @@ The general instructions for both modes are the same. The only difference comes 
 #### Setting Certificate mode
 1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
 2. Set `MBED_SERVER_PORT` to `5684`.
-3. Go to  [mbed Device Connector website](https://connector.mbed.com).
+3. Go to  [mbed Device Connector website](https://connector-test.dev.mbed.com).
 4. Navigate to **Security credentials** under **My devices**.
 5. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
 6. Copy the created security credentials to `sources/security.h`.
@@ -79,7 +81,7 @@ The general instructions for both modes are the same. The only difference comes 
 
 Ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
 
-**Step 1**: Go to [mbed Device Connector website](https://connector.mbed.com).
+**Step 1**: Go to [mbed Device Connector website](https://connector-test.dev.mbed.com).
 
 **Step 2**: Log in using your mbed account.
 
@@ -93,6 +95,6 @@ The **/Test/0/D** represents the dynamic resource that can be read by the mbed D
 
 **NOTE:** In case you are getting error like Server Response : 410(Gone) or other such error, try clearing cache of your browser, logout and login again and then try.
 
-For more information on the mbed Device Connector REST API, see [help pages](https://connector.mbed.com/#help-rest-api).
+For more information on the mbed Device Connector REST API, see [help pages](https://connector-test.dev.mbed.com/#help-rest-api).
 
 **Step 5**: If you press the **SW3** button, the endpoint sends a deregister message to the mbed Device Connector. After a successful deregistration, LED **D12** starts blinking indicating that the application has successfully completed the task.
