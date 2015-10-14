@@ -25,7 +25,7 @@ To set up the environment, you need to do the following:
 
 ### IP address setup
 
-This example uses IPV4 to communicate with the [mbed Device Connector Server](https://ds-test.dev.mbed.com). The example program should automatically get an IPV4 address from the router when connected via Ethernet.
+This example uses IPV4 to communicate with the [mbed Device Connector Server](https://ds-test-sl.dev.mbed.com). The example program should automatically get an IPV4 address from the router when connected via Ethernet.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
