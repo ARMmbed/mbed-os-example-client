@@ -32,11 +32,8 @@ using namespace mbed::util;
 // Select connection mode: Certificate or NoSecurity
 M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
 
-//Select binding mode: UDP or TCP
-M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
-
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://ds-test-sl.dev.mbed.com";
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com";
 //If you use secure connection port is 5684, for non-secure port is 5683
 const int &MBED_SERVER_PORT = 5683;
 
@@ -83,9 +80,9 @@ public:
         // setup its name, resource type, life time, connection mode,
         // Currently only LwIPv4 is supported.
 
-        // Randomizing listening port for Certificate mode connectivity
-        srand(time(NULL));
-        uint16_t port = rand() % 65535 + 12345;
+	// Randomizing listening port for Certificate mode connectivity
+	srand(time(NULL));
+	uint16_t port = rand() % 65535 + 12345;
 
         _interface = M2MInterfaceFactory::create_interface(*this,
                                                   ENDPOINT_NAME,
@@ -93,7 +90,7 @@ public:
                                                   3600,
                                                   port,
                                                   MBED_USER_NAME_DOMAIN,
-                                                  SOCKET_MODE,
+                                                  M2MInterface::UDP,
                                                   M2MInterface::LwIP_IPv4,
                                                   "");
     }
