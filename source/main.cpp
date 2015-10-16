@@ -264,23 +264,23 @@ private:
     int                 _value;
 };
 
+EthernetInterface eth;
+// Instantiate the class which implements
+// LWM2M Client API
+MbedClient mbed_client;
+
+// Set up Hardware interrupt button.
+InterruptIn obs_button(OBS_BUTTON);
+InterruptIn unreg_button(UNREG_BUTTON);
+
 void app_start(int /*argc*/, char* /*argv*/[]) {
 
     // This sets up the network interface configuration which will be used
     // by LWM2M Client API to communicate with mbed Device server.
-    EthernetInterface eth;
     eth.init(); //Use DHCP
     eth.connect();
 
     lwipv4_socket_init();
-
-    // Instantiate the class which implements
-    // LWM2M Client API
-    MbedClient mbed_client;
-
-    // Set up Hardware interrupt button.
-    InterruptIn obs_button(OBS_BUTTON);
-    InterruptIn unreg_button(UNREG_BUTTON);
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Server
@@ -321,28 +321,9 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     mbed_client.set_register_object(register_object);
 
-    Ticker ticker;
-    ticker.attach(&mbed_client,&MbedClient::test_update_register, 20.0);
-
     // Issue register command.
     FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&mbed_client, &MbedClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
-
-    minar::Scheduler::start();
-
-    // Delete device object created for registering device
-    // resources.
-    if(device_object) {
-        M2MDevice::delete_instance();
-    }
-
-    // Delete generic object created for registering custom
-    // resources.
-    if(generic_object) {
-        delete generic_object;
-    }
-
-    // Disconnect the connect and teardown the network interface
-    eth.disconnect();
+    minar::Scheduler::postCallback(&mbed_client,&MbedClient::test_update_register).period(minar::milliseconds(25000));
 }
 
