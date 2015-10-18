@@ -32,12 +32,13 @@ If your network does not have DHCP enabled, you have to manually assign a static
 ## mbed Build instructions		
 		
 ### Building
-You can use this example in the following connection modes:
+This example uses Certificate mode.
 
-- Non-secure mode
-- Certificate mode
-
-The general instructions for both modes are the same. The only difference comes in step 5, when selecting the mode.
+#### Setting socket type		
+		
+You can also connect in different socket mode.
+By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket.
+Below instructions remain same irrespective of the socket mode you choose.
 
 #### General 
 1. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labeled **OpenSDA**.
@@ -48,19 +49,11 @@ The general instructions for both modes are the same. The only difference comes 
 6. Set up the target device, `yotta target frdm-k64f-gcc`.
 7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
-#### Setting Non-secure mode
-1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
-2. Set `MBED_SERVER_PORT` to `5683`.
-3. Open `sources/security.h` with your code editor to set the registration domain. You **must** use your **mbed developer account username** as a domain name. Enter your **mbed developer account username** as domain in `MBED_DOMAIN`.
-4. The endpoint registration name is defined as `MBED_ENDPOINT_NAME` in `sources/security.h`. You can change it by modifying it with your code editor.
-
-#### Setting Certificate mode
-1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
-2. Set `MBED_SERVER_PORT` to `5684`.
-3. Go to  [mbed Device Connector website](https://connector-test-sl.dev.mbed.com).
-4. Navigate to **Security credentials** under **My devices**.
-5. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
-6. Copy the created security credentials to `sources/security.h`.
+#### Setting Certificate for the application
+1. Go to  [mbed Device Connector website](https://connector-test-sl.dev.mbed.com).
+2. Navigate to **Security credentials** under **My devices**.
+3. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
+4. Copy the created security credentials to `sources/security.h`.
 
 ### Flashing to target device
 

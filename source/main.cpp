@@ -29,16 +29,11 @@
 
 using namespace mbed::util;
 
-// Select connection mode: Certificate or NoSecurity
-M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
-
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://ds-test-sl.dev.mbed.com";
-//If you use secure connection port is 5684, for non-secure port is 5683
-const int &MBED_SERVER_PORT = 5683;
+const String &MBED_SERVER_ADDRESS = "coap://ds-test-sl.dev.mbed.com:5684";
 
 const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
 const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
@@ -111,15 +106,11 @@ public:
         // required for client to connect to mbed device server.
         M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::M2MServer);
         if(security) {
-            char buffer[6];
-            sprintf(buffer,"%d",MBED_SERVER_PORT);
-            m2m::String port(buffer);
-
-            m2m::String addr = MBED_SERVER_ADDRESS;
-            addr.append(":", 1);
-            addr.append(port.c_str(), size_t(port.size()) );
-            security->set_resource_value(M2MSecurity::M2MServerUri, addr);
-            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
+            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
+            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
+            security->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
+            security->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
+            security->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
         }
         return security;
     }
@@ -299,15 +290,6 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     // Create LWM2M server object specifying mbed device server
     // information.
     M2MSecurity* register_object = mbed_client.create_register_object();
-
-    if( CONN_MODE == M2MSecurity::Certificate ){
-        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-        register_object->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
-        register_object->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
-        register_object->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
-    } else{
-        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
-    }
 
     // Create LWM2M device object specifying device resources
     // as per OMA LWM2M specification.
