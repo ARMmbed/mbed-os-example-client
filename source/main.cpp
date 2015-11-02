@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "mbed-net-sockets/UDPSocket.h"
+#include "sockets/UDPSocket.h"
 #include "EthernetInterface.h"
 #include "test_env.h"
 #include "mbed-client/m2minterfacefactory.h"
@@ -29,13 +29,13 @@
 
 using namespace mbed::util;
 
-// Select connection mode: Certificate or NoSecurity
-M2MSecurity::SecurityModeType CONN_MODE = M2MSecurity::NoSecurity;
+Serial output(USBTX, USBRX);
+
+//Select binding mode: UDP or TCP
+M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com";
-//If you use secure connection port is 5684, for non-secure port is 5683
-const int &MBED_SERVER_PORT = 5683;
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
 
 const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
 const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
@@ -75,6 +75,10 @@ public:
         }
     }
 
+    void trace_printer(const char* str) {
+        output.printf("\r\n%s\r\n", str);
+    }
+
     void create_interface() {
         // Creates M2MInterface using which endpoint can
         // setup its name, resource type, life time, connection mode,
@@ -90,7 +94,7 @@ public:
                                                   3600,
                                                   port,
                                                   MBED_USER_NAME_DOMAIN,
-                                                  M2MInterface::UDP,
+                                                  SOCKET_MODE,
                                                   M2MInterface::LwIP_IPv4,
                                                   "");
     }
@@ -108,15 +112,11 @@ public:
         // required for client to connect to mbed device server.
         M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::M2MServer);
         if(security) {
-            char buffer[6];
-            sprintf(buffer,"%d",MBED_SERVER_PORT);
-            m2m::String port(buffer);
-
-            m2m::String addr = MBED_SERVER_ADDRESS;
-            addr.append(":", 1);
-            addr.append(port.c_str(), size_t(port.size()) );
-            security->set_resource_value(M2MSecurity::M2MServerUri, addr);
-            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
+            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
+            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
+            security->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
+            security->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
+            security->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
         }
         return security;
     }
@@ -197,7 +197,7 @@ public:
         if(server_object) {
             _bootstrapped = true;
             _error = false;
-            printf("\nBootstrapped\n");
+            trace_printer("\nBootstrapped\n");
         }
     }
 
@@ -207,7 +207,7 @@ public:
     void object_registered(M2MSecurity */*security_object*/, const M2MServer &/*server_object*/){
         _registered = true;
         _unregistered = false;
-        printf("\nRegistered\n");
+        trace_printer("\nRegistered\n");
     }
 
     //Callback from mbed client stack when the unregistration
@@ -218,7 +218,7 @@ public:
         _registered = false;
         notify_completion(_unregistered);
         minar::Scheduler::stop();
-        printf("\nUnregistered\n");
+        trace_printer("\nUnregistered\n");
     }
 
     void registration_updated(M2MSecurity */*security_object*/, const M2MServer & /*server_object*/){
@@ -227,16 +227,49 @@ public:
     //Callback from mbed client stack if any error is encountered
     // during any of the LWM2M operations. Error type is passed in
     // the callback.
-    void error(M2MInterface::Error /*error*/){
+    void error(M2MInterface::Error error){
         _error = true;
-        printf("\nError occured\n");
+        switch(error){
+            case M2MInterface::AlreadyExists:
+                trace_printer("[ERROR:] M2MInterface::AlreadyExists\n");
+                break;
+            case M2MInterface::BootstrapFailed:
+                trace_printer("[ERROR:] M2MInterface::BootstrapFailed\n");
+                break;
+            case M2MInterface::InvalidParameters:
+                trace_printer("[ERROR:] M2MInterface::InvalidParameters\n");
+                break;
+            case M2MInterface::NotRegistered:
+                trace_printer("[ERROR:] M2MInterface::NotRegistered\n");
+                break;
+            case M2MInterface::Timeout:
+                trace_printer("[ERROR:] M2MInterface::Timeout\n");
+                break;
+            case M2MInterface::NetworkError:
+                trace_printer("[ERROR:] M2MInterface::NetworkError\n");
+                break;
+            case M2MInterface::ResponseParseFailed:
+                trace_printer("[ERROR:] M2MInterface::ResponseParseFailed\n");
+                break;
+            case M2MInterface::UnknownError:
+                trace_printer("[ERROR:] M2MInterface::UnknownError\n");
+                break;
+            case M2MInterface::MemoryFail:
+                trace_printer("[ERROR:] M2MInterface::MemoryFail\n");
+                break;
+            case M2MInterface::NotAllowed:
+                trace_printer("[ERROR:] M2MInterface::NotAllowed\n");
+                break;
+            default:
+                break;
+        }
     }
 
     //Callback from mbed client stack if any value has changed
     // during PUT operation. Object and its type is passed in
     // the callback.
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
-        printf("\nValue updated of Object name %s and Type %d\n",
+        output.printf("\nValue updated of Object name %s and Type %d\n",
                base->name().c_str(), type);
     }
 
@@ -264,23 +297,27 @@ private:
     int                 _value;
 };
 
+EthernetInterface eth;
+// Instantiate the class which implements
+// LWM2M Client API
+MbedClient mbed_client;
+
+// Set up Hardware interrupt button.
+InterruptIn obs_button(OBS_BUTTON);
+InterruptIn unreg_button(UNREG_BUTTON);
+
 void app_start(int /*argc*/, char* /*argv*/[]) {
+
+    //Sets the console baud-rate
+    output.baud(115200);
 
     // This sets up the network interface configuration which will be used
     // by LWM2M Client API to communicate with mbed Device server.
-    EthernetInterface eth;
     eth.init(); //Use DHCP
     eth.connect();
 
     lwipv4_socket_init();
-
-    // Instantiate the class which implements
-    // LWM2M Client API
-    MbedClient mbed_client;
-
-    // Set up Hardware interrupt button.
-    InterruptIn obs_button(OBS_BUTTON);
-    InterruptIn unreg_button(UNREG_BUTTON);
+    output.printf("IP address %s\r\n", eth.getIPAddress());
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Server
@@ -297,15 +334,6 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     // information.
     M2MSecurity* register_object = mbed_client.create_register_object();
 
-    if( CONN_MODE == M2MSecurity::Certificate ){
-        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-        register_object->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
-        register_object->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
-        register_object->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
-    } else{
-        register_object->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::NoSecurity);
-    }
-
     // Create LWM2M device object specifying device resources
     // as per OMA LWM2M specification.
     M2MDevice* device_object = mbed_client.create_device_object();
@@ -321,28 +349,9 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     mbed_client.set_register_object(register_object);
 
-    Ticker ticker;
-    ticker.attach(&mbed_client,&MbedClient::test_update_register, 20.0);
-
     // Issue register command.
     FunctionPointer2<void, M2MSecurity*, M2MObjectList> fp(&mbed_client, &MbedClient::test_register);
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
-
-    minar::Scheduler::start();
-
-    // Delete device object created for registering device
-    // resources.
-    if(device_object) {
-        M2MDevice::delete_instance();
-    }
-
-    // Delete generic object created for registering custom
-    // resources.
-    if(generic_object) {
-        delete generic_object;
-    }
-
-    // Disconnect the connect and teardown the network interface
-    eth.disconnect();
+    minar::Scheduler::postCallback(&mbed_client,&MbedClient::test_update_register).period(minar::milliseconds(25000));
 }
 

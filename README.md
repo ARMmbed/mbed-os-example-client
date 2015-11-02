@@ -19,9 +19,10 @@ To set up the environment, you need to do the following:
 
 1. Go to [mbed Device Connector website](https://connector.mbed.com) and log in with your mbed.org account.
 2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
-3. Build the application with yotta.
-4. Plug the Ethernet cable to the board.
-5. Load the application to the FRDM-K64F board.
+3. Set yotta's target for this project, eg, yotta target frdm-k64f-gcc
+4. Build the application with yotta.
+5. Plug the Ethernet cable to the board.
+6. Load the application to the FRDM-K64F board.
 
 ### IP address setup
 
@@ -32,12 +33,13 @@ If your network does not have DHCP enabled, you have to manually assign a static
 ## mbed Build instructions		
 		
 ### Building
-You can use this example in the following connection modes:
+This example uses Certificate mode.
 
-- Non-secure mode
-- Certificate mode
-
-The general instructions for both modes are the same. The only difference comes in step 5, when selecting the mode.
+#### Setting socket type		
+		
+You can also connect in different socket mode.
+By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket.
+Below instructions remain same irrespective of the socket mode you choose.
 
 #### General 
 1. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labeled **OpenSDA**.
@@ -48,19 +50,11 @@ The general instructions for both modes are the same. The only difference comes 
 6. Set up the target device, `yotta target frdm-k64f-gcc`.
 7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
-#### Setting Non-secure mode
-1. Set the `CONN_MODE` value to `M2MSecurity::NoSecurity`.
-2. Set `MBED_SERVER_PORT` to `5683`.
-3. Open `sources/security.h` with your code editor to set the registration domain. You **must** use your **mbed developer account username** as a domain name. Enter your **mbed developer account username** as domain in `MBED_DOMAIN`.
-4. The endpoint registration name is defined as `MBED_ENDPOINT_NAME` in `sources/security.h`. You can change it by modifying it with your code editor.
-
-#### Setting Certificate mode
-1. Set the `CONN_MODE` value to `M2MSecurity::Certificate`.
-2. Set `MBED_SERVER_PORT` to `5684`.
-3. Go to  [mbed Device Connector website](https://connector.mbed.com).
-4. Navigate to **Security credentials** under **My devices**.
-5. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
-6. Copy the created security credentials to `sources/security.h`.
+#### Setting Certificate for the application
+1. Go to  [mbed Device Connector website](https://connector.mbed.com).
+2. Navigate to **Security credentials** under **My devices**.
+3. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
+4. Copy the created security credentials to `sources/security.h`.
 
 ### Flashing to target device
 
@@ -81,11 +75,11 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 **Step 3**: Click the **Connected devices** link under **My devices** to see your registered mbed Client example device.
 
-**Step 4**: You can send requests to mbed Client device with mbed Device Connector API. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S?sync=true` creates a GET request to the static **/Test/0/S** resource.
+**Step 4**: You can send requests to mbed Client device with mbed Device Connector API. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D?sync=true` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
 **NOTE:** In case you are getting error like Server Response : 410(Gone) or other such error, try clearing cache of your browser, logout and login again and then try.
 
