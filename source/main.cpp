@@ -35,7 +35,7 @@ Serial output(USBTX, USBRX);
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://ds-test-sl.dev.mbed.com:5684";
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
 
 const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
 const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
@@ -76,7 +76,7 @@ public:
     }
 
     void trace_printer(const char* str) {
-        output.printf("%s\r\n", str);
+        output.printf("\r\n%s\r\n", str);
     }
 
     void create_interface() {
@@ -317,6 +317,7 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     eth.connect();
 
     lwipv4_socket_init();
+    output.printf("IP address %s\r\n", eth.getIPAddress());
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Server
