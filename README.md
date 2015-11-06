@@ -18,11 +18,12 @@ This document describes briefly the steps required to start using the mbed Clien
 To set up the environment, you need to do the following:
 
 1. Go to [mbed Device Connector website](https://connector.mbed.com) and log in with your mbed.org account.
-2. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
-3. Set yotta's target for this project, eg, yotta target frdm-k64f-gcc
-4. Build the application with yotta.
-5. Plug the Ethernet cable to the board.
-6. Load the application to the FRDM-K64F board.
+2. Clone this example into your local computer.
+3. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
+4. Set yotta's target for this project, eg, yotta target frdm-k64f-gcc
+5. Build the application with yotta.
+6. Plug the Ethernet cable to the board.
+7. Load the application to the FRDM-K64F board.
 
 ### IP address setup
 
@@ -75,11 +76,11 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 **Step 3**: Click the **Connected devices** link under **My devices** to see your registered mbed Client example device.
 
-**Step 4**: You can send requests to mbed Client device with mbed Device Connector API. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
+**Step 4**: You can send requests to mbed Client device with mbed Device Connector API. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/v1/endpoints/lwm2m-endpoint/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
 
 **NOTE:** In case you are getting error like Server Response : 410(Gone) or other such error, try clearing cache of your browser, logout and login again and then try.
 
