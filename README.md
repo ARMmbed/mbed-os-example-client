@@ -55,7 +55,7 @@ Below instructions remain same irrespective of the socket mode you choose.
 1. Go to  [mbed Device Connector website](https://connector.mbed.com).
 2. Navigate to **Security credentials** under **My devices**.
 3. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
-4. Copy the created security credentials to `sources/security.h`.
+4. Copy the created security credentials to `source/security.h`.
 
 ### Flashing to target device
 
