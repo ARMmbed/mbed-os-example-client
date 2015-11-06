@@ -47,7 +47,7 @@ Below instructions remain same irrespective of the socket mode you choose.
 2. Install yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
 4. In the command prompt, go to **mbed-client-examples** directory.
-5. Select and set certificate as instructed below(#setting-certificate-for-the-application).
+5. Select and set certificate as instructed [below](#setting-certificate-for-the-application).
 6. Set up the target device, `yotta target frdm-k64f-gcc`.
 7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
