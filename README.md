@@ -1,7 +1,5 @@
 # Getting started on mbed Client Example
 
-**DISCLAIMER**: This example application connects to [ARM mbed Device Connector](https://connector.mbed.com), a new web service hosted by ARM. However, at the time of publishing this example, the service may not yet be live or fully ready for use. If the example doesn't work for you, or you are having problems with it, that probably means we haven't yet got the service online. Please look out for mbed Device Connector release announcements in [ARM mbed](https://mbed.com). If, however, you are mbed partner and have your own mbed Device Server setup, you can use this example application just by changing the mbed Device Server address from `api.connector.mbed.com` to your own mbed Device Server address. 
-
 This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register and read resource values to mbed Device Connector and deregister from it.
 
 ## Required hardware
