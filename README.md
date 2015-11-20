@@ -3,22 +3,24 @@
 This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register and read resource values to mbed Device Connector and deregister from it.
 
 ## Required hardware
-* An [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board
-* An Ethernet connection to the internet
-* An Ethernet cable
-* A micro-USB cable
+
+* An [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board.
+* An Ethernet connection to the internet.
+* An Ethernet cable.
+* A micro-USB cable.
 
 ## Required software
 
 * [yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
 
 ## Setting up the environment
+
 To set up the environment, you need to do the following:
 
 1. Go to [mbed Device Connector website](https://connector.mbed.com) and log in with your mbed.org account.
 2. Clone this example into your local computer.
 3. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
-4. Set yotta's target for this project, eg, yotta target frdm-k64f-gcc
+4. Set yotta's target for this project, for example `yotta target frdm-k64f-gcc`.
 5. Build the application with yotta.
 6. Plug the Ethernet cable to the board.
 7. Load the application to the FRDM-K64F board.
@@ -32,24 +34,24 @@ If your network does not have DHCP enabled, you have to manually assign a static
 ## mbed Build instructions		
 		
 ### Building
-This example uses Certificate mode.
+This example uses the Certificate mode.
 
 #### Setting socket type		
 		
-You can also connect in different socket mode.
-By changing SOCKET_MODE between M2MInterface::UDP or M2MInterface::TCP you can select binding mode for socket.
-Below instructions remain same irrespective of the socket mode you choose.
+You can also connect in different socket mode. To select the binding mode for the socket, change `SOCKET_MODE` between `M2MInterface::UDP` and `M2MInterface::TCP`. The instructions further in this document remain same irrespective of the socket mode you select.
 
 #### General 
+
 1. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labeled **OpenSDA**.
 2. Install yotta. See instructions [here](http://docs.yottabuild.org/#installing).
 3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-4. In the command prompt, go to **mbed-client-examples** directory.
-5. Select and set certificate as instructed [below](#setting-certificate-for-the-application).
+4. In the command prompt, go to the **mbed-client-examples** directory.
+5. Select and set the certificate as instructed [below](#setting-certificate-for-the-application).
 6. Set up the target device, `yotta target frdm-k64f-gcc`.
 7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
 
 #### Setting Certificate for the application
+
 1. Go to  [mbed Device Connector website](https://connector.mbed.com).
 2. Navigate to **Security credentials** under **My devices**.
 3. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
@@ -78,9 +80,9 @@ Ensure that you have flashed the program to your mbed device (see [Flashing to t
 
 The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/D` creates a GET request to the **/Test/0/D** resource.This returns the latest value of **/Test/0/D**. 
+The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/D` creates a GET request to the **/Test/0/D** resource. This returns the latest value of **/Test/0/D**. 
 
-**NOTE:** In case you are getting error like Server Response : 410(Gone) or other such error, try clearing cache of your browser, logout and login again and then try.
+**NOTE:** In case you are getting an error, for example `Server Response : 410(Gone)` or other such error, try clearing the cache of your browser, log out and log in again and then try.
 
 For more information on the mbed Device Connector REST API, see [help pages](https://connector.mbed.com/#help-rest-api).
 
