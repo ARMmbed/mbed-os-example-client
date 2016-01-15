@@ -24,6 +24,7 @@
 #include "mbed-client/m2mresource.h"
 #include "minar/minar.h"
 #include "security.h"
+#include "ns_trace.h"
 
 #include "lwipv4_init.h"
 
@@ -307,7 +308,7 @@ InterruptIn obs_button(OBS_BUTTON);
 InterruptIn unreg_button(UNREG_BUTTON);
 
 void app_start(int /*argc*/, char* /*argv*/[]) {
-
+    trace_init();
     //Sets the console baud-rate
     output.baud(115200);
 
