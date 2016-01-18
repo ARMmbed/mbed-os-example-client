@@ -163,6 +163,7 @@ public:
 
     void update_resource() {
         if(_object) {
+            output.printf("updating resource to %d\r\n", _value);
             M2MObjectInstance* inst = _object->object_instance();
             if(inst) {
                     M2MResource* res = inst->resource("D");
@@ -319,6 +320,7 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     lwipv4_socket_init();
     output.printf("IP address %s\r\n", eth.getIPAddress());
+    output.printf("Device name %s\r\n", MBED_ENDPOINT_NAME);
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Server
