@@ -316,10 +316,18 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     // This sets up the network interface configuration which will be used
     // by LWM2M Client API to communicate with mbed Device server.
     eth.init(); //Use DHCP
-    eth.connect();
+    if (eth.connect() == 0) {
+        output.printf("Connected!\r\n");
+        }
+    else {
+        output.printf("Failed to form a connection!\r\n");
+    }
 
-    lwipv4_socket_init();
-    output.printf("IP address %s\r\n", eth.getIPAddress());
+    if (lwipv4_socket_init() != 0) {
+        output.printf("Error on lwipv4_socket_init!\r\n");
+    }
+
+    output.printf("IP address is %s\r\n", eth.getIPAddress());
     output.printf("Device name %s\r\n", MBED_ENDPOINT_NAME);
 
     // On press of SW3 button on K64F board, example application
