@@ -30,7 +30,7 @@
 
 using namespace mbed::util;
 
-Serial output(USBTX, USBRX);
+Serial &output = get_stdio_serial();
 
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
