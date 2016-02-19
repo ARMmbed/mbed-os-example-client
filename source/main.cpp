@@ -13,351 +13,217 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "sockets/UDPSocket.h"
-#include "EthernetInterface.h"
-#include "test_env.h"
-#include "mbed-client/m2minterfacefactory.h"
-#include "mbed-client/m2mdevice.h"
-#include "mbed-client/m2minterfaceobserver.h"
-#include "mbed-client/m2minterface.h"
-#include "mbed-client/m2mobjectinstance.h"
-#include "mbed-client/m2mresource.h"
+
 #include "minar/minar.h"
 #include "security.h"
-#include "ns_trace.h"
-
+#include "simpleclient.h"
 #include "lwipv4_init.h"
+#include <string>
+#include <sstream>
+#include <vector>
 
 using namespace mbed::util;
 
 Serial &output = get_stdio_serial();
 
-//Select binding mode: UDP or TCP
-M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+EthernetInterface eth;
 
-// This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
+// These are example resource values for the Device Object
+struct MbedClientDevice device = {
+    "Manufacturer_String",      // Manufacturer
+    "Type_String",              // Type
+    "ModelNumber_String",       // ModelNumber
+    "SerialNumber_String"       // SerialNumber
+};
 
-const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
-const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
+// Instantiate the class which implements LWM2M Client API (from simpleclient.h)
+MbedClient mbed_client(device);
 
-const String &MANUFACTURER = "manufacturer";
-const String &TYPE = "type";
-const String &MODEL_NUMBER = "2015";
-const String &SERIAL_NUMBER = "12345";
+// Set up Hardware interrupt button.
+InterruptIn obs_button(SW2);
+InterruptIn unreg_button(SW3);
 
-const uint8_t STATIC_VALUE[] = "Static value";
+// LED Output
+DigitalOut led1(LED1);
 
-#if defined(TARGET_K64F)
-#define OBS_BUTTON SW2
-#define UNREG_BUTTON SW3
-#endif
-
-
-class MbedClient: public M2MInterfaceObserver {
+/*
+ * The Led contains one property (pattern) and a function (blink).
+ * When the function blink is executed, the pattern is read, and the LED
+ * will blink based on the pattern.
+ */
+class LedResource {
 public:
-    MbedClient(){
-        _interface = NULL;
-        _bootstrapped = false;
-        _error = false;
-        _registered = false;
-        _unregistered = false;
-        _register_security = NULL;
-        _value = 0;
-        _object = NULL;
+    LedResource() {
+        // create ObjectID with metadata tag of '3201', which is 'digital output'
+        led_object = M2MInterfaceFactory::create_object("3201");
+        M2MObjectInstance* led_inst = led_object->create_object_instance();
+
+        // 5853 = Multi-state output
+        M2MResource* pattern_res = led_inst->create_dynamic_resource("5853", "Pattern",
+            M2MResourceInstance::STRING, false);
+        // read and write
+        pattern_res->set_operation(M2MBase::GET_PUT_ALLOWED);
+        // set initial pattern (toggle every 200ms. 7 toggles in total)
+        pattern_res->set_value((const uint8_t*)"500:500:500:500:500:500:500", 27);
+
+        // there's not really an execute LWM2M ID that matches... hmm...
+        M2MResource* led_res = led_inst->create_dynamic_resource("5850", "Blink",
+            M2MResourceInstance::OPAQUE, false);
+        // we allow executing a function here...
+        led_res->set_operation(M2MBase::POST_ALLOWED);
+        // when a POST comes in, we want to execute the led_execute_callback
+        led_res->set_execute_function(execute_callback(this, &LedResource::blink));
     }
 
-    ~MbedClient() {
-        if(_interface) {
-            delete _interface;
+    M2MObject* get_object() {
+        return led_object;
+    }
+
+    void blink(void *) {
+        // read the value of 'Pattern'
+        M2MObjectInstance* inst = led_object->object_instance();
+        M2MResource* res = inst->resource("5853");
+
+        // values in mbed Client are all buffers, and we need a vector of int's
+        uint8_t* buffIn;
+        uint32_t sizeIn;
+        res->get_value(buffIn, sizeIn);
+
+        // turn the buffer into a string, and initialize a vector<int> on the heap
+        std::string s((char*)buffIn, sizeIn);
+        std::vector<uint32_t>* v = new std::vector<uint32_t>;
+        std::stringstream ss(s);
+        std::string item;
+        // our pattern is something like 500:200:500, so parse that
+        while (std::getline(ss, item, ':')) {
+            // then convert to integer, and push to the vector
+            v->push_back(atoi((const char*)item.c_str()));
         }
-        if(_register_security){
-            delete _register_security;
-        }
-    }
 
-    void trace_printer(const char* str) {
-        output.printf("\r\n%s\r\n", str);
-    }
+        output.printf("led_execute_callback pattern=%s\r\n", s.c_str());
 
-    void create_interface() {
-        // Creates M2MInterface using which endpoint can
-        // setup its name, resource type, life time, connection mode,
-        // Currently only LwIPv4 is supported.
-
-	// Randomizing listening port for Certificate mode connectivity
-	srand(time(NULL));
-	uint16_t port = rand() % 65535 + 12345;
-
-        _interface = M2MInterfaceFactory::create_interface(*this,
-                                                  ENDPOINT_NAME,
-                                                  "test",
-                                                  100,
-                                                  port,
-                                                  MBED_USER_NAME_DOMAIN,
-                                                  SOCKET_MODE,
-                                                  M2MInterface::LwIP_IPv4,
-                                                  "");
-    }
-
-    bool register_successful() {
-        return _registered;
-    }
-
-    bool unregister_successful() {
-        return _unregistered;
-    }
-
-    M2MSecurity* create_register_object() {
-        // Creates register server object with mbed device server address and other parameters
-        // required for client to connect to mbed device server.
-        M2MSecurity *security = M2MInterfaceFactory::create_security(M2MSecurity::M2MServer);
-        if(security) {
-            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
-            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-            security->set_resource_value(M2MSecurity::ServerPublicKey,SERVER_CERT,sizeof(SERVER_CERT));
-            security->set_resource_value(M2MSecurity::PublicKey,CERT,sizeof(CERT));
-            security->set_resource_value(M2MSecurity::Secretkey,KEY,sizeof(KEY));
-        }
-        return security;
-    }
-
-    M2MDevice* create_device_object() {
-        // Creates device object which contains mandatory resources linked with
-        // device endpoint.
-        M2MDevice *device = M2MInterfaceFactory::create_device();
-        if(device) {
-            device->create_resource(M2MDevice::Manufacturer,MANUFACTURER);
-            device->create_resource(M2MDevice::DeviceType,TYPE);
-            device->create_resource(M2MDevice::ModelNumber,MODEL_NUMBER);
-            device->create_resource(M2MDevice::SerialNumber,SERIAL_NUMBER);
-        }
-        return device;
-    }
-
-    M2MObject* create_generic_object() {
-        _object = M2MInterfaceFactory::create_object("Test");
-        if(_object) {
-            M2MObjectInstance* inst = _object->create_object_instance();
-            if(inst) {
-                    M2MResource* res = inst->create_dynamic_resource("D",
-                                                                     "ResourceTest",
-                                                                     M2MResourceInstance::INTEGER,
-                                                                     true);
-                    char buffer[20];
-                    int size = sprintf(buffer,"%d",_value);
-                    res->set_operation(M2MBase::GET_PUT_ALLOWED);
-                    res->set_value((const uint8_t*)buffer,
-                                   (const uint32_t)size);
-                    _value++;
-
-                    inst->create_static_resource("S",
-                                                 "ResourceTest",
-                                                 M2MResourceInstance::STRING,
-                                                 STATIC_VALUE,
-                                                 sizeof(STATIC_VALUE)-1);
-            }
-        }
-        return _object;
-    }
-
-    void update_resource() {
-        if(_object) {
-            output.printf("updating resource to %d\r\n", _value);
-            M2MObjectInstance* inst = _object->object_instance();
-            if(inst) {
-                    M2MResource* res = inst->resource("D");
-
-                    char buffer[20];
-                    int size = sprintf(buffer,"%d",_value);
-                    res->set_value((const uint8_t*)buffer,
-                                   (const uint32_t)size);
-                    _value++;
-                }
-        }
-    }
-
-    void test_register(M2MSecurity *register_object, M2MObjectList object_list){
-        if(_interface) {
-            // Register function
-            _interface->register_object(register_object, object_list);
-        }
-    }
-
-    void test_unregister() {
-        if(_interface) {
-            // Unregister function
-            _interface->unregister_object(NULL);
-        }
-    }
-
-    //Callback from mbed client stack when the bootstrap
-    // is successful, it returns the mbed Device Server object
-    // which will be used for registering the resources to
-    // mbed Device server.
-    void bootstrap_done(M2MSecurity *server_object){
-        if(server_object) {
-            _bootstrapped = true;
-            _error = false;
-            trace_printer("\nBootstrapped\n");
-        }
-    }
-
-    //Callback from mbed client stack when the registration
-    // is successful, it returns the mbed Device Server object
-    // to which the resources are registered and registered objects.
-    void object_registered(M2MSecurity */*security_object*/, const M2MServer &/*server_object*/){
-        _registered = true;
-        _unregistered = false;
-        trace_printer("\nRegistered\n");
-    }
-
-    //Callback from mbed client stack when the unregistration
-    // is successful, it returns the mbed Device Server object
-    // to which the resources were unregistered.
-    void object_unregistered(M2MSecurity */*server_object*/){
-        _unregistered = true;
-        _registered = false;
-        notify_completion(_unregistered);
-        minar::Scheduler::stop();
-        trace_printer("\nUnregistered\n");
-    }
-
-    void registration_updated(M2MSecurity */*security_object*/, const M2MServer & /*server_object*/){
-    }
-
-    //Callback from mbed client stack if any error is encountered
-    // during any of the LWM2M operations. Error type is passed in
-    // the callback.
-    void error(M2MInterface::Error error){
-        _error = true;
-        switch(error){
-            case M2MInterface::AlreadyExists:
-                trace_printer("[ERROR:] M2MInterface::AlreadyExists\n");
-                break;
-            case M2MInterface::BootstrapFailed:
-                trace_printer("[ERROR:] M2MInterface::BootstrapFailed\n");
-                break;
-            case M2MInterface::InvalidParameters:
-                trace_printer("[ERROR:] M2MInterface::InvalidParameters\n");
-                break;
-            case M2MInterface::NotRegistered:
-                trace_printer("[ERROR:] M2MInterface::NotRegistered\n");
-                break;
-            case M2MInterface::Timeout:
-                trace_printer("[ERROR:] M2MInterface::Timeout\n");
-                break;
-            case M2MInterface::NetworkError:
-                trace_printer("[ERROR:] M2MInterface::NetworkError\n");
-                break;
-            case M2MInterface::ResponseParseFailed:
-                trace_printer("[ERROR:] M2MInterface::ResponseParseFailed\n");
-                break;
-            case M2MInterface::UnknownError:
-                trace_printer("[ERROR:] M2MInterface::UnknownError\n");
-                break;
-            case M2MInterface::MemoryFail:
-                trace_printer("[ERROR:] M2MInterface::MemoryFail\n");
-                break;
-            case M2MInterface::NotAllowed:
-                trace_printer("[ERROR:] M2MInterface::NotAllowed\n");
-                break;
-            default:
-                break;
-        }
-    }
-
-    //Callback from mbed client stack if any value has changed
-    // during PUT operation. Object and its type is passed in
-    // the callback.
-    void value_updated(M2MBase *base, M2MBase::BaseType type) {
-        output.printf("\nValue updated of Object name %s and Type %d\n",
-               base->name().c_str(), type);
-    }
-
-    void test_update_register() {
-        if (_registered) {
-            _interface->update_registration(_register_security, 100);
-        }
-    }
-
-   void set_register_object(M2MSecurity *register_object) {
-        if (_register_security == NULL) {
-            _register_security = register_object;
-        }
+        // do_blink is called with the vector, and starting at -1
+        do_blink(v, 0);
     }
 
 private:
+    M2MObject* led_object;
 
-    M2MInterface    	*_interface;
-    M2MSecurity         *_register_security;
-    M2MObject           *_object;
-    volatile bool       _bootstrapped;
-    volatile bool       _error;
-    volatile bool       _registered;
-    volatile bool       _unregistered;
-    int                 _value;
+    void do_blink(std::vector<uint32_t>* pattern, uint16_t position) {
+        // blink the LED
+        led1 = !led1;
+
+        // up the position, if we reached the end of the vector
+        if (position >= pattern->size()) {
+            // free memory, and exit this function
+            delete pattern;
+            return;
+        }
+
+        // how long do we need to wait before the next blink?
+        uint32_t delay_ms = pattern->at(position);
+
+        // we create a FunctionPointer to this same function
+        FunctionPointer2<void, std::vector<uint32_t>*, uint16_t> fp(this, &LedResource::do_blink);
+        // and invoke it after `delay_ms` (upping position)
+        minar::Scheduler::postCallback(fp.bind(pattern, ++position)).delay(minar::milliseconds(delay_ms));
+    }
 };
 
-EthernetInterface eth;
-// Instantiate the class which implements
-// LWM2M Client API
-MbedClient mbed_client;
+/*
+ * The button contains one property (click count).
+ * When `handle_button_click` is executed, the counter updates.
+ */
+class ButtonResource {
+public:
+    ButtonResource() {
+        // create ObjectID with metadata tag of '3200', which is 'digital input'
+        btn_object = M2MInterfaceFactory::create_object("3200");
+        M2MObjectInstance* btn_inst = btn_object->create_object_instance();
+        // create resource with ID '5501', which is digital input counter
+        M2MResource* btn_res = btn_inst->create_dynamic_resource("5501", "Button",
+            M2MResourceInstance::INTEGER, true /* observable */);
+        // we can read this value
+        btn_res->set_operation(M2MBase::GET_ALLOWED);
+        // set initial value (all values in mbed Client are buffers)
+        // to be able to read this data easily in the Connector console, we'll use a string
+        btn_res->set_value((uint8_t*)"0", 1);
+    }
 
-// Set up Hardware interrupt button.
-InterruptIn obs_button(OBS_BUTTON);
-InterruptIn unreg_button(UNREG_BUTTON);
+    M2MObject* get_object() {
+        return btn_object;
+    }
+
+    /*
+     * When you press the button, we read the current value of the click counter
+     * from mbed Device Connector, then up the value with one.
+     */
+    void handle_button_click() {
+        M2MObjectInstance* inst = btn_object->object_instance();
+        M2MResource* res = inst->resource("5501");
+
+        // up counter
+        counter++;
+
+        printf("handle_button_click, new value of counter is %d\r\n", counter);
+
+        // serialize the value of counter as a string, and tell connector
+        stringstream ss;
+        ss << counter;
+        std::string stringified = ss.str();
+        res->set_value((uint8_t*)stringified.c_str(), stringified.length());
+    }
+
+private:
+    M2MObject* btn_object;
+    uint16_t counter = 0;
+};
 
 void app_start(int /*argc*/, char* /*argv*/[]) {
-    trace_init();
+
     //Sets the console baud-rate
     output.baud(115200);
 
+    output.printf("In app_start()\r\n");
+
     // This sets up the network interface configuration which will be used
     // by LWM2M Client API to communicate with mbed Device server.
-    eth.init(); //Use DHCP
-    if (eth.connect() == 0) {
-        output.printf("Connected!\r\n");
-        }
-    else {
+    eth.init();     //Use DHCP
+    if (eth.connect() != 0) {
         output.printf("Failed to form a connection!\r\n");
     }
-
     if (lwipv4_socket_init() != 0) {
         output.printf("Error on lwipv4_socket_init!\r\n");
     }
-
-    output.printf("IP address is %s\r\n", eth.getIPAddress());
+    output.printf("IP address %s\r\n", eth.getIPAddress());
     output.printf("Device name %s\r\n", MBED_ENDPOINT_NAME);
 
-    // On press of SW3 button on K64F board, example application
-    // will call unregister API towards mbed Device Server
-    unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
+    // we create our button and LED resources
+    auto button_resource = new ButtonResource();
+    auto led_resource = new LedResource();
 
-    // On press of SW2 button on K64F board, example application
-    // will send observation towards mbed Device Server
-    obs_button.fall(&mbed_client,&MbedClient::update_resource);
+    // Unregister button (SW3) press will unregister endpoint from connector.mbed.com
+    unreg_button.fall(&mbed_client, &MbedClient::test_unregister);
 
-    // Create LWM2M Client API interface to manage register and unregister
+    // Observation Button (SW2) press will send update of endpoint resource values to connector
+    obs_button.fall(button_resource, &ButtonResource::handle_button_click);
+
+    // Create endpoint interface to manage register and unregister
     mbed_client.create_interface();
 
-    // Create LWM2M server object specifying mbed device server
-    // information.
-    M2MSecurity* register_object = mbed_client.create_register_object();
+    // Create Objects of varying types, see simpleclient.h for more details on implementation.
+    M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
+    M2MDevice*   device_object   = mbed_client.create_device_object();   // device resources object
 
-    // Create LWM2M device object specifying device resources
-    // as per OMA LWM2M specification.
-    M2MDevice* device_object = mbed_client.create_device_object();
-
-    // Create Generic object specifying custom resources
-    M2MObject* generic_object = mbed_client.create_generic_object();
-
-    // Add all the objects that you would like to register
-    // into the list and pass the list for register API.
+    // Create list of Objects to register
     M2MObjectList object_list;
-    object_list.push_back(device_object);
-    object_list.push_back(generic_object);
 
+    // Add objects to list
+    object_list.push_back(device_object);
+    object_list.push_back(button_resource->get_object());
+    object_list.push_back(led_resource->get_object());
+
+    // Set endpoint registration object
     mbed_client.set_register_object(register_object);
 
     // Issue register command.
@@ -365,4 +231,3 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     minar::Scheduler::postCallback(fp.bind(register_object,object_list));
     minar::Scheduler::postCallback(&mbed_client,&MbedClient::test_update_register).period(minar::milliseconds(25000));
 }
-
