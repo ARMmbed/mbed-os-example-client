@@ -1,6 +1,13 @@
-# Getting started on mbed Client Example
+# Getting started with mbed Client on mbed OS
 
-This document describes briefly the steps required to start using the mbed Client example application on mbed OS. The mbed Client example application demonstrates how to register and read resource values to mbed Device Connector and deregister from it.
+This is the mbed Client Example for mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with mbed Device Connector, how to read and write values, and how to deregister. If you're unfamiliar with mbed Device Connector, we recommend you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
+
+The application:
+
+* Registers with mbed Device Connector.
+* Gives mbed Device Connector access to its resources (read and write).
+* Records the number of clicks on the device’s button and sends the number to mbed Device Connector.
+* Lets you control the blink pattern of the LED on the device (through mbed Device Connector).
 
 ## Required hardware
 
@@ -11,79 +18,97 @@ This document describes briefly the steps required to start using the mbed Clien
 
 ## Required software
 
-* [yotta](http://docs.yottabuild.org/#installing) - to build the example programs.
+* An [ARM mbed account](https://developer.mbed.org/account/login/?next=/).
+* [yotta](http://docs.yottabuild.org/#installing) - to build the example programs. To learn how to build mbed OS applications with yotta, see [the user guide](https://docs.mbed.com/docs/getting-started-mbed-os/en/latest/Full_Guide/app_on_yotta/#building-an-application).
+* A [serial port monitor](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
-## Setting up the environment
+## Setting up
 
-To set up the environment, you need to do the following:
+To set up the example, please:
 
-1. Go to [mbed Device Connector website](https://connector.mbed.com) and log in with your mbed.org account.
-2. Clone this example into your local computer.
-3. Configure the mbed Client example program with desired parameters. See [mbed Build instructions](#mbed-build-instructions) chapter for more information.
-4. Set yotta's target for this project, for example `yotta target frdm-k64f-gcc`.
-5. Build the application with yotta.
-6. Plug the Ethernet cable to the board.
-7. Load the application to the FRDM-K64F board.
+1. [Build the example](#Building-the-example).
+1. [Set up an IP address](#IP-address-setup). This step is optional.
+1. [Set a socket type](#Setting-socket-type). This step is optional.
+
+### Building the example
+
+To build the example application:
+
+1. Clone [this](https://github.com/ARMmbed/mbed-client-examples) repository.
+1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
+1. On mbed Device Connector, go to [My Devices>Security credentials](https://connector.mbed.com/#credentials), and get new credentials for your device by clicking the *Get my device security credentials* button.
+1. Store the credentials as `source/security.h` in this project's directory.
+1. Open a command line tool and navigate to the project’s directory.
+1. Set yotta's build target. For example, if you're targeting the FRDM-K64F board: `yotta target frdm-k64f-gcc`.
+1. Build the application by using the command `yotta build`. yotta builds a binary file in the project’s directory.
+1. Plug the Ethernet cable into the board.
+1. Plug the micro-USB cable into the *OpenSDA* port. The board is listed as a mass-storage device.
+1. Drag the binary `build/frdm-k64f-gcc/source/mbed-client-examples.bin` to the board to flash the application.
+1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work..
+1. Press the *RESET* button to run the program.
 
 ### IP address setup
 
-This example uses IPV4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com). The example program should automatically get an IPV4 address from the router when connected via Ethernet.
+This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com). The example program should automatically get an IPv4 address from the router when connected over Ethernet.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
-## mbed Build instructions		
-		
-### Building
-This example uses the Certificate mode.
+### Changing socket type (binding mode)
 
-#### Setting socket type		
-		
-You can also connect in different socket mode. To select the binding mode for the socket, change `SOCKET_MODE` between `M2MInterface::UDP` and `M2MInterface::TCP`. The instructions further in this document remain same irrespective of the socket mode you select.
+Your device can connect to mbed Device Connector via one of two binding modes: UDP or TCP. The default is UDP.
 
-#### General 
+To change the binding mode:
 
-1. Connect the FRDM-K64F board to the computer with the micro-USB cable. Make sure that you are using the micro-USB port labeled **OpenSDA**.
-2. Install yotta. See instructions [here](http://docs.yottabuild.org/#installing).
-3. Install the necessary toolchains (`arm-none-eabi-gcc`). Refer to the yotta installation instructions (in step 3) to learn how to install the toolchains.
-4. In the command prompt, go to the **mbed-client-examples** directory.
-5. Select and set the certificate as instructed [below](#setting-certificate-for-the-application).
-6. Set up the target device, `yotta target frdm-k64f-gcc`.
-7. In the command prompt, type `yotta build`. The binary file `mbed-client-examples.bin` will be created in the `/build/frdm-k64f-gcc/source/` folder.
+1. In `main.cpp`, find the parameter ``SOCKET_MODE``.
+1. The default is ``M2MInterface::UDP``.
+1. To switch to TCP, change it to ``M2MInterface::TCP``.
 
-#### Setting Certificate for the application
+Then re-build and flash the application.
 
-1. Go to  [mbed Device Connector website](https://connector.mbed.com).
-2. Navigate to **Security credentials** under **My devices**.
-3. Click **GET MY DEVICE SECURITY CREDENTIALS**. You will get the needed certificate information as well as the endpoint name and domain.
-4. Copy the created security credentials to `source/security.h`.
+**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.
 
-### Flashing to target device
+## Monitoring the application
 
-1. Connect the FRDM-K64F board to the internet using an Ethernet cable.
-2. Connect the FRDM-K64F board to your computer using a micro-USB cable. Make sure that you plug into the micro-USB port labeled **OpenSDA**, on the bottom of the board.
-3. Find the binary file named `mbed-client-examples.bin` in the folder `mbed-client-examples/build/frdm-k64f-gcc/source/`. Drag and drop the file onto the `MBED` drive on your computer.
-4. The board will be programmed when the LED stops flashing. Press the **RESET** button to run the program.
+The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor. Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
-## Testing
+After connecting you should see messages about connecting to mbed Device Connector:
 
-### Testing the mbed Client example application with the mbed Device Connector
+```
+In app_start()
+IP address 10.2.15.222
+Device name 6868df22-d353-4150-b90a-a878130859d9
+```
 
-Ensure that you have flashed the program to your mbed device (see [Flashing to target device](#flashing-to-target-device)).
+And after you click the `SW2` button on your board you should see messages about the value changes:
 
-**Step 1**: Go to [mbed Device Connector website](https://connector.mbed.com).
+```
+handle_button_click, new value of counter is 1
+```
 
-**Step 2**: Log in using your mbed account.
+**Note:** The application uses baud rate 115200.
 
-**Step 3**: Click the **Connected devices** link under **My devices** to see your registered mbed Client example device.
+## Testing the application
 
-**Step 4**: You can send requests to mbed Client device with mbed Device Connector API. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/S` creates a GET request to the static **/Test/0/S** resource.
+1. Flash the application.
+1. Verify that registration succeeded. You should see `Registered object successfully!` printed to the serial port.
+1. On mbed Device Connector, go to [My devices>Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
+1. Press the `SW2` button on the device a number of times (make a note of how many times you did that).
+1. Go to [Device Connector>API Console](https://connector.mbed.com/#console).
+1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click *TEST API*.
+1. The number of times you pressed `SW2` is shown.
 
-The **/Test/0/S** represents the static resource that is a fixed value set in the mbed Client. 
 
-The **/Test/0/D** represents the dynamic resource that can be read by the mbed Device Server. It is linked with the **SW2** button on the FRDM board. The value starts from zero and every time you press the **SW2** button the node increases the counter value by 1. You can make a CoAP request to the node resources to get the latest value. To do that, click **API Console** under **mbed Device Connector**. Click the URL to create a request. For example: `https://api.connector.mbed.com/endpoints/<Your-endpoint-name>/Test/0/D` creates a GET request to the **/Test/0/D** resource. This returns the latest value of **/Test/0/D**. 
+![SW2 pressed five times, as shown by the API Console](clicks.png)
 
-**NOTE:** In case you are getting an error, for example `Server Response : 410(Gone)` or other such error, try clearing the cache of your browser, log out and log in again and then try.
+**NOTE:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in.
 
-For more information on the mbed Device Connector REST API, see [help pages](https://connector.mbed.com/#help-rest-api).
+### Application resources
 
-**Step 5**: If you press the **SW3** button, the endpoint sends a deregister message to the mbed Device Connector. After a successful deregistration, LED **D12** starts blinking indicating that the application has successfully completed the task.
+The application exposes three [resources](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model):
+
+1. `3200/0/5501`. Number of presses of SW2 (GET).
+2. `3201/0/5850`. Blink function, blinks `LED1` when executed (POST).
+3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
+
+For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the mbed Device Connector Quick Start.
+
