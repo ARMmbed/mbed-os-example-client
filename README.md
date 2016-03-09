@@ -46,7 +46,7 @@ To build the example application:
 1. Drag the binary `build/frdm-k64f-gcc/source/mbed-client-examples.bin` to the board to flash the application.
 1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work..
 1. Press the *RESET* button to run the program.
-1. For verification, continue to [here](#Monitoring-the-application).
+1. For verification, continue to [here](#monitoring-the-application).
 
 ### IP address setup (optional)
 
