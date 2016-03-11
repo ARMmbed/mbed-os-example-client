@@ -85,7 +85,7 @@ public:
         M2MResource* res = inst->resource("5853");
 
         // values in mbed Client are all buffers, and we need a vector of int's
-        uint8_t* buffIn;
+        uint8_t* buffIn = NULL;
         uint32_t sizeIn;
         res->get_value(buffIn, sizeIn);
 
@@ -183,7 +183,6 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
 
     //Sets the console baud-rate
     output.baud(115200);
-
     output.printf("In app_start()\r\n");
 
     // This sets up the network interface configuration which will be used
