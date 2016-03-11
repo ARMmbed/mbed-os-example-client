@@ -109,6 +109,10 @@ public:
                                                       SOCKET_MODE,              // binding mode
                                                       M2MInterface::LwIP_IPv4,  // network stack
                                                       "");                      // context address string
+    String binding_mode;
+    (SOCKET_MODE == M2MInterface::UDP) ? binding_mode = "UDP" : binding_mode = "TCP";
+    printf("\r\nSOCKET_MODE : %s\r\n", binding_mode.c_str());
+    printf("Connecting to %s\r\n", MBED_SERVER_ADDRESS.c_str());
     }
 
     /*
