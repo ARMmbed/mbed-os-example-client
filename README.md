@@ -46,20 +46,21 @@ To build the example application:
 1. Drag the binary `build/frdm-k64f-gcc/source/mbed-client-examples.bin` to the board to flash the application.
 1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work..
 1. Press the *RESET* button to run the program.
+1. For verification, continue to [here](#monitoring-the-application).
 
-### IP address setup
+### IP address setup (optional)
 
 This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com). The example program should automatically get an IPv4 address from the router when connected over Ethernet.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
-### Changing socket type (binding mode)
+### Changing socket type (binding mode - optional)
 
 Your device can connect to mbed Device Connector via one of two binding modes: UDP or TCP. The default is UDP.
 
 To change the binding mode:
 
-1. In `main.cpp`, find the parameter ``SOCKET_MODE``.
+1. In `simpleclient.h`, find the parameter ``SOCKET_MODE``.
 1. The default is ``M2MInterface::UDP``.
 1. To switch to TCP, change it to ``M2MInterface::TCP``.
 
@@ -69,7 +70,9 @@ Then re-build and flash the application.
 
 ## Monitoring the application
 
-The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor. Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
+The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor.The application uses baud rate 115200.
+
+**Note:** Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
 After connecting you should see messages about connecting to mbed Device Connector:
 
@@ -78,14 +81,13 @@ In app_start()
 IP address 10.2.15.222
 Device name 6868df22-d353-4150-b90a-a878130859d9
 ```
+**Note:** Device name is the endpoint name you will need later on [Testing the application](https://github.com/ARMmbed/mbed-client-quickstart#testing-the-application) chapter.
 
 And after you click the `SW2` button on your board you should see messages about the value changes:
 
 ```
 handle_button_click, new value of counter is 1
 ```
-
-**Note:** The application uses baud rate 115200.
 
 ## Testing the application
 
@@ -96,6 +98,8 @@ handle_button_click, new value of counter is 1
 1. Go to [Device Connector>API Console](https://connector.mbed.com/#console).
 1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click *TEST API*.
 1. The number of times you pressed `SW2` is shown.
+1. Press `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and LED starts blinking. 
+   This will also end your application run. Press `RESET` button to run the program again.
 
 
 ![SW2 pressed five times, as shown by the API Console](clicks.png)
@@ -110,5 +114,5 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 2. `3201/0/5850`. Blink function, blinks `LED1` when executed (POST).
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
-For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the mbed Device Connector Quick Start.
+For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
