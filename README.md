@@ -81,6 +81,7 @@ In app_start()
 IP address 10.2.15.222
 Device name 6868df22-d353-4150-b90a-a878130859d9
 ```
+**Note:** Device name is the endpoint name you will need later on [Testing the application](https://github.com/ARMmbed/mbed-client-quickstart#testing-the-application) chapter.
 
 And after you click the `SW2` button on your board you should see messages about the value changes:
 
