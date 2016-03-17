@@ -213,11 +213,11 @@ public:
     // is successful, it returns the mbed Device Server object
     // to which the resources were unregistered.
     void object_unregistered(M2MSecurity */*server_object*/){
+        trace_printer("Unregistered Object Successfully");
         _unregistered = true;
         _registered = false;
         notify_completion(_unregistered);
         minar::Scheduler::stop();
-        trace_printer("Unregistered Object Successfully");
     }
 
     /*
