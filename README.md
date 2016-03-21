@@ -96,7 +96,7 @@ handle_button_click, new value of counter is 1
 1. On mbed Device Connector, go to [My devices>Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
 1. Press the `SW2` button on the device a number of times (make a note of how many times you did that).
 1. Go to [Device Connector>API Console](https://connector.mbed.com/#console).
-1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click *TEST API*.
+1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click *TEST API*. Replace `DEVICE_NAME` with your actual enpoint name. Device name can be found from source/security.h file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-client-quickstart#monitoring-the-application).
 1. The number of times you pressed `SW2` is shown.
 1. Press `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and LED starts blinking. 
    This will also end your application run. Press `RESET` button to run the program again.
