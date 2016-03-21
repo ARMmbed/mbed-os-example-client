@@ -105,7 +105,8 @@ handle_button_click, new value of counter is 1
 
 ![SW2 pressed five times, as shown by the API Console](clicks.png)
 
-**NOTE:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in.
+**NOTE:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in. 
+**NOTE:** Only GET methods can be executed through [Device Connector > API Console](https://connector.mbed.com/#console). For the other methods check the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
 ### Application resources
 
