@@ -267,6 +267,12 @@ public:
             case M2MInterface::NotAllowed:
                 trace_printer("[ERROR:] M2MInterface::NotAllowed");
                 break;
+            case M2MInterface::SecureConnectionFailed:
+                trace_printer("[ERROR:] M2MInterface::SecureConnectionFailed");
+                break;
+            case M2MInterface::DnsResolvingFailed:
+                trace_printer("[ERROR:] M2MInterface::DnsResolvingFailed");
+                break;
             default:
                 break;
         }
