@@ -21,6 +21,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "mbed-trace/mbed_trace.h"
 
 using namespace mbed::util;
 
@@ -42,6 +43,11 @@ MbedClient mbed_client(device);
 // Set up Hardware interrupt button.
 InterruptIn obs_button(SW2);
 InterruptIn unreg_button(SW3);
+
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
+}
 
 // LED Output
 DigitalOut led1(LED1);
@@ -196,7 +202,8 @@ void app_start(int /*argc*/, char* /*argv*/[]) {
     }
     output.printf("IP address %s\r\n", eth.getIPAddress());
     output.printf("Device name %s\r\n", MBED_ENDPOINT_NAME);
-
+    mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
     // we create our button and LED resources
     auto button_resource = new ButtonResource();
     auto led_resource = new LedResource();
