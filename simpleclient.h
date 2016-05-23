@@ -17,9 +17,6 @@
 #ifndef __SIMPLECLIENT_H__
 #define __SIMPLECLIENT_H__
 
-#include "sockets/UDPSocket.h"
-#include "EthernetInterface.h"
-#include "mbed-drivers/test_env.h"
 #include "mbed-client/m2minterfacefactory.h"
 #include "mbed-client/m2mdevice.h"
 #include "mbed-client/m2minterfaceobserver.h"
@@ -27,9 +24,9 @@
 #include "mbed-client/m2mobject.h"
 #include "mbed-client/m2mobjectinstance.h"
 #include "mbed-client/m2mresource.h"
-#include "minar/minar.h"
+#include "mbed-client/m2mconfig.h"
 #include "security.h"
-
+#include "mbed.h"
 
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
@@ -94,7 +91,7 @@ public:
     *  setup its name, resource type, life time, connection mode,
     *  Currently only LwIPv4 is supported.
     */
-    void create_interface() {
+    void create_interface(void *handler=NULL) {
 	// Randomizing listening port for Certificate mode connectivity
 	srand(time(NULL));
 	uint16_t port = rand() % 65535 + 12345;
@@ -113,6 +110,11 @@ public:
     (SOCKET_MODE == M2MInterface::UDP) ? binding_mode = "UDP" : binding_mode = "TCP";
     printf("\r\nSOCKET_MODE : %s\r\n", binding_mode.c_str());
     printf("Connecting to %s\r\n", MBED_SERVER_ADDRESS.c_str());
+
+    if(_interface) {
+        _interface->set_platform_network_handler(handler);
+    }
+
     }
 
     /*
@@ -215,9 +217,7 @@ public:
     void object_unregistered(M2MSecurity */*server_object*/){
         trace_printer("Unregistered Object Successfully");
         _unregistered = true;
-        _registered = false;
-        notify_completion(_unregistered);
-        minar::Scheduler::stop();
+        _registered = false;               
     }
 
     /*
@@ -266,12 +266,6 @@ public:
                 break;
             case M2MInterface::NotAllowed:
                 trace_printer("[ERROR:] M2MInterface::NotAllowed");
-                break;
-            case M2MInterface::SecureConnectionFailed:
-                trace_printer("[ERROR:] M2MInterface::SecureConnectionFailed");
-                break;
-            case M2MInterface::DnsResolvingFailed:
-                trace_printer("[ERROR:] M2MInterface::DnsResolvingFailed");
                 break;
             default:
                 break;
