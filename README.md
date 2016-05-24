@@ -36,16 +36,16 @@ To build the example application:
 
 1. Clone [this](https://github.com/ARMmbed/mbed-client-quickstart-morpheus) repository.
 1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
-1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials), and get new credentials for your device by clicking the **Get my device security credentials** button.
+1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** button to get new credentials for your device.
 1. Replace the credentials in `security.h` of this project's directory with content copied above.
 1. Open a command line tool and navigate to the project’s directory.
-1. Update mbed-os sources using : `mbed update` command.
-1. Build the application by selecting hardware board and build toolchain using the command `mbed compile -m K64F -t GCC_ARM`. mbed-cli builds a binary file under project’s `.build` directory.
+1. Update mbed-os sources using the `mbed update` command.
+1. Build the application by selecting the hardware board and build toolchain using the command `mbed compile -m K64F -t GCC_ARM`. mbed-cli builds a binary file under the project’s `.build` directory.
 1. Plug the Ethernet cable into the board.
 1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
 1. Drag the binary `.build/K64F/GCC_ARM/mbed-client-quickstart-morpheus.bin` to the board to flash the application.
 1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
-1. Press the **RESET** button to run the program.
+1. Press the **RESET** button on the board to run the program.
 1. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
 
 ### IP address setup (optional)
@@ -66,15 +66,15 @@ To change the binding mode:
 
 Then re-build and flash the application.
 
-**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.
+<span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
 
 ## Monitoring the application
 
 The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor. The application uses baud rate 115200.
 
-**Note:** Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
+<span class="notes">**Note:** Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).</span>
 
-After connecting you should see messages about connecting to mbed Device Connector:
+After connecting, you should see messages about connecting to mbed Device Connector:
 
 ```
 In app_start()
@@ -82,9 +82,9 @@ IP address 10.2.15.222
 Device name 6868df22-d353-4150-b90a-a878130859d9
 ```
 
-**Note:** Device name is the endpoint name you will need later on [Testing the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#testing-the-application) chapter.
+<span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#testing-the-application) chapter.</span>
 
-After you click the `SW2` button on your board you should see messages about the value changes:
+When you click the `SW2` button on your board you should see messages about the value changes:
 
 ```
 handle_button_click, new value of counter is 1
@@ -99,14 +99,14 @@ handle_button_click, new value of counter is 1
 1. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
 1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `source/security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#monitoring-the-application).
 1. The number of times you pressed `SW2` is shown.
-1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and LED starts blinking. 
-   This will also stop your application. Press the `RESET` button to run the program again.
+1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the `RESET` button to run the program again.
 
 
 ![SW2 pressed five times, as shown by the API Console](clicks.png)
 
-**NOTE:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in. 
-**NOTE:** Only GET methods can be executed through [Device Connector > API Console](https://connector.mbed.com/#console). For the other methods check the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
+<span class="tips">**Tip:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in.</span>
+
+<span class="notes">**Note:** Only GET methods can be executed through [Device Connector > API Console](https://connector.mbed.com/#console). For other methods check the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
 ### Application resources
 
