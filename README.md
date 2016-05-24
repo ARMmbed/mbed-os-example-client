@@ -19,7 +19,7 @@ The application:
 ## Required software
 
 * An [ARM mbed account](https://developer.mbed.org/account/login/?next=/).
-* [yotta](http://docs.yottabuild.org/#installing) - to build the example programs. To learn how to build mbed OS applications with yotta, see [the user guide](https://docs.mbed.com/docs/getting-started-mbed-os/en/latest/Full_Guide/app_on_yotta/#building-an-application).
+* [mbed-cli](https://github.com/ARMmbed/mbed-cli) - to build the example programs. To learn how to build mbed OS applications with mbed-cli, see [the user guide](https://github.com/ARMmbed/mbed-cli/blob/master/README.md).
 * A [serial port monitor](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
 ## Setting up
@@ -34,16 +34,16 @@ To set up the example, please:
 
 To build the example application:
 
-1. Clone [this](https://github.com/ARMmbed/mbed-client-examples) repository.
+1. Clone [this](https://github.com/ARMmbed/mbed-client-quickstart-morpheus) repository.
 1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
 1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials), and get new credentials for your device by clicking the **Get my device security credentials** button.
-1. Store the credentials as `source/security.h` in this project's directory.
+1. Replace the credentials in `security.h` of this project's directory with content copied above.
 1. Open a command line tool and navigate to the project’s directory.
-1. Set yotta's build target. For example, if you are targeting the FRDM-K64F board: `yotta target frdm-k64f-gcc`.
-1. Build the application by using the command `yotta build`. yotta builds a binary file in the project’s directory.
+1. Update mbed-os sources using : `mbed update` command.
+1. Build the application by selecting hardware board and build toolchain using the command `mbed compile -m K64F -t GCC_ARM`. mbed-cli builds a binary file under project’s `.build` directory.
 1. Plug the Ethernet cable into the board.
 1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
-1. Drag the binary `build/frdm-k64f-gcc/source/mbed-client-examples.bin` to the board to flash the application.
+1. Drag the binary `.build/K64F/GCC_ARM/mbed-client-quickstart-morpheus.bin` to the board to flash the application.
 1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
 1. Press the **RESET** button to run the program.
 1. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
@@ -82,7 +82,7 @@ IP address 10.2.15.222
 Device name 6868df22-d353-4150-b90a-a878130859d9
 ```
 
-**Note:** Device name is the endpoint name you will need later on [Testing the application](https://github.com/ARMmbed/mbed-client-quickstart#testing-the-application) chapter.
+**Note:** Device name is the endpoint name you will need later on [Testing the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#testing-the-application) chapter.
 
 After you click the `SW2` button on your board you should see messages about the value changes:
 
@@ -97,7 +97,7 @@ handle_button_click, new value of counter is 1
 1. On mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
 1. Press the `SW2` button on the device a number of times (make a note of how many times you did that).
 1. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
-1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `source/security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-client-quickstart#monitoring-the-application).
+1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `source/security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#monitoring-the-application).
 1. The number of times you pressed `SW2` is shown.
 1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and LED starts blinking. 
    This will also stop your application. Press the `RESET` button to run the program again.
