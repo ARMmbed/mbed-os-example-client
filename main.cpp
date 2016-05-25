@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "simpleclient.h"
-#include "mbed-trace/mbed_trace.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -214,11 +213,6 @@ void unregister() {
     updates.release();
 }
 
-void trace_printer(const char* str)
-{
-  printf("%s\r\n", str);
-}
-
 // Status indication
 Ticker status_ticker;
 DigitalOut status_led(LED1);
@@ -236,9 +230,6 @@ int main() {
     output.baud(115200);
 
     output.printf("Starting mbed Client example...\r\n");
-
-    mbed_trace_init();
-    mbed_trace_print_function_set( trace_printer );
 
     NetworkStack *network_stack = 0;
 #if defined WIFI
