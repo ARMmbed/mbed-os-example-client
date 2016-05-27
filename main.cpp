@@ -25,12 +25,16 @@
 
 #define ETHERNET
 #undef WIFI
+#undef CELLULAR
 #undef MESH_LOWPAN_ND
 #undef MESH_THREAD
 
 #if defined WIFI
 #include "ESP8266Interface.h"
 ESP8266Interface esp(D1, D0);
+#elif defined (CELLULAR)
+#include "C027Interface.h"
+C027Interface c027;
 #elif defined (ETHERNET)
 #include "LWIPInterface.h"
 LWIPInterface lwip;
@@ -243,6 +247,10 @@ int main() {
     lwip.connect();
     output.printf("Using Ethernet LWIP\r\n");
     network_stack = &lwip;
+#elif defined (CELLULAR)
+    c027.connect();
+    output.printf("Using Cellular C027\r\n");
+    network_interface = &c027;
 #elif defined MESH
     mesh.connect();
     network_stack = &mesh;
