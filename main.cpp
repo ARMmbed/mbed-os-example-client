@@ -174,10 +174,6 @@ public:
         return btn_object;
     }
 
-    void button_clicked() {
-        output.printf("\n\rButton clicked\r\n");
-    }
-
     /*
      * When you press the button, we read the current value of the click counter
      * from mbed Device Connector, then up the value with one.
@@ -206,10 +202,16 @@ private:
 // Network interaction must be performed outside of interrupt context
 Semaphore updates(0);
 volatile bool registered = false;
+volatile bool clicked = false;
 osThreadId mainThread;
 
 void unregister() {
     registered = false;
+    updates.release();
+}
+
+void button_clicked() {
+    clicked = true;
     updates.release();
 }
 
@@ -255,8 +257,8 @@ int main() {
     }
 
     // we create our button and LED resources
-    ButtonResource *button_resource = new ButtonResource();
-    LedResource *led_resource = new LedResource();
+    ButtonResource button_resource;
+    LedResource led_resource;
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Connector
@@ -264,7 +266,7 @@ int main() {
     unreg_button.fall(&unregister);
 
     // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(button_resource, &ButtonResource::handle_button_click);
+    obs_button.fall(&button_clicked);
 
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(network_stack);
@@ -278,8 +280,8 @@ int main() {
 
     // Add objects to list
     object_list.push_back(device_object);
-    object_list.push_back(button_resource->get_object());
-    object_list.push_back(led_resource->get_object());
+    object_list.push_back(button_resource.get_object());
+    object_list.push_back(led_resource.get_object());
 
     // Set endpoint registration object
     mbed_client.set_register_object(register_object);
@@ -288,16 +290,19 @@ int main() {
     mbed_client.test_register(register_object, object_list);
     registered = true;
 
-    while (true) {
+    while (true) {            
         updates.wait(25000);
-
-        if (!registered) {
+        if(registered) {
+            mbed_client.test_update_register();
+        }else {
             break;
+        }
+        if(clicked) {
+           clicked = false;
+            button_resource.handle_button_click();
         }
     }
 
     mbed_client.test_unregister();
     status_ticker.detach();
 }
-
-
