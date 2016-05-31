@@ -32,7 +32,7 @@
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
+const String &MBED_SERVER_ADDRESS = YOTTA_CFG_DEVICE_CONNECTOR_URI;
 
 // These come from the security.h file copied from connector.mbed.com
 const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
