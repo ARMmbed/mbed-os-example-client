@@ -18,11 +18,6 @@
 #include <sstream>
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
-#include "eventOS_scheduler.h"
-#include "eventOS_event.h"
-#include "nsdynmemLIB.h"
-#include "platform/arm_hal_timer.h"
-#include "ns_event_loop.h"
 
 #include "security.h"
 
@@ -54,8 +49,18 @@ LoWPANNDInterface mesh;
 ThreadInterface mesh;
 #endif
 
+#ifndef MESH
+#include "eventOS_scheduler.h"
+#include "eventOS_event.h"
+#include "nsdynmemLIB.h"
+#include "platform/arm_hal_timer.h"
+#include "ns_event_loop.h"
+
 #define HEAP_SIZE 32500
 static uint8_t app_stack_heap[HEAP_SIZE + 1];
+
+#endif
+
 
 Serial output(USBTX, USBRX);
 
@@ -254,12 +259,14 @@ int main() {
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
 
+#ifndef MESH
     ns_dyn_mem_init(app_stack_heap, HEAP_SIZE,
                     NULL, 0);
     platform_timer_enable();
     eventOS_scheduler_init();
     ns_event_loop_thread_create();
     ns_event_loop_thread_start();
+#endif
 
     NetworkStack *network_stack = 0;
 #if defined WIFI
@@ -325,7 +332,9 @@ int main() {
     while (true) {
         updates.wait(25000);
         if(registered) {
-            mbed_client.test_update_register();
+            if(!clicked) {
+                mbed_client.test_update_register();
+            }
         }else {
             break;
         }
