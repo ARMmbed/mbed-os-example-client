@@ -157,7 +157,7 @@ private:
  */
 class ButtonResource {
 public:
-    ButtonResource(){      
+    ButtonResource(): counter(0) {
         // create ObjectID with metadata tag of '3200', which is 'digital input'
         btn_object = M2MInterfaceFactory::create_object("3200");
         M2MObjectInstance* btn_inst = btn_object->create_object_instance();
@@ -204,7 +204,7 @@ public:
 
 private:
     M2MObject* btn_object;
-    uint16_t counter = 0;
+    uint16_t counter;
 };
 
 // Network interaction must be performed outside of interrupt context
