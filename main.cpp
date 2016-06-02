@@ -56,9 +56,8 @@ ThreadInterface mesh;
 #include "platform/arm_hal_timer.h"
 #include "ns_event_loop.h"
 
-#define HEAP_SIZE 32500
+#define HEAP_SIZE 1023
 static uint8_t app_stack_heap[HEAP_SIZE + 1];
-
 #endif
 
 
