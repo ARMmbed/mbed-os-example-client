@@ -31,9 +31,6 @@
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
-// This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = YOTTA_CFG_DEVICE_CONNECTOR_URI;
-
 // These come from the security.h file copied from connector.mbed.com
 const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
 const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
@@ -91,8 +88,10 @@ public:
     *  setup its name, resource type, life time, connection mode,
     *  Currently only LwIPv4 is supported.
     */
-    void create_interface(void *handler=NULL) {
+    void create_interface(const String &server_address,
+                          void *handler=NULL) {
 	// Randomizing listening port for Certificate mode connectivity
+    _server_address = server_address;
 	srand(time(NULL));
 	uint16_t port = rand() % 65535 + 12345;
 
@@ -109,7 +108,7 @@ public:
     String binding_mode;
     (SOCKET_MODE == M2MInterface::UDP) ? binding_mode = "UDP" : binding_mode = "TCP";
     printf("\r\nSOCKET_MODE : %s\r\n", binding_mode.c_str());
-    printf("Connecting to %s\r\n", MBED_SERVER_ADDRESS.c_str());
+    printf("Connecting to %s\r\n", _server_address.c_str());
 
     if(_interface) {
         _interface->set_platform_network_handler(handler);
@@ -143,7 +142,7 @@ public:
         // make sure security ObjectID/ObjectInstance was created successfully
         if(security) {
             // Add ResourceID's and values to the security ObjectID/ObjectInstance
-            security->set_resource_value(M2MSecurity::M2MServerUri, MBED_SERVER_ADDRESS);
+            security->set_resource_value(M2MSecurity::M2MServerUri, _server_address);
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
             security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT));
             security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT));
@@ -267,6 +266,13 @@ public:
             case M2MInterface::NotAllowed:
                 trace_printer("[ERROR:] M2MInterface::NotAllowed");
                 break;
+            case M2MInterface::SecureConnectionFailed:
+                trace_printer("[ERROR:] M2MInterface::SecureConnectionFailed");
+                break;
+            case M2MInterface::DnsResolvingFailed:
+                trace_printer("[ERROR:] M2MInterface::DnsResolvingFailed");
+                break;
+
             default:
                 break;
         }
@@ -319,6 +325,7 @@ private:
     volatile bool            _unregistered;
     int                      _value;
     struct MbedClientDevice  _device;
+    String                   _server_address;
 };
 
 #endif // __SIMPLECLIENT_H__

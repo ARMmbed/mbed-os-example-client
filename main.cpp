@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "mbed-trace/mbed_trace.h"
 
 #include "security.h"
 
@@ -46,6 +47,22 @@ LoWPANNDInterface mesh;
 #define MESH
 #include "NanostackInterface.h"
 ThreadInterface mesh;
+#endif
+
+#ifndef MESH
+#include "eventOS_scheduler.h"
+#include "eventOS_event.h"
+#include "nsdynmemLIB.h"
+#include "platform/arm_hal_timer.h"
+#include "ns_event_loop.h"
+
+#define HEAP_SIZE 1023
+static uint8_t app_stack_heap[HEAP_SIZE + 1];
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
+#else
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = YOTTA_CFG_DEVICE_CONNECTOR_URI;
 #endif
 
 Serial output(USBTX, USBRX);
@@ -157,7 +174,7 @@ private:
  */
 class ButtonResource {
 public:
-    ButtonResource(){      
+    ButtonResource(): counter(0) {
         // create ObjectID with metadata tag of '3200', which is 'digital input'
         btn_object = M2MInterfaceFactory::create_object("3200");
         M2MObjectInstance* btn_inst = btn_object->create_object_instance();
@@ -176,10 +193,6 @@ public:
 
     M2MObject* get_object() {
         return btn_object;
-    }
-
-    void button_clicked() {
-        output.printf("\n\rButton clicked\r\n");
     }
 
     /*
@@ -204,17 +217,28 @@ public:
 
 private:
     M2MObject* btn_object;
-    uint16_t counter = 0;
+    uint16_t counter;
 };
 
 // Network interaction must be performed outside of interrupt context
 Semaphore updates(0);
 volatile bool registered = false;
+volatile bool clicked = false;
 osThreadId mainThread;
 
 void unregister() {
     registered = false;
     updates.release();
+}
+
+void button_clicked() {
+    clicked = true;
+    updates.release();
+}
+
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
 }
 
 // Status indication
@@ -234,6 +258,18 @@ int main() {
     output.baud(115200);
 
     output.printf("Starting mbed Client example...\r\n");
+
+    mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
+
+#ifndef MESH
+    ns_dyn_mem_init(app_stack_heap, HEAP_SIZE,
+                    NULL, 0);
+    platform_timer_enable();
+    eventOS_scheduler_init();
+    ns_event_loop_thread_create();
+    ns_event_loop_thread_start();
+#endif
 
     NetworkStack *network_stack = 0;
 #if defined WIFI
@@ -263,8 +299,8 @@ int main() {
     }
 
     // we create our button and LED resources
-    ButtonResource *button_resource = new ButtonResource();
-    LedResource *led_resource = new LedResource();
+    ButtonResource button_resource;
+    LedResource led_resource;
 
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Connector
@@ -272,10 +308,10 @@ int main() {
     unreg_button.fall(&unregister);
 
     // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(button_resource, &ButtonResource::handle_button_click);
+    obs_button.fall(&button_clicked);
 
     // Create endpoint interface to manage register and unregister
-    mbed_client.create_interface(network_stack);
+    mbed_client.create_interface(MBED_SERVER_ADDRESS, network_stack);
 
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
@@ -286,8 +322,8 @@ int main() {
 
     // Add objects to list
     object_list.push_back(device_object);
-    object_list.push_back(button_resource->get_object());
-    object_list.push_back(led_resource->get_object());
+    object_list.push_back(button_resource.get_object());
+    object_list.push_back(led_resource.get_object());
 
     // Set endpoint registration object
     mbed_client.set_register_object(register_object);
@@ -298,14 +334,19 @@ int main() {
 
     while (true) {
         updates.wait(25000);
-
-        if (!registered) {
+        if(registered) {
+            if(!clicked) {
+                mbed_client.test_update_register();
+            }
+        }else {
             break;
+        }
+        if(clicked) {
+           clicked = false;
+            button_resource.handle_button_click();
         }
     }
 
     mbed_client.test_unregister();
     status_ticker.detach();
 }
-
-
