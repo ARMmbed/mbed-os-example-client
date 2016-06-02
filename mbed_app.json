@@ -1,0 +1,10 @@
+{
+    "config": {
+        "user-config-file": {
+            "value": "\"mbed_client_config.h\""
+        },
+        "user-config-file": {
+        "value": "\"mbedtls_custom_config.h\""
+        }
+    }
+} 
