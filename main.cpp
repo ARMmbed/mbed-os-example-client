@@ -58,8 +58,12 @@ ThreadInterface mesh;
 
 #define HEAP_SIZE 1023
 static uint8_t app_stack_heap[HEAP_SIZE + 1];
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
+#else
+// This is address to mbed Device Connector
+const String &MBED_SERVER_ADDRESS = YOTTA_CFG_DEVICE_CONNECTOR_URI;
 #endif
-
 
 Serial output(USBTX, USBRX);
 
@@ -170,7 +174,7 @@ private:
  */
 class ButtonResource {
 public:
-    ButtonResource(){      
+    ButtonResource(): counter(0) {
         // create ObjectID with metadata tag of '3200', which is 'digital input'
         btn_object = M2MInterfaceFactory::create_object("3200");
         M2MObjectInstance* btn_inst = btn_object->create_object_instance();
@@ -213,7 +217,7 @@ public:
 
 private:
     M2MObject* btn_object;
-    uint16_t counter = 0;
+    uint16_t counter;
 };
 
 // Network interaction must be performed outside of interrupt context
@@ -307,7 +311,7 @@ int main() {
     obs_button.fall(&button_clicked);
 
     // Create endpoint interface to manage register and unregister
-    mbed_client.create_interface(network_stack);
+    mbed_client.create_interface(MBED_SERVER_ADDRESS, network_stack);
 
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
