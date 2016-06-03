@@ -103,7 +103,22 @@ TBD
 
 ### Wi-Fi settings
 
-TBD
+The example application uses ESP8266 WiFi Interface for managing Wireless connectivity. For running this application using WiFi you need:
+
+1. [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
+1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
+1. Attach shield onto K64F board.
+1. In `main.cpp` , change 
+```
+#undef ETHERNET
+#define WIFI
+#undef CELLULAR
+#undef MESH_LOWPAN_ND
+#undef MESH_THREAD
+```
+1. In `main.cpp`, remove  `#error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"`
+1. In next line `esp.connect("ssid", "password");` , replace `ssid` and `password` with your WiFi SSID and WiFi password respectively.
+
 
 ### IP address setup
 
