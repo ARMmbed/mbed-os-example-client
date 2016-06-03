@@ -92,7 +92,10 @@ With Thread you can change device operating mode between a router and a sleepy e
 
 ### Ethernet settings
 
-TBD
+For running the example application using Ethernet, you need:
+
+1. An Ethernet cable.
+1. An Ethernet connection to the internet.
 
 ### Cellular settings
 
