@@ -83,7 +83,7 @@ YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=2
 YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=1
 ```
 
-For more information about the radio shields, see the [mbed-client-example-6lowpan](https://github.com/ARMmbed/mbed-client-example-6lowpan#radio-module-identification) documentation.
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
 
 #### Thread-specific settings
 
