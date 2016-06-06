@@ -4,7 +4,7 @@ This is the mbed Client example for mbed OS (we also have one for [Linux](https:
 
 The application:
 
-* Connects to network with either WiFi, Ethernet, Cellular, 6LoWPAN ND or Thread connection.
+* Connects to network with WiFi, Ethernet, Cellular, 6LoWPAN ND or Thread connection.
 * Registers with mbed Device Connector.
 * Gives mbed Device Connector access to its resources (read and write).
 * Records the number of clicks on the device’s button and sends the number to mbed Device Connector.
@@ -28,18 +28,18 @@ The application:
 
 To configure the example application, please:
 
-1. [Choose connection type](#connection-type).
-1. [Set client credentials](#client-credentials).
+1. [Select the connection type](#connection-type).
+1. [Set the client credentials](#client-credentials).
 1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change Ethernet settings](#ethernet-settings).
 1. [Change cellular settings](#cellular-settings).
 1. [Change Wi-Fi settings](#wi-fi-settings).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
-1. [Change socket type](#changing-socket-type). This step is optional.
+1. [Change the socket type](#changing-socket-type). This step is optional.
 
 ### Connection type
 
-By default the application uses Ethernet as the default connection type. The connection type can be changed in the beginning of the `main.cpp` file by setting one of the five connection types as defined and all the rest as undefined. For example to enable 6LoWPAN ND mode:
+The application uses Ethernet as the default connection type. To change the connection type, set one of them as defined and all the rest as undefined in the beginning of the `main.cpp` file. For example, to enable 6LoWPAN ND mode:
 
 ```
 #undef ETHERNET
@@ -51,7 +51,7 @@ By default the application uses Ethernet as the default connection type. The con
 
 ### Client credentials
 
-The client side certificate needs to be created and set in order for the application to register to the Connector service.
+To register the application to the Connector service, you need to create and set the client side certificate.
 
 1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
 1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** button to get new credentials for your device.
@@ -59,7 +59,7 @@ The client side certificate needs to be created and set in order for the applica
 
 ### 6LoWPAN ND and Thread settings
 
-As both 6LoWPAN ND and Thread use IPv6 for connectivity, you need to verify first that you have a working IPv6 connection. You can do this by pinging the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
+6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
 #### mbed gateway
 
@@ -67,7 +67,7 @@ To connect the example application in 6LoWPAN ND or Thread mode to Connector, yo
 
 #### Channel settings
 
-In both 6LoWPAN ND and Thread mode you need to set the channel settings to match the mbed gateway settings. Channel settings can be found in the `MACROS.txt` file. For 2.4GHz shields (AT86RF233) use the following values:
+In 6LoWPAN ND and Thread mode, you need to set the channel settings to match the mbed gateway settings. Channel settings can be found in the `MACROS.txt` file. For 2.4GHz shields (AT86RF233), use the following values:
 
 ```
 YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=0
@@ -83,19 +83,20 @@ YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=2
 YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=1
 ```
 
-For more information about the radio shields, please see the [mbed-client-example-6lowpan](https://github.com/ARMmbed/mbed-client-example-6lowpan#radio-module-identification) documentation.
+For more information about the radio shields, see the [mbed-client-example-6lowpan](https://github.com/ARMmbed/mbed-client-example-6lowpan#radio-module-identification) documentation.
 
-#### Thread specific settings
+#### Thread-specific settings
 
-With Thread you can change device operating mode between a router and a sleepy end device by opening `MACROS.txt` and changing the `YOTTA_CFG_MBED_MESH_API_THREAD_DEVICE_TYPE` to either `MESH_DEVICE_TYPE_THREAD_ROUTER` or `MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE`.
+With Thread, you can change the operating mode of the device between a router and a sleepy end device as follows:
 
+In the `MACROS.txt` file, change the `YOTTA_CFG_MBED_MESH_API_THREAD_DEVICE_TYPE` to either `MESH_DEVICE_TYPE_THREAD_ROUTER` or `MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE`.
 
 ### Ethernet settings
 
 For running the example application using Ethernet, you need:
 
-1. An Ethernet cable.
-1. An Ethernet connection to the internet.
+- An Ethernet cable.
+- An Ethernet connection to the internet.
 
 ### Cellular settings
 
@@ -103,21 +104,15 @@ TBD
 
 ### Wi-Fi settings
 
-The example application uses ESP8266 WiFi Interface for managing Wireless connectivity. For running this application using WiFi you need:
+The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need to:
 
-1. [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
+1. Have [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
 1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
-1. Attach shield onto K64F board.
-1. In `main.cpp` , change 
-```
-#undef ETHERNET
-#define WIFI
-#undef CELLULAR
-#undef MESH_LOWPAN_ND
-#undef MESH_THREAD
-```
-1. In `main.cpp`, remove  `#error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"`
-1. In next line `esp.connect("ssid", "password");` , replace `ssid` and `password` with your WiFi SSID and WiFi password respectively.
+1. Attach the shield on the K64F board.
+1. In the `main.cpp` file:
+    - set WIFI as defined and other connection types as undefined. 
+    - remove  `#error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"`
+    - `esp.connect("ssid", "password");` , replace `ssid` and `password` with your WiFi SSID and WiFi password respectively.
 
 
 ### IP address setup
@@ -128,15 +123,13 @@ If your network does not have DHCP enabled, you have to manually assign a static
 
 ### Changing socket type
 
-Your device can connect to mbed Device Connector via one of two binding modes: UDP or TCP. The default is UDP. Binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default is UDP. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`.
-1. The default is `M2MInterface::UDP`.
+1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP`.
 1. To switch to TCP, change it to `M2MInterface::TCP`.
-
-Then re-build and flash the application.
+1. Rebuild and flash the application.
 
 <span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
 
@@ -148,7 +141,7 @@ To build the example application:
 1. Open a command line tool and navigate to the project’s directory.
 1. Update mbed-os sources using the `mbed update` command.
 1. [Configure](#application-setup) the client application.
-1. Build the application by selecting the hardware board and build toolchain using the command `mbed compile -m K64F -t GCC_ARM -c -j0`. mbed-cli builds a binary file under the project’s `.build` directory.
+1. Build the application by selecting the hardware board and build the toolchain using the command `mbed compile -m K64F -t GCC_ARM -c -j0`. mbed-cli builds a binary file under the project’s `.build` directory.
 1. Plug the Ethernet cable into the board if you are using Ethernet mode.
 1. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
 1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
