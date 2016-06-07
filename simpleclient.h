@@ -31,9 +31,8 @@
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 
-// These come from the security.h file copied from connector.mbed.com
-const String &MBED_USER_NAME_DOMAIN = MBED_DOMAIN;
-const String &ENDPOINT_NAME = MBED_ENDPOINT_NAME;
+// MBED_DOMAIN and MBED_ENDPOINT_NAME come
+// from the security.h file copied from connector.mbed.com
 
 struct MbedClientDevice {
     const char* Manufacturer;
@@ -44,7 +43,7 @@ struct MbedClientDevice {
 
 /*
 * Wrapper for mbed client stack that handles all callbacks, error handling, and
-* other schenanigans to make the mbed client stack easier to use.
+* other shenanigans to make the mbed client stack easier to use.
 *
 * The end user should only have to care about configuring the parameters at the
 * top of this file and making sure they add the security.h file correctly.
@@ -88,7 +87,7 @@ public:
     *  setup its name, resource type, life time, connection mode,
     *  Currently only LwIPv4 is supported.
     */
-    void create_interface(const String &server_address,
+    void create_interface(const char *server_address,
                           void *handler=NULL) {
 	// Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
@@ -97,18 +96,17 @@ public:
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
-                                                      ENDPOINT_NAME,            // endpoint name string
+                                                      MBED_ENDPOINT_NAME,       // endpoint name string
                                                       "test",                   // endpoint type string
                                                       100,                      // lifetime
                                                       port,                     // listen port
-                                                      MBED_USER_NAME_DOMAIN,    // domain string
+                                                      MBED_DOMAIN,              // domain string
                                                       SOCKET_MODE,              // binding mode
                                                       M2MInterface::LwIP_IPv4,  // network stack
                                                       "");                      // context address string
-    String binding_mode;
-    (SOCKET_MODE == M2MInterface::UDP) ? binding_mode = "UDP" : binding_mode = "TCP";
-    printf("\r\nSOCKET_MODE : %s\r\n", binding_mode.c_str());
-    printf("Connecting to %s\r\n", _server_address.c_str());
+    const char *binding_mode = (SOCKET_MODE == M2MInterface::UDP) ? "UDP" : "TCP";
+    printf("\r\nSOCKET_MODE : %s\r\n", binding_mode);
+    printf("Connecting to %s\r\n", server_address);
 
     if(_interface) {
         _interface->set_platform_network_handler(handler);
