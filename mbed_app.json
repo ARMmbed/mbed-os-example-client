@@ -1,0 +1,7 @@
+{
+    "config": {
+        "mbed-client-user-config-file": {
+            "value": "\"mbed_client_config.h\""
+        }
+    }
+} 
