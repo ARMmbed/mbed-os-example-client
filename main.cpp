@@ -59,10 +59,10 @@ ThreadInterface mesh;
 #define HEAP_SIZE 1023
 static uint8_t app_stack_heap[HEAP_SIZE + 1];
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = "coap://api.connector.mbed.com:5684";
+#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #else
 // This is address to mbed Device Connector
-const String &MBED_SERVER_ADDRESS = YOTTA_CFG_DEVICE_CONNECTOR_URI;
+#define MBED_SERVER_ADDRESS YOTTA_CFG_DEVICE_CONNECTOR_URI
 #endif
 
 Serial output(USBTX, USBRX);
