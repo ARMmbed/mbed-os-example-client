@@ -50,14 +50,6 @@ ThreadInterface mesh;
 #endif
 
 #ifndef MESH
-#include "eventOS_scheduler.h"
-#include "eventOS_event.h"
-#include "nsdynmemLIB.h"
-#include "platform/arm_hal_timer.h"
-#include "ns_event_loop.h"
-
-#define HEAP_SIZE 1023
-static uint8_t app_stack_heap[HEAP_SIZE + 1];
 // This is address to mbed Device Connector
 #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #else
@@ -261,15 +253,6 @@ int main() {
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
-
-#ifndef MESH
-    ns_dyn_mem_init(app_stack_heap, HEAP_SIZE,
-                    NULL, 0);
-    platform_timer_enable();
-    eventOS_scheduler_init();
-    ns_event_loop_thread_create();
-    ns_event_loop_thread_start();
-#endif
 
     NetworkStack *network_stack = 0;
 #if defined WIFI
