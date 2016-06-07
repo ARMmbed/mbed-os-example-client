@@ -269,7 +269,7 @@ int main() {
 #elif defined (CELLULAR)
     c027.connect();
     output.printf("Using Cellular C027\r\n");
-    network_interface = &c027;
+    network_stack = &c027;
 #elif defined MESH
     mesh.connect();
     network_stack = &mesh;
