@@ -10,7 +10,7 @@ def morpheusTargets = [
 def toolchains = [
   // Enable ARM and IAR after this is fixed: https://github.com/ARMmbed/mbed-os/issues/125
   //ARM: "armcc",
-  //IAR: "iar_arm",
+  IAR: "iar_arm",
   GCC_ARM: "arm-none-eabi-gcc"
   ]
   
@@ -80,6 +80,7 @@ const uint8_t KEY[] = "";
             bat "cat security.h"
             bat "mbed ls -a"
             // sh "mbed deploy --protocol ssh"
+            bat "copy C:\\mbed_tools\\scripts\\mbed_settings.py ."
             bat "mbed compile -m ${target} -t ${toolchain} -c"
             
           } else {
