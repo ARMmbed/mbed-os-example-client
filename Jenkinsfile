@@ -38,7 +38,21 @@ try {
 } catch (err) {
   currentBuild.result = 'FAILURE'
 } 
-
+stage "postbuild"
+node {
+  // Check for compiler warnings
+  step([$class: 'WarningsPublisher', 
+    consoleParsers: [[parserName: 'GNU C Compiler 4 (gcc)']], 
+    canComputeNew: false, 
+    canResolveRelativePaths: false, 
+    defaultEncoding: '', 
+    excludePattern: '', 
+    includePattern: '', 
+    messagesPattern: '', 
+    healthy: '', 
+    unHealthy: ''
+  ])
+}
 
 //Create morpheus build steps for parallel execution
  def morpheusBuildStep(target, compilerLabel, toolchain) {
@@ -86,18 +100,6 @@ const uint8_t KEY[] = "";
             sh "mbed compile -m ${target} -t ${toolchain} -c"
           }
         }
-        // Check for compiler warnings
-        step([$class: 'WarningsPublisher', 
-          consoleParsers: [[parserName: 'GNU C Compiler 4 (gcc)']], 
-          canComputeNew: false, 
-          canResolveRelativePaths: false, 
-          defaultEncoding: '', 
-          excludePattern: '', 
-          includePattern: '', 
-          messagesPattern: '', 
-          healthy: '', 
-          unHealthy: ''
-        ])
       }
     }
  }
