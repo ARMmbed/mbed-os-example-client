@@ -83,7 +83,7 @@ const uint8_t KEY[] = "";
             sh "cat security.h"
             sh "mbed ls -a"
             // sh "mbed deploy --protocol ssh"
-            sh "mbed compile --tests -m ${target} -t ${toolchain} -c"
+            sh "mbed compile -m ${target} -t ${toolchain} -c"
           }
         }
         // Check for compiler warnings
