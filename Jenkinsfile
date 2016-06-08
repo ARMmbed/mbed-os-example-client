@@ -61,10 +61,11 @@ stage "postbuild"
         deleteDir()
         dir("mbed-client-quickstart-morpheus") {
           checkout scm
-          sh "mbed --help"
-          sh "mbed add https://github.com/ARMmbed/mbed-os/#c4986eed9f42cbb3352c793d7a16d512d978d102 --protocol ssh"
-          sh "rm -f security.h"
-          writeFile file: 'security.h', text: '''#ifndef __SECURITY_H__
+          if ("${compilerLabel}" == "iar_arm") {
+            bat"mbed --help"
+            bat "mbed add https://github.com/ARMmbed/mbed-os/#c4986eed9f42cbb3352c793d7a16d512d978d102 --protocol ssh"
+            bat "rm -f security.h"
+            writeFile file: 'security.h', text: '''#ifndef __SECURITY_H__
 #define __SECURITY_H__
 #include <inttypes.h>
 #define MBED_DOMAIN ""
@@ -74,10 +75,30 @@ const uint8_t CERT[] = "";
 const uint8_t KEY[] = "";
 #endif //__SECURITY_H__'''
 
-          sh "cat security.h"
-          sh "mbed ls -a"
-          // sh "mbed deploy --protocol ssh"
-          sh "mbed compile --tests -m ${target} -t ${toolchain} -c"
+            bat "cat security.h"
+            bat "mbed ls -a"
+            // sh "mbed deploy --protocol ssh"
+            bat "mbed compile --tests -m ${target} -t ${toolchain} -c"
+            
+          } else {
+            sh "mbed --help"
+            sh "mbed add https://github.com/ARMmbed/mbed-os/#c4986eed9f42cbb3352c793d7a16d512d978d102 --protocol ssh"
+            sh "rm -f security.h"
+            writeFile file: 'security.h', text: '''#ifndef __SECURITY_H__
+#define __SECURITY_H__
+#include <inttypes.h>
+#define MBED_DOMAIN ""
+#define MBED_ENDPOINT_NAME "lwm2m-endpoint"
+const uint8_t SERVER_CERT[] = "";
+const uint8_t CERT[] = "";
+const uint8_t KEY[] = "";
+#endif //__SECURITY_H__'''
+
+            sh "cat security.h"
+            sh "mbed ls -a"
+            // sh "mbed deploy --protocol ssh"
+            sh "mbed compile --tests -m ${target} -t ${toolchain} -c"
+          }
         }
       }
     }
