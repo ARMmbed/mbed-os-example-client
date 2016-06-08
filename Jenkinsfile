@@ -8,8 +8,9 @@ def morpheusTargets = [
   
 // Map morpheus toolchains to compiler labels on Jenkins
 def toolchains = [
+  // Enable ARM and IAR after this is fixed: https://github.com/ARMmbed/mbed-os/issues/125
   //ARM: "armcc",
-  IAR: "iar_arm",
+  //IAR: "iar_arm",
   GCC_ARM: "arm-none-eabi-gcc"
   ]
   
