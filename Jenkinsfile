@@ -8,9 +8,9 @@ def morpheusTargets = [
   
 // Map morpheus toolchains to compiler labels on Jenkins
 def toolchains = [
-  ARM: "armcc",
-  GCC_ARM: "arm-none-eabi-gcc",
-  IAR: "iar_arm"
+  //ARM: "armcc",
+  IAR: "iar_arm",
+  GCC_ARM: "arm-none-eabi-gcc"
   ]
   
 // Initial maps for parallel build steps
@@ -38,6 +38,7 @@ try {
 } catch (err) {
   currentBuild.result = 'FAILURE'
 } 
+/*
 stage "postbuild"
 node {
   // Check for compiler warnings
@@ -53,7 +54,7 @@ node {
     unHealthy: ''
   ])
 }
-
+*/
 //Create morpheus build steps for parallel execution
  def morpheusBuildStep(target, compilerLabel, toolchain) {
     return {
