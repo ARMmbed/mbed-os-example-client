@@ -79,7 +79,7 @@ const uint8_t KEY[] = "";
             bat "cat security.h"
             bat "mbed ls -a"
             // sh "mbed deploy --protocol ssh"
-            bat "mbed compile --tests -m ${target} -t ${toolchain} -c"
+            bat "mbed compile -m ${target} -t ${toolchain} -c"
             
           } else {
             sh "mbed --help"
