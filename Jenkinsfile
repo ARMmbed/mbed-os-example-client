@@ -9,7 +9,7 @@ def morpheusTargets = [
 // Map morpheus toolchains to compiler labels on Jenkins
 def toolchains = [
   ARM: "armcc",
-  GCC_ARM: "arm-none-eabi-gcc"
+  GCC_ARM: "arm-none-eabi-gcc",
   IAR: "iar_arm"
   ]
   
