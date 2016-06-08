@@ -63,7 +63,19 @@ To register the application to the Connector service, you need to create and set
 
 #### mbed gateway
 
-To connect the example application in 6LoWPAN ND or Thread mode to Connector, you need to set up an mbed 6LoWPAN gateway router. Clone the [mbed-client-example-6lowpan](https://github.com/ARMmbed/mbed-client-example-6lowpan) repository and follow the [gateway configuration](https://github.com/ARMmbed/mbed-client-example-6lowpan#gateway-configuration) instructions. Use the dynamic binary in both cases for IPv6 autoconfiguration.
+To connect the example application in 6LoWPAN ND or Thread mode to Connector, you need to set up an mbed 6LoWPAN gateway router.
+
+1. Use an Ethernet cable to connect the mbed 6LoWPAN gateway router to the internet.
+2. Use a micro-USB cable to connect the mbed 6LoWPAN gateway router to your computer. The computer will list the router as removable storage.
+3. The firmware for the gateway is located in the `GW_Binary` folder in the root of this example. You should select the binary matching your application bootstrap mode:
+
+	* For the **6LoWPAN ND** bootstrap, use `gateway6LoWPANDynamic.bin`.
+	* For the **Thread** bootstrap, use `gatewayThreadDynamic.bin`.
+
+	The dynamic binaries use IPv6 autoconfiguration and enable the client to connect to the Connector service. The static binaries create a site-local IPv6 network from where packets cannot be routed outside.
+
+4. Copy the gateway binary file to the mbed 6LoWPAN gateway router to flash the device. The device will reboot automatically after flashing. If that does not happen, push the **Reset** button on the board.
+5. Optionally you can view debug traces from the gateway with a serial port monitor. The gateway uses baud rate 460800. The gateway IPv6 address is correctly configured when the following trace is visible: `Eth bootstrap ready, IP=XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX`.
 
 #### Channel settings
 
