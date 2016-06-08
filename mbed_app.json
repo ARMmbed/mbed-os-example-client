@@ -1,7 +1,8 @@
 {
-    "config": {
-        "mbed-client-user-config-file": {
-            "value": "\"mbed_client_config.h\""
+    "target_overrides": {
+        "*": {
+            "mbed-client.reconnection-count": 3,
+            "mbed-client.reconnection-interval": 5
         }
     }
 } 
