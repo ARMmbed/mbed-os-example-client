@@ -39,25 +39,11 @@ try {
   currentBuild.result = 'FAILURE'
 } 
 
-stage "postbuild"
-  // Check for compiler warnings
-  step([$class: 'WarningsPublisher', 
-    consoleParsers: [[parserName: 'GNU C Compiler 4 (gcc)']], 
-    canComputeNew: false, 
-    canResolveRelativePaths: false, 
-    defaultEncoding: '', 
-    excludePattern: '', 
-    includePattern: '', 
-    messagesPattern: '', 
-    healthy: '', 
-    unHealthy: ''
-  ])
-
 
 //Create morpheus build steps for parallel execution
  def morpheusBuildStep(target, compilerLabel, toolchain) {
     return {
-      node ("${compilerLabel}") {
+      node ("morpheus && ${compilerLabel}") {
         deleteDir()
         dir("mbed-client-quickstart-morpheus") {
           checkout scm
@@ -100,6 +86,18 @@ const uint8_t KEY[] = "";
             sh "mbed compile --tests -m ${target} -t ${toolchain} -c"
           }
         }
+        // Check for compiler warnings
+        step([$class: 'WarningsPublisher', 
+          consoleParsers: [[parserName: 'GNU C Compiler 4 (gcc)']], 
+          canComputeNew: false, 
+          canResolveRelativePaths: false, 
+          defaultEncoding: '', 
+          excludePattern: '', 
+          includePattern: '', 
+          messagesPattern: '', 
+          healthy: '', 
+          unHealthy: ''
+        ])
       }
     }
  }
