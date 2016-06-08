@@ -57,7 +57,7 @@ stage "postbuild"
 //Create morpheus build steps for parallel execution
  def morpheusBuildStep(target, compilerLabel, toolchain) {
     return {
-      node ("morpheus && ${compilerLabel}") {
+      node ("${compilerLabel}") {
         deleteDir()
         dir("mbed-client-quickstart-morpheus") {
           checkout scm
