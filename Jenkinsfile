@@ -9,7 +9,7 @@ def morpheusTargets = [
 // Map morpheus toolchains to compiler labels on Jenkins
 def toolchains = [
   // Enable ARM and IAR after this is fixed: https://github.com/ARMmbed/mbed-os/issues/125
-  //ARM: "armcc",
+  ARM: "armcc",
   IAR: "iar_arm",
   GCC_ARM: "arm-none-eabi-gcc"
   ]
@@ -100,6 +100,7 @@ const uint8_t KEY[] = "";
             sh "cat security.h"
             sh "mbed ls -a"
             // sh "mbed deploy --protocol ssh"
+            sh "cp /builds/scripts/mbed_settings.py ."
             sh "mbed compile -m ${target} -t ${toolchain} -c"
           }
         }
