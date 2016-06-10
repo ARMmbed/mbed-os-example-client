@@ -24,26 +24,24 @@
 #include "mbed.h"
 #include "rtos.h"
 
-#define ETHERNET
-#undef WIFI
-#undef CELLULAR
-#undef MESH_LOWPAN_ND
-#undef MESH_THREAD
+#define ETHERNET        1
+#define WIFI            2
+#define MESH_LOWPAN_ND  3
+#define MESH_THREAD     4
 
-#if defined WIFI
+#define STRINGIFY(s) #s
+
+#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #include "ESP8266Interface.h"
 ESP8266Interface esp(D1, D0);
-#elif defined (CELLULAR)
-#include "C027Interface.h"
-C027Interface c027;
-#elif defined (ETHERNET)
+#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
 #include "LWIPInterface.h"
 LWIPInterface lwip;
-#elif defined (MESH_LOWPAN_ND)
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
 #define MESH
 #include "NanostackInterface.h"
 LoWPANNDInterface mesh;
-#elif defined (MESH_THREAD)
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
 #define MESH
 #include "NanostackInterface.h"
 ThreadInterface mesh;
@@ -54,7 +52,7 @@ ThreadInterface mesh;
 #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #else
 // This is address to mbed Device Connector
-#define MBED_SERVER_ADDRESS YOTTA_CFG_DEVICE_CONNECTOR_URI
+#define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
 #endif
 
 Serial output(USBTX, USBRX);
@@ -255,25 +253,29 @@ int main() {
     mbed_trace_print_function_set(trace_printer);
 
     NetworkStack *network_stack = 0;
-#if defined WIFI
+    int connect_success = -1;
+#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     output.printf("\n\rUsing WiFi \r\n");
     output.printf("\n\rConnecting to WiFi..\r\n");
-    #error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"
-    esp.connect("ssid", "password");
-    output.printf("\n\rConnected to WiFi\r\n");
+    connect_success = esp.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
     network_stack = &esp;
-#elif defined ETHERNET
-    lwip.connect();
+#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
     output.printf("Using Ethernet LWIP\r\n");
+    connect_success = lwip.connect();
     network_stack = &lwip;
-#elif defined (CELLULAR)
-    c027.connect();
-    output.printf("Using Cellular C027\r\n");
-    network_stack = &c027;
-#elif defined MESH
-    mesh.connect();
+#endif
+#ifdef MESH
+    output.printf("Using Mesh\r\n");
+    output.printf("\n\rConnecting to Mesh..\r\n");
+    connect_success = mesh.connect();
     network_stack = &mesh;
 #endif
+    if(connect_success == 0) {
+    output.printf("\n\rConnected to Network successfully\r\n");
+    } else {
+        output.printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", connect_success);
+        return 0;
+    }
     const char *ip_addr = network_stack->get_ip_address();
     if (ip_addr) {
         output.printf("IP address %s\r\n", ip_addr);
