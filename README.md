@@ -39,14 +39,13 @@ To configure the example application, please:
 
 ### Connection type
 
-The application uses Ethernet as the default connection type. To change the connection type, set one of them as defined and all the rest as undefined in the beginning of the `main.cpp` file. For example, to enable 6LoWPAN ND mode:
+The application uses Ethernet as the default connection type. To change the connection type, set one of them in `mbed_app.json`. For example, to enable 6LoWPAN ND mode:
 
 ```
-#undef ETHERNET
-#undef WIFI
-#undef CELLULAR
-#define MESH_LOWPAN_ND
-#undef MESH_THREAD
+ "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+            "value": "MESH_LOWPAN_ND"
+        },
 ```
 
 ### Client credentials
@@ -122,11 +121,25 @@ The example application uses ESP8266 WiFi Interface for managing the wireless co
 1. Have [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
 1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
 1. Attach the shield on the K64F board.
-1. In the `main.cpp` file:
-    - set WIFI as defined and other connection types as undefined. 
-    - remove  `#error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"`
-    - `esp.connect("ssid", "password");` , replace `ssid` and `password` with your WiFi SSID and WiFi password respectively.
+1. In the `mbed_app.json` file, change
+   ```
+ "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+            "value": "WIFI"
+        },
+```
 
+1. Provide your WiFi SSID and password here
+   ```
+   "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"IoTBU-Sniffer\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"AppleBearWireCube\""
+        }
+   ```
 
 ### IP address setup
 
