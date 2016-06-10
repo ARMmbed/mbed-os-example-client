@@ -6,11 +6,11 @@
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
-            "value": "\"IoTBU-Sniffer\""
+            "value": "\"SSID\""
         },
         "wifi-password": {
             "help": "WiFi Password",
-            "value": "\"AppleBearWireCube\""
+            "value": "\"Password\""
         }
     },
     "target_overrides": {
