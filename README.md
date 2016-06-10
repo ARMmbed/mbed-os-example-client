@@ -80,29 +80,35 @@ You can view debug traces from the gateway with a serial port monitor. The gatew
 
 #### Channel settings
 
-In 6LoWPAN ND and Thread mode, you need to set the channel settings to match the mbed gateway settings. Channel settings can be found in the `MACROS.txt` file. For 2.4GHz shields (AT86RF233), use the following values:
+The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `mbed_app.json` file in the main project directory. For example:
 
 ```
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=0
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=12
-YOTTA_CFG_MBED_MESH_API_THREAD_CONFIG_CHANNEL_PAGE=0
-YOTTA_CFG_MBED_MESH_API_THREAD_CONFIG_CHANNEL=12
+"target_overrides": {
+  "*": {
+    "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+    "mbed-mesh-api.6lowpan-nd-channel": 12,
+    "mbed-mesh-api.thread-config-channel-page": 0,
+    "mbed-mesh-api.thread-config-channel": 12
+  }
+}
 ```
 
-Values for sub-GHz shields (AT86RF212B), **6LoWPAN ND only**:
+For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only**:
 
 ```
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=2
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=1
+"mbed-mesh-api.6lowpan-nd-channel-page": 2,
+"mbed-mesh-api.6lowpan-nd-channel": 1
 ```
 
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-client-quickstart-morpheus/mbed-os/net/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
-With Thread, you can change the operating mode of the device between a router and a sleepy end device as follows:
+With Thread, you can change the operating mode of the client from the default router mode to a sleepy end device by adding the following override to the `mbed_app.json` file:
 
-In the `MACROS.txt` file, change the `YOTTA_CFG_MBED_MESH_API_THREAD_DEVICE_TYPE` to either `MESH_DEVICE_TYPE_THREAD_ROUTER` or `MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE`.
+```
+"mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
+```
 
 ### Ethernet settings
 
