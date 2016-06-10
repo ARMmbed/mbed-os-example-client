@@ -333,3 +333,5 @@ int main() {
     mbed_client.test_unregister();
     status_ticker.detach();
 }
+
+
