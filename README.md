@@ -135,15 +135,15 @@ The example application uses ESP8266 WiFi Interface for managing the wireless co
         },
 ```
 
-1. Provide your WiFi SSID and password here
+1. Provide your WiFi SSID and password here, remember to leave `\"` in the beginning and end of your SSID and password(as shown in the example below), else example will not be able to pick up the SSID and password in correct format.
    ```
    "wifi-ssid": {
             "help": "WiFi SSID",
-            "value": "\"IoTBU-Sniffer\""
+            "value": "\"SSID\""
         },
         "wifi-password": {
             "help": "WiFi Password",
-            "value": "\"AppleBearWireCube\""
+            "value": "\"Password\""
         }
    ```
 
