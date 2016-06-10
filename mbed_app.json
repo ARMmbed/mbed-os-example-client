@@ -1,4 +1,18 @@
 {
+    "config": {
+        "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "value": "ETHERNET"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"IoTBU-Sniffer\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"AppleBearWireCube\""
+        }
+    },
     "target_overrides": {
         "*": {
             "mbed-client.reconnection-count": 3,
