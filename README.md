@@ -123,11 +123,12 @@ The example application uses ESP8266 WiFi Interface for managing the wireless co
 1. Attach the shield on the K64F board.
 1. In the `mbed_app.json` file, change
    ```
-   "network-interface":{
+ "network-interface":{
             "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
             "value": "WIFI"
         },
-   ```
+```
+
 1. Provide your WiFi SSID and password here
    ```
    "wifi-ssid": {
