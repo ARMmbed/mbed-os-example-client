@@ -41,11 +41,11 @@ To configure the example application, please:
 
 The application uses Ethernet as the default connection type. To change the connection type, set one of them in `mbed_app.json`. For example, to enable 6LoWPAN ND mode:
 
-```
- "network-interface":{
-            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-            "value": "MESH_LOWPAN_ND"
-        },
+```json
+    "network-interface": {
+        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "MESH_LOWPAN_ND"
+    }
 ```
 
 ### Client credentials
@@ -81,20 +81,20 @@ You can view debug traces from the gateway with a serial port monitor. The gatew
 
 The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `mbed_app.json` file in the main project directory. For example:
 
-```
-"target_overrides": {
-  "*": {
-    "mbed-mesh-api.6lowpan-nd-channel-page": 0,
-    "mbed-mesh-api.6lowpan-nd-channel": 12,
-    "mbed-mesh-api.thread-config-channel-page": 0,
-    "mbed-mesh-api.thread-config-channel": 12
-  }
-}
+```json
+    "target_overrides": {
+        "*": {
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-mesh-api.thread-config-channel-page": 0,
+            "mbed-mesh-api.thread-config-channel": 12
+        }
+    }
 ```
 
 For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only**:
 
-```
+```json
 "mbed-mesh-api.6lowpan-nd-channel-page": 2,
 "mbed-mesh-api.6lowpan-nd-channel": 1
 ```
@@ -105,8 +105,8 @@ For more information about the radio shields, see [the related documentation](do
 
 With Thread, you can change the operating mode of the client from the default router mode to a sleepy end device by adding the following override to the `mbed_app.json` file:
 
-```
-"mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
+```json
+    "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
 ```
 
 ### Ethernet settings
@@ -116,36 +116,33 @@ For running the example application using Ethernet, you need:
 - An Ethernet cable.
 - An Ethernet connection to the internet.
 
-### Cellular settings
-
-TBD
-
 ### Wi-Fi settings
 
-The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need to:
+The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need:
 
-1. Have [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
-1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
+1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module
+1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update)
+1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
 1. Attach the shield on the K64F board.
 1. In the `mbed_app.json` file, change
-   ```
- "network-interface":{
-            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-            "value": "WIFI"
-        },
+```json
+    "network-interface": {
+        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI"
+    }
 ```
 
 1. Provide your WiFi SSID and password here, remember to leave `\"` in the beginning and end of your SSID and password(as shown in the example below), else example will not be able to pick up the SSID and password in correct format.
-   ```
-   "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        }
-   ```
+```json
+    "wifi-ssid": {
+        "help": "WiFi SSID",
+        "value": "\"SSID\""
+    },
+    "wifi-password": {
+        "help": "WiFi Password",
+        "value": "\"Password\""
+    }
+```
 
 ### IP address setup
 
