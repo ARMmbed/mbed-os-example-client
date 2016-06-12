@@ -122,30 +122,32 @@ TBD
 
 ### Wi-Fi settings
 
-The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need to:
+The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need:
 
-1. Have [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
-1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
+1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module
+1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update)
+1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
 1. Attach the shield on the K64F board.
 1. In the `mbed_app.json` file, change
-   ```
- "network-interface":{
-            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-            "value": "WIFI"
-        },
+```
+    "network-interface": {
+        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI"
+    },
 ```
 
 1. Provide your WiFi SSID and password here, remember to leave `\"` in the beginning and end of your SSID and password(as shown in the example below), else example will not be able to pick up the SSID and password in correct format.
-   ```
-   "wifi-ssid": {
-            "help": "WiFi SSID",
+```
+    "wifi-ssid": {
+        "help": "WiFi SSID",
             "value": "\"SSID\""
         },
         "wifi-password": {
             "help": "WiFi Password",
             "value": "\"Password\""
         }
-   ```
+    }
+```
 
 ### IP address setup
 
