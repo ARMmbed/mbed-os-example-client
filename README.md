@@ -116,10 +116,6 @@ For running the example application using Ethernet, you need:
 - An Ethernet cable.
 - An Ethernet connection to the internet.
 
-### Cellular settings
-
-TBD
-
 ### Wi-Fi settings
 
 The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need:
