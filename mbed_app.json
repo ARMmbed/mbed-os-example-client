@@ -1,7 +1,22 @@
 {
     "config": {
-        "mbed-client-user-config-file": {
-            "value": "\"mbed_client_config.h\""
+        "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "value": "ETHERNET"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"SSID\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Password\""
+        }
+    },
+    "target_overrides": {
+        "*": {
+            "mbed-client.reconnection-count": 3,
+            "mbed-client.reconnection-interval": 5
         }
     }
 } 

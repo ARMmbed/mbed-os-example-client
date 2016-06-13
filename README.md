@@ -39,14 +39,13 @@ To configure the example application, please:
 
 ### Connection type
 
-The application uses Ethernet as the default connection type. To change the connection type, set one of them as defined and all the rest as undefined in the beginning of the `main.cpp` file. For example, to enable 6LoWPAN ND mode:
+The application uses Ethernet as the default connection type. To change the connection type, set one of them in `mbed_app.json`. For example, to enable 6LoWPAN ND mode:
 
-```
-#undef ETHERNET
-#undef WIFI
-#undef CELLULAR
-#define MESH_LOWPAN_ND
-#undef MESH_THREAD
+```json
+    "network-interface": {
+        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "MESH_LOWPAN_ND"
+    }
 ```
 
 ### Client credentials
@@ -80,29 +79,35 @@ You can view debug traces from the gateway with a serial port monitor. The gatew
 
 #### Channel settings
 
-In 6LoWPAN ND and Thread mode, you need to set the channel settings to match the mbed gateway settings. Channel settings can be found in the `MACROS.txt` file. For 2.4GHz shields (AT86RF233), use the following values:
+The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `mbed_app.json` file in the main project directory. For example:
 
-```
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=0
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=12
-YOTTA_CFG_MBED_MESH_API_THREAD_CONFIG_CHANNEL_PAGE=0
-YOTTA_CFG_MBED_MESH_API_THREAD_CONFIG_CHANNEL=12
-```
-
-Values for sub-GHz shields (AT86RF212B), **6LoWPAN ND only**:
-
-```
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL_PAGE=2
-YOTTA_CFG_MBED_MESH_API_6LOWPAN_ND_CHANNEL=1
+```json
+    "target_overrides": {
+        "*": {
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-mesh-api.thread-config-channel-page": 0,
+            "mbed-mesh-api.thread-config-channel": 12
+        }
+    }
 ```
 
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
+For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only**:
+
+```json
+"mbed-mesh-api.6lowpan-nd-channel-page": 2,
+"mbed-mesh-api.6lowpan-nd-channel": 1
+```
+
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-client-quickstart-morpheus/mbed-os/net/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
-With Thread, you can change the operating mode of the device between a router and a sleepy end device as follows:
+With Thread, you can change the operating mode of the client from the default router mode to a sleepy end device by adding the following override to the `mbed_app.json` file:
 
-In the `MACROS.txt` file, change the `YOTTA_CFG_MBED_MESH_API_THREAD_DEVICE_TYPE` to either `MESH_DEVICE_TYPE_THREAD_ROUTER` or `MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE`.
+```json
+    "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
+```
 
 ### Ethernet settings
 
@@ -111,22 +116,33 @@ For running the example application using Ethernet, you need:
 - An Ethernet cable.
 - An Ethernet connection to the internet.
 
-### Cellular settings
-
-TBD
-
 ### Wi-Fi settings
 
-The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need to:
+The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need:
 
-1. Have [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module running [Espressif Firmware](https://codeload.github.com/espressif/ESP8266_AT/zip/master)
-1. Mount WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
+1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module
+1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update)
+1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension)
 1. Attach the shield on the K64F board.
-1. In the `main.cpp` file:
-    - set WIFI as defined and other connection types as undefined. 
-    - remove  `#error "Remember to provide your WiFi credentials and provide in esp.connect("ssid","password");"`
-    - `esp.connect("ssid", "password");` , replace `ssid` and `password` with your WiFi SSID and WiFi password respectively.
+1. In the `mbed_app.json` file, change
+```json
+    "network-interface": {
+        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI"
+    }
+```
 
+Provide your WiFi SSID and password here and leave `\"` in the beginning and end of your SSID and password (as shown in the example below). Otherwise, the example cannot pick up the SSID and password in correct format.
+```json
+    "wifi-ssid": {
+        "help": "WiFi SSID",
+        "value": "\"SSID\""
+    },
+    "wifi-password": {
+        "help": "WiFi Password",
+        "value": "\"Password\""
+    }
+```
 
 ### IP address setup
 
