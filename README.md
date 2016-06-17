@@ -4,7 +4,7 @@ This is the mbed Client example for mbed OS (we also have one for [Linux](https:
 
 The application:
 
-* Connects to network with WiFi, Ethernet, Cellular, 6LoWPAN ND or Thread connection.
+* Connects to network with WiFi, Ethernet, 6LoWPAN ND or Thread connection.
 * Registers with mbed Device Connector.
 * Gives mbed Device Connector access to its resources (read and write).
 * Records the number of clicks on the device’s button and sends the number to mbed Device Connector.
