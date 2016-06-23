@@ -35,8 +35,8 @@
 #include "ESP8266Interface.h"
 ESP8266Interface esp(D1, D0);
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-#include "LWIPInterface.h"
-LWIPInterface lwip;
+#include "EthernetInterface.h"
+EthernetInterface eth;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
 #define MESH
 #include "NanostackInterface.h"
@@ -252,23 +252,23 @@ int main() {
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
 
-    NetworkStack *network_stack = 0;
+    NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     output.printf("\n\rUsing WiFi \r\n");
     output.printf("\n\rConnecting to WiFi..\r\n");
     connect_success = esp.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
-    network_stack = &esp;
+    network_interface = &esp;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("Using Ethernet LWIP\r\n");
-    connect_success = lwip.connect();
-    network_stack = &lwip;
+    output.printf("Using Ethernet\r\n");
+    connect_success = eth.connect();
+    network_interface = &eth;
 #endif
 #ifdef MESH
     output.printf("Using Mesh\r\n");
     output.printf("\n\rConnecting to Mesh..\r\n");
     connect_success = mesh.connect();
-    network_stack = &mesh;
+    network_interface = &mesh;
 #endif
     if(connect_success == 0) {
     output.printf("\n\rConnected to Network successfully\r\n");
@@ -276,7 +276,7 @@ int main() {
         output.printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", connect_success);
         return 0;
     }
-    const char *ip_addr = network_stack->get_ip_address();
+    const char *ip_addr = network_interface->get_ip_address();
     if (ip_addr) {
         output.printf("IP address %s\r\n", ip_addr);
     } else {
@@ -296,7 +296,7 @@ int main() {
     obs_button.fall(&button_clicked);
 
     // Create endpoint interface to manage register and unregister
-    mbed_client.create_interface(MBED_SERVER_ADDRESS, network_stack);
+    mbed_client.create_interface(MBED_SERVER_ADDRESS, network_interface);
 
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
