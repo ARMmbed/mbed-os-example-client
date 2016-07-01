@@ -99,7 +99,7 @@ For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only*
 "mbed-mesh-api.6lowpan-nd-channel": 1
 ```
 
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-os-example-client/mbed-os/net/mbed-mesh-api/mbed_lib.json` file.
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-os-example-client/mbed-os/features/FEATURE_IPV6/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
@@ -209,7 +209,7 @@ handle_button_click, new value of counter is 1
 1. On mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
 1. Press the `SW2` button on the device a number of times (make a note of how many times you did that).
 1. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
-1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `source/security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-os-example-client#monitoring-the-application).
+1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-os-example-client#monitoring-the-application).
 1. The number of times you pressed `SW2` is shown.
 1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the `RESET` button to run the program again.
 
