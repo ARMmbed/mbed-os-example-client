@@ -32,7 +32,6 @@ To configure the example application, please:
 1. [Set the client credentials](#client-credentials).
 1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change Ethernet settings](#ethernet-settings).
-1. [Change cellular settings](#cellular-settings).
 1. [Change Wi-Fi settings](#wi-fi-settings).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-socket-type). This step is optional.
