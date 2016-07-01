@@ -32,7 +32,6 @@ To configure the example application, please:
 1. [Set the client credentials](#client-credentials).
 1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change Ethernet settings](#ethernet-settings).
-1. [Change cellular settings](#cellular-settings).
 1. [Change Wi-Fi settings](#wi-fi-settings).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-socket-type). This step is optional.
@@ -99,7 +98,7 @@ For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only*
 "mbed-mesh-api.6lowpan-nd-channel": 1
 ```
 
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-client-quickstart-morpheus/mbed-os/net/mbed-mesh-api/mbed_lib.json` file.
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All the configurable settings can be found in the `mbed-os-example-client/mbed-os/features/FEATURE_IPV6/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
@@ -166,7 +165,7 @@ To change the binding mode:
 
 To build the example application:
 
-1. Clone [this](https://github.com/ARMmbed/mbed-client-quickstart-morpheus) repository.
+1. Clone [this](https://github.com/ARMmbed/mbed-os-example-client) repository.
 1. Open a command line tool and navigate to the project’s directory.
 1. Update mbed-os sources using the `mbed update` command.
 1. [Configure](#application-setup) the client application.
@@ -174,7 +173,7 @@ To build the example application:
 1. Plug the Ethernet cable into the board if you are using Ethernet mode.
 1. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
 1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
-1. Drag the binary `.build/K64F/GCC_ARM/mbed-client-quickstart-morpheus.bin` to the board to flash the application.
+1. Drag the binary `.build/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
 1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
 1. Press the **RESET** button on the board to run the program.
 1. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
@@ -194,7 +193,7 @@ IP address 10.2.15.222
 Device name 6868df22-d353-4150-b90a-a878130859d9
 ```
 
-<span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#testing-the-application) chapter.</span>
+<span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-os-example-client#testing-the-application) chapter.</span>
 
 When you click the `SW2` button on your board you should see messages about the value changes:
 
@@ -209,7 +208,7 @@ handle_button_click, new value of counter is 1
 1. On mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
 1. Press the `SW2` button on the device a number of times (make a note of how many times you did that).
 1. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
-1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `source/security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-client-quickstart-morpheus#monitoring-the-application).
+1. Enter `https://api.connector.mbed.com/endpoints/DEVICE_NAME/3200/0/5501` in the URI field and click **TEST API**. Replace `DEVICE_NAME` with your actual endpoint name. The device name can be found in the `security.h` file, see variable `MBED_ENDPOINT_NAME` or it can be found from the traces [Monitoring the application](https://github.com/ARMmbed/mbed-os-example-client#monitoring-the-application).
 1. The number of times you pressed `SW2` is shown.
 1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the `RESET` button to run the program again.
 
