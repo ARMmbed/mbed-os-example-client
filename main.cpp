@@ -121,15 +121,21 @@ public:
         // turn the buffer into a string, and initialize a vector<int> on the heap
         std::string s((char*)buffIn, sizeIn);
         std::vector<uint32_t>* v = new std::vector<uint32_t>;
-        std::stringstream ss(s);
-        std::string item;
-        // our pattern is something like 500:200:500, so parse that
-        while (std::getline(ss, item, ':')) {
-            // then convert to integer, and push to the vector
-            v->push_back(atoi((const char*)item.c_str()));
-        }
 
         output.printf("led_execute_callback pattern=%s\r\n", s.c_str());
+
+        // our pattern is something like 500:200:500, so parse that
+        std::size_t found = s.find_first_of(":");
+        while (found!=std::string::npos) {
+
+            v->push_back(atoi((const char*)s.substr(0,found).c_str()));
+            s = s.substr(found+1);
+            found=s.find_first_of(":");
+            if(found == std::string::npos) {
+                v->push_back(atoi((const char*)s.c_str()));
+            }
+        }
+
 
         // do_blink is called with the vector, and starting at -1
         do_blink(v, 0);
@@ -199,10 +205,9 @@ public:
         printf("handle_button_click, new value of counter is %d\r\n", counter);
 
         // serialize the value of counter as a string, and tell connector
-        stringstream ss;
-        ss << counter;
-        std::string stringified = ss.str();
-        res->set_value((uint8_t*)stringified.c_str(), stringified.length());
+        char buffer[20];
+        int size = sprintf(buffer,"%d",counter);
+        res->set_value((uint8_t*)buffer, size);
     }
 
 private:
