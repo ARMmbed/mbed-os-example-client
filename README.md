@@ -57,6 +57,18 @@ To register the application to the Connector service, you need to create and set
 
 ### 6LoWPAN ND and Thread settings
 
+First you need to select the RF driver to be used by 6LoWPAN/Thread stack.
+
+For example Atmel AT86RF233/212B driver is located in https://github.com/ARMmbed/atmel-rf-driver
+
+To add that driver to you application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`
+
+Then you need to enable the IPV6 functionality as the 6LoWPAN and Thread are part of IPv6 stack. Edit the `mbed_app.json` file to add `IPV6` feature:
+
+```
+"target.features_add": ["CLIENT", "IPV6", "COMMON_PAL"],
+```
+
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
 #### mbed gateway

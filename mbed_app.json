@@ -15,9 +15,9 @@
     },
     "target_overrides": {
         "*": {
-            "target.features_add": ["IPV6", "CLIENT", "IPV4"],
+            "target.features_add": ["CLIENT", "COMMON_PAL"],
             "mbed-client.reconnection-count": 3,
             "mbed-client.reconnection-interval": 5
         }
     }
-} 
+}
