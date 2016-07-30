@@ -68,9 +68,16 @@ struct MbedClientDevice device = {
 // Instantiate the class which implements LWM2M Client API (from simpleclient.h)
 MbedClient mbed_client(device);
 
-// Set up Hardware interrupt button.
-InterruptIn obs_button(SW2);
+// Set up Hardware interrupt button or timer
+#ifdef SW2
+InterruptIn update_resource(SW2);
+#else
+Ticker timer;
+#endif
+
+#ifdef SW3
 InterruptIn unreg_button(SW3);
+#endif
 
 // LED Output
 DigitalOut led1(LED1);
@@ -226,7 +233,7 @@ void unregister() {
     updates.release();
 }
 
-void button_clicked() {
+void update_resource() {
     clicked = true;
     updates.release();
 }
@@ -292,13 +299,19 @@ int main() {
     ButtonResource button_resource;
     LedResource led_resource;
 
-    // On press of SW3 button on K64F board, example application
+    // On press of SW3 button, example application
     // will call unregister API towards mbed Device Connector
     //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
+#ifdef SW3
     unreg_button.fall(&unregister);
+#endif
 
-    // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(&button_clicked);
+    // Send update of endpoint resource values to connector
+#ifdef SW2
+    obs_button.fall(&update_resource);        // when a button is pressed
+#else
+    timer.attach(&update_resource, 5.0);    // every 5 seconds
+#endif
 
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(MBED_SERVER_ADDRESS, network_interface);
@@ -333,7 +346,7 @@ int main() {
         }
         if(clicked) {
            clicked = false;
-            button_resource.handle_button_click();
+           button_resource.handle_button_click();
         }
     }
 
