@@ -71,6 +71,22 @@ Then you need to enable the IPV6 functionality as the 6LoWPAN and Thread are par
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
+**NOTE:** If you are using  [k64f-border-router](https://github.com/ARMmbed/k64f-border-router) (which can be used only as a 6LoWPAN BR and only with FRDM-K64F), you need to enable another security feature. By default, k64f-border-router uses `PSK` as security. You can either enable security here on your mbed-os-example-client application, e.g.,
+
+```json
+    "target_overrides": {
+        "*": {
+            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
+        }
+	}
+```
+or you can remove link layer security from k64f-border-router. For doing that, change the [mbed_app.json](https://github.com/ARMmbed/k64f-border-router/blob/master/mbed_app.json) fetched from k64f-border-router repository, e.g., 
+
+```json
+    "config": {
+            "security-mode": "NONE",
+        }
+```
 #### mbed gateway
 
 To connect the example application in 6LoWPAN ND or Thread mode to Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
