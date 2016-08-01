@@ -200,9 +200,15 @@ The application prints debug messages over the serial port, so you can monitor i
 After connecting, you should see messages about connecting to mbed Device Connector:
 
 ```
-In app_start()
-IP address 10.2.15.222
-Device name 6868df22-d353-4150-b90a-a878130859d9
+Starting mbed Client example...
+Using <Network Interface>
+
+Connected to Network successfully
+IP address xxx.xxx.xxx.xxx
+
+SOCKET_MODE : UDP
+Connecting to coap://api.connector.mbed.com:5684
+
 ```
 
 <span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-os-example-client#testing-the-application) chapter.</span>
@@ -224,6 +230,7 @@ handle_button_click, new value of counter is 1
 1. The number of times you pressed `SW2` is shown.
 1. Press the `SW3` button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the `RESET` button to run the program again.
 
+<span class="notes">**Note:** On non K64F boards, there is no unregistration functionality and button press is simulated through timer ticks incrementing every 15 seconds.</span>
 
 ![SW2 pressed five times, as shown by the API Console](clicks.png)
 
