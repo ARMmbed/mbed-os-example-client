@@ -18,6 +18,17 @@ The application:
 * mbed 6LoWPAN shield (AT86RF212B/[AT86RF233](https://firefly-iot.com/product/firefly-arduino-shield-2-4ghz/)) for 6LoWPAN ND and Thread.
 * Ethernet cable and connection to the internet.
 
+## Requirements for non K64F board
+This example application is primarily designed for FRDM-K64F board but you can also use other mbed OS supported boards to run this example application , with some minor modifications for setup.
+* To get the application registering successfully on non K64F boards , you need Edit the `mbed_app.json` file to add `NULL_ENTROPY`  feature for mbedTLS:
+
+```
+""macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
+            "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
+            "MBEDTLS_TEST_NULL_ENTROPY"],
+```
+* On non K64F boards, there is no unregistration functionality and button press is simulated through timer ticks incrementing every 15 seconds.
+
 ## Required software
 
 * [ARM mbed account](https://developer.mbed.org/account/login/?next=/).
