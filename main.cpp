@@ -255,6 +255,20 @@ void blinky() { status_led = !status_led; }
 
 // Entry point to the program
 int main() {
+
+#ifndef MBEDTLS_ENTROPY_HARDWARE_ALT
+
+#ifdef MBEDTLS_TEST_NULL_ENTROPY
+#warning "mbedTLS security feature is disabled. Connection will not be secure !! Implement proper hardware entropy for your selected hardware."
+
+#else
+
+#error "This hardware does not have entropy, endpoint will not register to Connector.\
+You need to enable NULL ENTROPY for your application, but if this configuration change is made then no security is offered by mbed TLS.\
+Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app.json macros to register your endpoint."
+#endif
+
+#endif
     status_ticker.attach_us(blinky, 250000);
 
     // Keep track of the main thread
