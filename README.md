@@ -275,3 +275,15 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 
 For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
+
+## Known Issues
+
+If you are using MESH_THREAD as the network interface, once your client device joins the Thread Border Router and you hard reset the client device using reset button, the client device will not be able to join the network again and you will see a warning:
+
+```
+[WARN][mleS]: dropping packet because mle frame counter is not higher
+```
+
+Border router will start dropping packets because of MLE frame counter mismatch.  For more information about MLE frame counter feature see the [MLE-05 RFC](https://tools.ietf.org/id/draft-kelsey-intarea-mesh-link-establishment-05.html#rfc.section.7.6). 
+After 240 seconds, the default link timeout triggers the Border router to unregister the lost end device and the BR drops all the counters for that particular device. 
+Now your should should be able to join the network again. 
