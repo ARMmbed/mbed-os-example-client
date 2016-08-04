@@ -182,6 +182,22 @@ Provide your WiFi SSID and password here and leave `\"` in the beginning and end
     }
 ```
 
+<span class="notes">**Note:** Some devices don't support the Grove Shield or use the primary UART for USB communication. On these devices, the `mbed_app.json` should be modified to use the serial pins connected to the ESP8266.</span>
+
+For example, the NUCLEO_F401RE requires a different serial connection:
+
+```json
+    "wifi-tx": {
+        "help": "TX pin for serial connection to external device",
+        "value": "PA_11"
+    },
+    "wifi-rx": {
+        "help": "RX pin for serial connection to external device",
+        "value": "PA_12"
+    }
+```
+
+
 ### IP address setup
 
 This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. The example program should automatically get an IPv4 address from the router when connected over Ethernet.
