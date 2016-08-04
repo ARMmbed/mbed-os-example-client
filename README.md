@@ -275,15 +275,24 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 
 For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
+## Important Note (Multi-platform support)
 
-## Known Issues
+mbed-OS provides the developer with total control of the device. However some defaults are always loaded if the user does not provide proper information regarding them. This becomes evident when a user switches among platforms. On some platforms a particular pin might be reserved for a particular functionality (depending upon the MCU) which thus cannot be used generally. A good example of such phenomenon is the use of atmel-rf-sheild with [Nucleo F401RE platform](https://developer.mbed.org/platforms/ST-Nucleo-F401RE/). 
+If user do not provide particular pin configuration for the atmel-rf-driver (sometimes a desired behaviour) the driver falls back to a default Arduino form factor, see [atmel-rf-driver pin assignment](https://github.com/ARMmbed/atmel-rf-driver/blob/master/source/driverAtmelRFInterface.h). This fallback mechanism works on most of the platforms, however in the above mentioned case, there is a catch. Fall back mechanism sets the GPIO pin D5 as a designated Reset pin for SPI (SPI_RST) in the radio driver. Whereas this particular pin is assigned by the MCU to debugging in Nucleo F401RE. This will result in hard fault ofcourse. The solution is to map the conflicting pins to a free GPIO pin. For example, the user can add *"atmel-rf.spi-rst": "D4"* to his/her mbed_app.json file. This will set the SPI_RST pin to D4 of the GPIO. 
 
-If you are using MESH_THREAD as the network interface, once your client device joins the Thread Border Router and you hard reset the client device using reset button, the client device will not be able to join the network again and you will see a warning:
-
+```json
+{
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["IPV6", "COMMON_PAL"],
+            "atmel-rf.spi-rst": "D4"
+        }
+    }
+}
 ```
-[WARN][mleS]: dropping packet because mle frame counter is not higher
-```
 
-Border router will start dropping packets because of MLE frame counter mismatch.  For more information about MLE frame counter feature see the [MLE-05 RFC](https://tools.ietf.org/id/draft-kelsey-intarea-mesh-link-establishment-05.html#rfc.section.7.6). 
-After 240 seconds, the default link timeout triggers the Border router to unregister the lost end device and the BR drops all the counters for that particular device. 
-Now your should should be able to join the network again. 
+Desired work flow in such situations (if it may arise) should be:
+
+1.  Checking the platform pinmap from [mbed Platforms](https://developer.mbed.org/platforms/).
+2. Making sure that the desired GPIO pin is free by looking at the data sheet of the particular MCU. Most of the data sheets are available on  [mbed Platforms](https://developer.mbed.org/platforms/). 
+3. If necessary, change the pin or pins by using the mbed-OS config mechanism. You can get more informations about the configuration system in the [documentation](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md)
