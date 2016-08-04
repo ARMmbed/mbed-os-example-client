@@ -11,6 +11,14 @@
         "wifi-password": {
             "help": "WiFi Password",
             "value": "\"Password\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
@@ -19,6 +27,14 @@
             "target.features_add": ["CLIENT", "COMMON_PAL"],
             "mbed-client.reconnection-count": 3,
             "mbed-client.reconnection-interval": 5
+        },
+        "NUCLEO_F401RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "NUCLEO_F411RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
         }
     }
 }

@@ -33,7 +33,7 @@
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #include "ESP8266Interface.h"
-ESP8266Interface esp(D1, D0);
+ESP8266Interface esp(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
 #include "EthernetInterface.h"
 EthernetInterface eth;
