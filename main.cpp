@@ -84,6 +84,8 @@ Ticker timer;
 // LED Output
 DigitalOut led1(LED1);
 
+bool doing_blink = 0;
+
 /*
  * The Led contains one property (pattern) and a function (blink).
  * When the function blink is executed, the pattern is read, and the LED
@@ -155,12 +157,14 @@ private:
 
     void do_blink(std::vector<uint32_t>* pattern, uint16_t position) {
         // blink the LED
+        doing_blink = 1;
         led1 = !led1;
 
         // up the position, if we reached the end of the vector
         if (position >= pattern->size()) {
             // free memory, and exit this function
             delete pattern;
+            doing_blink = 0;
             return;
         }
 
@@ -250,7 +254,7 @@ void trace_printer(const char* str) {
 // Status indication
 Ticker status_ticker;
 DigitalOut status_led(LED1);
-void blinky() { status_led = !status_led; }
+void blinky() { status_led = doing_blink ? status_led : !status_led; }
 
 
 // Entry point to the program
