@@ -26,7 +26,8 @@
         "*": {
             "target.features_add": ["CLIENT", "COMMON_PAL"],
             "mbed-client.reconnection-count": 3,
-            "mbed-client.reconnection-interval": 5
+            "mbed-client.reconnection-interval": 5,
+            "mbed-client.sn-coap-max-blockwise-payload-size": 1024
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",
