@@ -58,9 +58,14 @@ ThreadInterface mesh;
 Serial output(USBTX, USBRX);
 
 // Status indication
-DigitalOut status_led(LED1);
+DigitalOut red_led(LED1);
+DigitalOut green_led(LED2);
+DigitalOut blue_led(LED3);
 Ticker status_ticker;
-void blinky() { status_led = !status_led; }
+void blinky() {
+    green_led = !green_led;
+
+}
 
 // These are example resource values for the Device Object
 struct MbedClientDevice device = {
@@ -85,9 +90,6 @@ InterruptIn unreg_button(SW3);
 // there is no functionality to unregister.
 Ticker timer;
 #endif
-
-// LED Output
-DigitalOut led1(LED1);
 
 /*
  * Arguments for running "blink" in it's own thread.
@@ -148,6 +150,8 @@ public:
     void blink(void *argument) {
         // read the value of 'Pattern'
         status_ticker.detach();
+        green_led = 1;
+
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource("5853");
         // Clear previous blink data
@@ -193,13 +197,14 @@ private:
     BlinkArgs *blink_args;
     void do_blink() {
         // blink the LED
-        led1 = !led1;
+        red_led = !red_led;
         // up the position, if we reached the end of the vector
         if (blink_args->position >= blink_args->blink_pattern.size()) {
             // send delayed response after blink is done
             M2MObjectInstance* inst = led_object->object_instance();
             M2MResource* led_res = inst->resource("5850");
             led_res->send_delayed_post_response();
+            red_led = 1;
             status_ticker.attach_us(blinky, 250000);
             return;
         }
@@ -350,6 +355,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
 #endif
+    red_led = 1;
+    blue_led = 1;
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
     mainThread = osThreadGetId();
@@ -378,6 +385,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     output.printf("\n\rConnecting to Mesh..\r\n");
     connect_success = mesh.connect();
     network_interface = &mesh;
+
 #endif
     if(connect_success == 0) {
     output.printf("\n\rConnected to Network successfully\r\n");
