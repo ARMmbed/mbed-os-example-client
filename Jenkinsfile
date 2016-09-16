@@ -9,7 +9,7 @@ def toolchains = [
   GCC_ARM: "arm-none-eabi-gcc"
   ]
 
-def confgurations = [
+def configurations = [
   "default",
   "thread"
   ]
