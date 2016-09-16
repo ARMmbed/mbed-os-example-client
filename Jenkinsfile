@@ -47,7 +47,7 @@ def buildStep(target, compilerLabel, toolchain, configName) {
             // Add IPV6 feature
             execute("sed -i 's/\"CLIENT\", \"COMMON_PAL\"/\"CLIENT\", \"IPV6\", \"COMMON_PAL\"/' mbed_app.json")
             // Change connection type to thread
-            execute ("sed -i 's/"value": "ETHERNET"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
+            execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
             // Add atmel-rf-driver
             execute ("mbed add https://github.com/ARMmbed/atmel-rf-driver")
           }
