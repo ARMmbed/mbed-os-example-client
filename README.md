@@ -1,4 +1,4 @@
-# Getting started with mbed Client on mbed OS
+﻿# Getting started with mbed Client on mbed OS
 
 This is the mbed Client example for mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
 
@@ -23,9 +23,10 @@ This example application is primarily designed for FRDM-K64F board but you can a
 * To get the application registering successfully on non K64F boards , you need Edit the `mbed_app.json` file to add `NULL_ENTROPY`  feature for mbedTLS:
 
 ```
-""macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
-            "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
-            "MBEDTLS_TEST_NULL_ENTROPY"],
+"target_overrides": {
+    "your-target-name": {
+        "target.macros_add": ["MBEDTLS_TEST_NULL_ENTROPY", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES"]
+    },
 ```
 * On non K64F boards, there is no unregistration functionality and button press is simulated through timer ticks incrementing every 15 seconds.
 
