@@ -57,6 +57,16 @@ ThreadInterface mesh;
 
 Serial output(USBTX, USBRX);
 
+// Status indication
+DigitalOut red_led(LED1);
+DigitalOut green_led(LED2);
+DigitalOut blue_led(LED3);
+Ticker status_ticker;
+void blinky() {
+    green_led = !green_led;
+
+}
+
 // These are example resource values for the Device Object
 struct MbedClientDevice device = {
     "Manufacturer_String",      // Manufacturer
@@ -81,8 +91,21 @@ InterruptIn unreg_button(SW3);
 Ticker timer;
 #endif
 
-// LED Output
-DigitalOut led1(LED1);
+/*
+ * Arguments for running "blink" in it's own thread.
+ */
+class BlinkArgs {
+public:
+    BlinkArgs() {
+        clear();
+    }
+    void clear() {
+        position = 0;
+        blink_pattern.clear();
+    }
+    uint16_t position;
+    std::vector<uint32_t> blink_pattern;
+};
 
 /*
  * The Led contains one property (pattern) and a function (blink).
@@ -111,65 +134,85 @@ public:
         led_res->set_operation(M2MBase::POST_ALLOWED);
         // when a POST comes in, we want to execute the led_execute_callback
         led_res->set_execute_function(execute_callback(this, &LedResource::blink));
+        // Completion of execute function can take a time, that's why delayed response is used
+        led_res->set_delayed_response(true);
+        blink_args = new BlinkArgs();
+    }
+
+    ~LedResource() {
+        delete blink_args;
     }
 
     M2MObject* get_object() {
         return led_object;
     }
 
-    void blink(void *) {
+    void blink(void *argument) {
         // read the value of 'Pattern'
+        status_ticker.detach();
+        green_led = 1;
+
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource("5853");
+        // Clear previous blink data
+        blink_args->clear();
 
         // values in mbed Client are all buffers, and we need a vector of int's
         uint8_t* buffIn = NULL;
         uint32_t sizeIn;
         res->get_value(buffIn, sizeIn);
-
         // turn the buffer into a string, and initialize a vector<int> on the heap
         std::string s((char*)buffIn, sizeIn);
-        std::vector<uint32_t>* v = new std::vector<uint32_t>;
-
+        free(buffIn);
         output.printf("led_execute_callback pattern=%s\r\n", s.c_str());
 
         // our pattern is something like 500:200:500, so parse that
         std::size_t found = s.find_first_of(":");
         while (found!=std::string::npos) {
-
-            v->push_back(atoi((const char*)s.substr(0,found).c_str()));
+            blink_args->blink_pattern.push_back(atoi((const char*)s.substr(0,found).c_str()));
             s = s.substr(found+1);
             found=s.find_first_of(":");
             if(found == std::string::npos) {
-                v->push_back(atoi((const char*)s.c_str()));
+                blink_args->blink_pattern.push_back(atoi((const char*)s.c_str()));
             }
         }
-
-
+        // check if POST contains payload
+        if (argument) {
+            M2MResource::M2MExecuteParameter* param = (M2MResource::M2MExecuteParameter*)argument;
+            String object_name = param->get_argument_object_name();
+            uint16_t object_instance_id = param->get_argument_object_instance_id();
+            String resource_name = param->get_argument_resource_name();
+            int payload_length = param->get_argument_value_length();
+            uint8_t* payload = param->get_argument_value();
+            output.printf("Resource: %s/%d/%s executed\r\n", object_name.c_str(), object_instance_id, resource_name.c_str());
+            output.printf("Payload: %.*s\r\n", payload_length, payload);
+        }
         // do_blink is called with the vector, and starting at -1
-        do_blink(v, 0);
+        blinky_thread.start(this, &LedResource::do_blink);
     }
 
 private:
     M2MObject* led_object;
-
-    void do_blink(std::vector<uint32_t>* pattern, uint16_t position) {
+    Thread blinky_thread;
+    BlinkArgs *blink_args;
+    void do_blink() {
         // blink the LED
-        led1 = !led1;
-
+        red_led = !red_led;
         // up the position, if we reached the end of the vector
-        if (position >= pattern->size()) {
-            // free memory, and exit this function
-            delete pattern;
+        if (blink_args->position >= blink_args->blink_pattern.size()) {
+            // send delayed response after blink is done
+            M2MObjectInstance* inst = led_object->object_instance();
+            M2MResource* led_res = inst->resource("5850");
+            led_res->send_delayed_post_response();
+            red_led = 1;
+            status_ticker.attach_us(blinky, 250000);
             return;
         }
 
-        // how long do we need to wait before the next blink?
-        uint32_t delay_ms = pattern->at(position);
-
         // Invoke same function after `delay_ms` (upping position)
-        Thread::wait(delay_ms);
-        do_blink(pattern, ++position);
+        Thread::wait(blink_args->blink_pattern.at(blink_args->position));
+        blink_args->position++;
+        do_blink();
     }
 };
 
@@ -190,7 +233,7 @@ public:
         btn_res->set_operation(M2MBase::GET_ALLOWED);
         // set initial value (all values in mbed Client are buffers)
         // to be able to read this data easily in the Connector console, we'll use a string
-        btn_res->set_value((uint8_t*)"0", 1);        
+        btn_res->set_value((uint8_t*)"0", 1);
     }
 
     ~ButtonResource() {
@@ -226,6 +269,56 @@ private:
     uint16_t counter;
 };
 
+class BigPayloadResource {
+public:
+    BigPayloadResource() {
+        big_payload = M2MInterfaceFactory::create_object("1000");
+        M2MObjectInstance* payload_inst = big_payload->create_object_instance();
+        M2MResource* payload_res = payload_inst->create_dynamic_resource("1", "BigData",
+            M2MResourceInstance::STRING, true /* observable */);
+        payload_res->set_operation(M2MBase::GET_PUT_ALLOWED);
+        payload_res->set_value((uint8_t*)"0", 1);
+        payload_res->set_incoming_block_message_callback(
+                    incoming_block_message_callback(this, &BigPayloadResource::block_message_received));
+        payload_res->set_outgoing_block_message_callback(
+                    outgoing_block_message_callback(this, &BigPayloadResource::block_message_requested));
+    }
+
+    M2MObject* get_object() {
+        return big_payload;
+    }
+
+    void block_message_received(M2MBlockMessage *argument) {
+        if (argument) {
+            if (M2MBlockMessage::ErrorNone == argument->error_code()) {
+                if (argument->is_last_block()) {
+                    output.printf("Last block received\r\n");
+                }
+                output.printf("Block number: %d\r\n", argument->block_number());
+                // First block received
+                if (argument->block_number() == 0) {
+                    // Store block
+                // More blocks coming
+                } else {
+                    // Store blocks
+                }
+            } else {
+                output.printf("Error when receiving block message!  - EntityTooLarge\r\n");
+            }
+            output.printf("Total message size: %d\r\n", argument->total_message_size());
+        }
+    }
+
+    void block_message_requested(const String& resource, uint8_t *&/*data*/, uint32_t &/*len*/) {
+        output.printf("GET request received for resource: %s\r\n", resource.c_str());
+        // Copy data and length to coap response
+        // NOTE! Due to a limitation in the mbed-client-c library, GET request can only contain data up to 65KB.
+    }
+
+private:
+    M2MObject*  big_payload;
+};
+
 // Network interaction must be performed outside of interrupt context
 Semaphore updates(0);
 volatile bool registered = false;
@@ -247,12 +340,6 @@ void trace_printer(const char* str) {
     printf("%s\r\n", str);
 }
 
-// Status indication
-Ticker status_ticker;
-DigitalOut status_led(LED1);
-void blinky() { status_led = !status_led; }
-
-
 // Entry point to the program
 int main() {
 
@@ -269,8 +356,9 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
 #endif
+    red_led = 1;
+    blue_led = 1;
     status_ticker.attach_us(blinky, 250000);
-
     // Keep track of the main thread
     mainThread = osThreadGetId();
 
@@ -281,7 +369,6 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
-
     NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
@@ -316,6 +403,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // we create our button and LED resources
     ButtonResource button_resource;
     LedResource led_resource;
+    BigPayloadResource big_payload_resource;
 
 #ifdef TARGET_K64F
     // On press of SW3 button on K64F board, example application
@@ -344,6 +432,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     object_list.push_back(device_object);
     object_list.push_back(button_resource.get_object());
     object_list.push_back(led_resource.get_object());
+    object_list.push_back(big_payload_resource.get_object());
 
     // Set endpoint registration object
     mbed_client.set_register_object(register_object);
