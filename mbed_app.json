@@ -2,7 +2,7 @@
     "config": {
         "network-interface":{
             "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
-            "value": "ETHERNET"
+            "value": "MESH_LOWPAN_ND"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
@@ -21,10 +21,13 @@
             "value": "D0"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
+    	       "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
+               "MBEDTLS_TEST_NULL_ENTROPY"],
     "target_overrides": {
         "*": {
-            "target.features_add": ["CLIENT", "COMMON_PAL"],
+            "target.features_add": ["CLIENT", "COMMON_PAL", "IPV6"],
+	    "target.macros_remove": ["MBEDTLS_ENTROPY_HARDWARE_ALT"],
             "mbed-client.reconnection-count": 3,
             "mbed-client.reconnection-interval": 5
         },
