@@ -32,3 +32,8 @@ yotta_targets/
 build/
 .yotta.json
 source/security.h
+
+# betzw
+mbed-os/*
+atmel-rf-driver/*
+esp8266-driver/*
