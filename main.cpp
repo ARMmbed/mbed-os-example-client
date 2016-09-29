@@ -18,6 +18,7 @@
 #include <sstream>
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
+#include "mbedtls/entropy_poll.h"
 
 #include "security.h"
 
@@ -256,19 +257,29 @@ void blinky() { status_led = !status_led; }
 // Entry point to the program
 int main() {
 
-#ifndef MBEDTLS_ENTROPY_HARDWARE_ALT
+    unsigned int seed;
+    size_t len;
 
-#ifdef MBEDTLS_TEST_NULL_ENTROPY
+#ifdef MBEDTLS_ENTROPY_HARDWARE_ALT
+    // Used to randomize source port
+    mbedtls_hardware_poll(NULL, (unsigned char *) &seed, sizeof seed, &len);
+
+#elif defined MBEDTLS_TEST_NULL_ENTROPY
+
 #warning "mbedTLS security feature is disabled. Connection will not be secure !! Implement proper hardware entropy for your selected hardware."
+    // Used to randomize source port
+    mbedtls_null_entropy_poll( NULL,(unsigned char *) &seed, sizeof seed, &len);
 
 #else
 
 #error "This hardware does not have entropy, endpoint will not register to Connector.\
 You need to enable NULL ENTROPY for your application, but if this configuration change is made then no security is offered by mbed TLS.\
 Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app.json macros to register your endpoint."
-#endif
 
 #endif
+
+    srand(seed);
+
     status_ticker.attach_us(blinky, 250000);
 
     // Keep track of the main thread
