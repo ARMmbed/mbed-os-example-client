@@ -91,7 +91,6 @@ public:
                           void *handler=NULL) {
 	// Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-	srand(time(NULL));
 	uint16_t port = rand() % 65535 + 12345;
 
     // create mDS interface object, this is the base object everything else attaches to
