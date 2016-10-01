@@ -25,13 +25,6 @@
 #include "mbed.h"
 #include "rtos.h"
 
-#define ETHERNET        1
-#define WIFI            2
-#define MESH_LOWPAN_ND  3
-#define MESH_THREAD     4
-
-#define STRINGIFY(s) #s
-
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #include "ESP8266Interface.h"
 ESP8266Interface esp(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
