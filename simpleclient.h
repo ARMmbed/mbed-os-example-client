@@ -32,6 +32,8 @@
 #define WIFI            2
 #define MESH_LOWPAN_ND  3
 #define MESH_THREAD     4
+#define ATMEL           5
+#define MCR20           6
 
 #define STRINGIFY(s) #s
 

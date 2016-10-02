@@ -68,16 +68,29 @@ To register the application to the Connector service, you need to create and set
 
 ### 6LoWPAN ND and Thread settings
 
-First you need to select the RF driver to be used by 6LoWPAN/Thread stack.
+First you need to select the RF driver to be used by 6LoWPAN/Thread stack. This example suppports AT86RF233/212B and NXP-MCR20a radio shields.
 
-For example Atmel AT86RF233/212B driver is located in https://github.com/ARMmbed/atmel-rf-driver
+Atmel AT86RF233/212B driver is located at https://github.com/ARMmbed/atmel-rf-driver. 
+Whereas NXP-MCR20a driver is located at https://github.com/ARMmbed/mcr20a-rf-driver
 
 To add that driver to you application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`
+Please make sure that the 'mbed_app.json' file is also beckoning to the correct radio driver type.
 
-Then you need to enable the IPV6 functionality as the 6LoWPAN and Thread are part of IPv6 stack. Edit the `mbed_app.json` file to add `IPV6` feature:
+```json
+    "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20",
+        	"value": "ATMEL"
+        },
+```
+
+Then you need to enable ARM IPv6/6LoWPAN stack. Edit the `mbed_app.json` file to add `NANOSTACK` feature alongwith the particular configuration of the stack:
 
 ```
-"target.features_add": ["CLIENT", "IPV6", "COMMON_PAL"],
+"target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+```
+If your connection type is 'MESH_THREAD' then you may want to take in use the THREAD_ROUTER configuration.
+```
+"target.features_add": ["NANOSTACK", "THREAD_ROUTER", "COMMON_PAL"],
 ```
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
