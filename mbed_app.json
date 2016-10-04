@@ -2,7 +2,7 @@
     "config": {
         "network-interface":{
             "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
-            "value": "MESH_LOWPAN_ND"
+            "value": "ETHERNET"
         },
         "mesh_radio_type": {
         	"help": "options are ATMEL, MCR20",
