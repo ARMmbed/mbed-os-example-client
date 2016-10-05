@@ -25,6 +25,7 @@
 #include "mbed-client/m2mobjectinstance.h"
 #include "mbed-client/m2mresource.h"
 #include "mbed-client/m2mconfig.h"
+#include "mbed-client/m2mblockmessage.h"
 #include "security.h"
 #include "mbed.h"
 
@@ -102,9 +103,9 @@ public:
     */
     void create_interface(const char *server_address,
                           void *handler=NULL) {
-	// Randomizing listening port for Certificate mode connectivity
+    // Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-	uint16_t port = rand() % 65535 + 12345;
+    uint16_t port = rand() % 65535 + 12345;
 
     // In case of Mesh or Thread use M2MInterface::Nanostack_IPv6
 #if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
@@ -233,7 +234,7 @@ public:
     void object_unregistered(M2MSecurity */*server_object*/){
         trace_printer("Unregistered Object Successfully");
         _unregistered = true;
-        _registered = false;               
+        _registered = false;
     }
 
     /*
