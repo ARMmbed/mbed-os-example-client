@@ -231,21 +231,43 @@ To change the binding mode:
 
 ## Building the example
 
-To build the example application:
+To build the example using mbed CLI:
 
-1. Clone [this](https://github.com/ARMmbed/mbed-os-example-client) repository.
 1. Open a command line tool and navigate to the project’s directory.
-1. Update mbed-os sources using the `mbed update` command.
-1. [Configure](#application-setup) the client application.
-1. Build the application by selecting the hardware board and build the toolchain using the command `mbed compile -m K64F -t GCC_ARM -c -j0`. mbed-cli builds a binary file under the project’s `.build` directory.
-1. Plug the Ethernet cable into the board if you are using Ethernet mode.
-1. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
-1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
-1. Drag the binary `.build/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
-1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
-1. Press the **RESET** button on the board to run the program.
-1. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
 
+2. Import this example:
+
+```
+mbed import mbed-os-example-client
+```
+
+3. [Configure](#application-setup) the client application.
+
+4. Build the application by selecting the hardware board and build the toolchain using the command:
+
+```
+mbed compile -m K64F -t GCC_ARM -c
+```
+
+mbed CLI builds a binary file under the project’s `.build` directory.
+
+5. Plug the Ethernet cable into the board if you are using Ethernet mode.
+
+6. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
+
+7. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
+
+8. Drag the binary `.build/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
+
+9. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
+
+10. Press the **RESET** button on the board to run the program.
+
+11. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
+
+To build the example using the Online IDE:
+
+Import this repository in the Online IDE and continue from steps 3 onwards.
 
 ## Monitoring the application
 
