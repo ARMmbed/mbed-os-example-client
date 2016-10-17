@@ -231,21 +231,43 @@ To change the binding mode:
 
 ## Building the example
 
-To build the example application:
+To build the example using mbed CLI:
 
-1. Clone [this](https://github.com/ARMmbed/mbed-os-example-client) repository.
 1. Open a command line tool and navigate to the project’s directory.
-1. Update mbed-os sources using the `mbed update` command.
-1. [Configure](#application-setup) the client application.
-1. Build the application by selecting the hardware board and build the toolchain using the command `mbed compile -m K64F -t GCC_ARM -c -j0`. mbed-cli builds a binary file under the project’s `.build` directory.
-1. Plug the Ethernet cable into the board if you are using Ethernet mode.
-1. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
-1. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
-1. Drag the binary `.build/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
-1. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
-1. Press the **RESET** button on the board to run the program.
-1. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
 
+2. Import this example:
+
+    ```
+    mbed import mbed-os-example-client
+    ```
+
+3. [Configure](#application-setup) the client application.
+
+4. To build the application, select the hardware board and build the toolchain using the command:
+
+    ```
+    mbed compile -m K64F -t GCC_ARM -c
+    ```
+
+    mbed CLI builds a binary file under the project’s `.build` directory.
+
+5. Plug the Ethernet cable into the board if you are using Ethernet mode.
+
+6. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
+
+7. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
+
+8. Drag the binary `.build/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
+
+9. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
+
+10. Press the **RESET** button on the board to run the program.
+
+11. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
+
+**To build the example using the Online IDE:**
+
+Import this repository in the Online IDE and continue from step 3 onwards.
 
 ## Monitoring the application
 
@@ -304,10 +326,10 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 
 For information on how to get notifications when resource 1 changes, or how to use resources 2 and 3, take a look at the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
-## Important Note (Multi-platform support)
+## Important note (Multi-platform support)
 
-mbed-OS provides the developer with total control of the device. However some defaults are always loaded if the user does not provide proper information regarding them. This becomes evident when a user switches among platforms. On some platforms a particular pin might be reserved for a particular functionality (depending upon the MCU) which thus cannot be used generally. A good example of such phenomenon is the use of atmel-rf-sheild with [Nucleo F401RE platform](https://developer.mbed.org/platforms/ST-Nucleo-F401RE/). 
-If user do not provide particular pin configuration for the atmel-rf-driver (sometimes a desired behaviour) the driver falls back to a default Arduino form factor, see [atmel-rf-driver pin assignment](https://github.com/ARMmbed/atmel-rf-driver/blob/master/source/driverAtmelRFInterface.h). This fallback mechanism works on most of the platforms, however in the above mentioned case, there is a catch. Fall back mechanism sets the GPIO pin D5 as a designated Reset pin for SPI (SPI_RST) in the radio driver. Whereas this particular pin is assigned by the MCU to debugging in Nucleo F401RE. This will result in hard fault ofcourse. The solution is to map the conflicting pins to a free GPIO pin. For example, the user can add *"atmel-rf.spi-rst": "D4"* to his/her mbed_app.json file. This will set the SPI_RST pin to D4 of the GPIO. 
+mbed-OS provides the developer with total control of the device. However, some defaults are always loaded if the user does not provide proper information regarding them. This becomes evident when a user switches among platforms. On some platforms, a particular pin might be reserved for a particular functionality (depending upon the MCU) which thus cannot be used generally. A good example of such phenomenon is the use of Atmel RF shield with [Nucleo F401RE platform](https://developer.mbed.org/platforms/ST-Nucleo-F401RE/). 
+If the user does not provide a particular pin configuration for the Atmel RF driver (sometimes a desired behaviour) the driver falls back to a default Arduino form factor, see [atmel-rf-driver pin assignment](https://github.com/ARMmbed/atmel-rf-driver/blob/master/source/driverAtmelRFInterface.h). This fallback mechanism works on most of the platforms, however in the above mentioned case, there is a catch. The fallback mechanism sets the GPIO pin D5 as a designated Reset pin for SPI (SPI_RST) in the radio driver. Whereas this particular pin is assigned by the MCU to debugging in Nucleo F401RE. This will result in a hard fault. The solution is to map the conflicting pins to a free GPIO pin. For example, the user can add *"atmel-rf.spi-rst": "D4"* to his/her `mbed_app.json` file. This will set the SPI_RST pin to D4 of the GPIO. 
 
 ```json
 {
@@ -320,8 +342,8 @@ If user do not provide particular pin configuration for the atmel-rf-driver (som
 }
 ```
 
-Desired work flow in such situations (if it may arise) should be:
+Desired work flow in such situations:
 
-1.  Checking the platform pinmap from [mbed Platforms](https://developer.mbed.org/platforms/).
-2. Making sure that the desired GPIO pin is free by looking at the data sheet of the particular MCU. Most of the data sheets are available on  [mbed Platforms](https://developer.mbed.org/platforms/). 
-3. If necessary, change the pin or pins by using the mbed-OS config mechanism. You can get more informations about the configuration system in the [documentation](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md)
+1. Check the platform pinmap from [mbed Platforms](https://developer.mbed.org/platforms/).
+2. Make sure that the desired GPIO pin is free by looking at the data sheet of the particular MCU. Most of the data sheets are available on [mbed Platforms](https://developer.mbed.org/platforms/). 
+3. If necessary, change the pin or pins by using the mbed-OS config mechanism. Read more about the configuration system in the [documentation](https://github.com/ARMmbed/mbed-os/blob/master/docs/config_system.md).
