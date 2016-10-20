@@ -35,5 +35,7 @@ source/security.h
 
 # betzw
 mbed-os/*
+sal-stack-nanostack-private/*
 atmel-rf-driver/*
 esp8266-driver/*
+BUILD/*
