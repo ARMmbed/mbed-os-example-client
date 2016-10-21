@@ -20,16 +20,15 @@ The application:
 
 ## Requirements for non-K64F boards
 
-This example application is primarily designed for an FRDM-K64F board but you can also use other mbed OS supported boards to run this example application, with some minor modifications for setup.
+*   This example requires TLS functionality to be enabled on mbed TLS.
+    On devices where hardware entropy is not present, TLS is disabled by default.
+    This would result in compile time failures or linking failures.
 
-* To register your application successfully with non-K64F boards, you need to edit the `mbed_app.json` file to add the `NULL_ENTROPY`  feature for mbedTLS:
+    To learn why entropy is required, read the
+    [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
 
-```
-""macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
-            "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
-            "MBEDTLS_TEST_NULL_ENTROPY"],
-```
-* On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.
+*   On non-K64F boards, there is no unregistration functionality and
+    button presses are simulated through timer ticks incrementing every 15 seconds.
 
 ## Required software
 
