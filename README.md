@@ -18,6 +18,19 @@ The application:
 * mbed 6LoWPAN shield (AT86RF212B/[AT86RF233](https://firefly-iot.com/product/firefly-arduino-shield-2-4ghz/)) for 6LoWPAN ND and Thread.
 * Ethernet cable and connection to the internet.
 
+## Supported Target hardware configurations
+
+ This example has been tested in following configuration
+ * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
+ * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
+ * K64F (Ethernet)
+ * NUCLEO_F429ZI (Ethernet)
+ * UBLOX_EVK_ODIN_W2 (Ethernet)
+ * K64F + GROVE SEEED shield (Wifi)
+ * NUCLEO_F429ZI + GROVE SEEED shield (Wifi)
+
+Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). 
+
 ## Requirements for non-K64F boards
 
 *   This example requires TLS functionality to be enabled on mbed TLS.
