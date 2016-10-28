@@ -50,7 +50,6 @@
 #define MBEDTLS_ASN1_PARSE_C
 #define MBEDTLS_ASN1_WRITE_C
 #define MBEDTLS_BIGNUM_C
-#define MBEDTLS_CCM_C
 #define MBEDTLS_CIPHER_C
 #define MBEDTLS_CTR_DRBG_C
 #define MBEDTLS_ECP_C
@@ -68,22 +67,12 @@
 // XXX mbedclient needs these: mbedtls_x509_crt_free, mbedtls_x509_crt_init, mbedtls_x509_crt_parse
 #define MBEDTLS_X509_USE_C
 #define MBEDTLS_X509_CRT_PARSE_C
-// a bit wrong way to get mbedtls_ssl_conf_psk:
-// XXX: this should be ifdef'd out from client too
-#define MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED
 
 // XXX: clean these up!!
-#define MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED
-#define MBEDTLS_KEY_EXCHANGE__SOME__ECDHE_ENABLED
-#define MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
 #define MBEDTLS_SHA512_C
 #define MBEDTLS_ECDH_C
 #define MBEDTLS_GCM_C
-#define MBEDTLS_CCM_C
 
-#define MBEDTLS_PKCS1_V15
-
-#define MBEDTLS_CIPHER_MODE_CBC
 #define MBEDTLS_ECDH_C
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_X509_CRT_PARSE_C
@@ -97,8 +86,6 @@
 
 // Remove selftesting and save 11KB of ROM
 #undef MBEDTLS_SELF_TEST
-
-#undef MBEDTLS_SSL_COOKIE_C
 
 // Reduces ROM size by 30 kB
 #undef MBEDTLS_ERROR_STRERROR_DUMMY
