@@ -1,5 +1,14 @@
-/*
+/**
  *  Minimal configuration for using mbedtls as part of mbed-client
+ *
+ *  NOTE! This is an optimized, minimal configuration for mbed Client.
+ *  We know it works with mbed Client but if you want to add more
+ *  services/communications to the application yourself - please ensure
+ *  you update this configuration accordingly. The default configuration
+ *  can be found from mbedTLS Github:
+ *
+ *  https://github.com/ARMmbed/mbedtls/blob/development/include/mbedtls/config.h
+ *
  *
  *  Copyright (C) 2006-2016, ARM Limited, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
@@ -88,7 +97,7 @@
 // dep of the previous
 #define MBEDTLS_BASE64_C
 
-// reduce IO buffer to save RAM, default is 16KB
+// Reduce IO buffer to save RAM, default is 16KB
 #define MBEDTLS_SSL_MAX_CONTENT_LEN 2048
 
 // define to save 8KB RAM at the expense of ROM
