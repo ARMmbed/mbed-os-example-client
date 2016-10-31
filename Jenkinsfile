@@ -13,13 +13,13 @@ def toolchains = [
   ]
 
 def configurations = [
-  "default": ["ETHERNET"],
-  "thread": ["ATMEL", "MCR20"],
-  "6lowpan": ["ATMEL", "MCR20"]
+  "def": ["ETH"],
+  "thd": ["ATMEL", "MCR20"],
+  "6lp": ["ATMEL", "MCR20"]
   ]
 
 def connectiontypes = [
-  "ETHERNET",
+  "ETH",
   "ATMEL",
   "MCR20"
   ]
@@ -60,14 +60,14 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
         dir("mbed-os-example-client") {
           checkout scm
           
-          if ("${configName}" == "thread") {
+          if ("${configName}" == "thd") {
             // Change device type to Thread router
             execute("sed -i 's/\"NANOSTACK\", \"LOWPAN_ROUTER\", \"COMMON_PAL\"/\"NANOSTACK\", \"THREAD_ROUTER\", \"COMMON_PAL\"/' mbed_app.json")
             // Change connection type to thread
             execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
           }
 
-          if ("${configName}" == "6lowpan") {
+          if ("${configName}" == "6lp") {
             // Change connection type to 6LoWPAN
             execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_LOWPAN_ND\"/' mbed_app.json")
 
@@ -89,7 +89,7 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
             execute ("git fetch origin latest")
             execute ("git checkout FETCH_HEAD")
           }
-          execute ("mbed compile --build out/${target}_${compilerLabel}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c")
+          execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c")
         }
         archive '**/mbed-os-example-client.bin'
       }
