@@ -60,7 +60,7 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
 #endif
 
-Serial output(USBTX, USBRX);
+RawSerial output(USBTX, USBRX);
 
 // Status indication
 DigitalOut red_led(LED1);
