@@ -67,9 +67,9 @@ NanostackRfPhySpirit1 rf_phy(SPIRIT1_SPI_MOSI, SPIRIT1_SPI_MISO, SPIRIT1_SPI_SCL
 Serial output(USBTX, USBRX);
 
 // Status indication
-DigitalOut red_led(LED1);
-DigitalOut green_led(LED2);
-DigitalOut blue_led(LED3);
+DigitalOut red_led(LED3);
+DigitalOut green_led(LED1);
+DigitalOut blue_led(LED2);
 Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
@@ -159,7 +159,7 @@ public:
     void blink(void *argument) {
         // read the value of 'Pattern'
         status_ticker.detach();
-        green_led = 1;
+        green_led = 0;
 
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource("5853");
@@ -214,7 +214,7 @@ private:
             M2MObjectInstance* inst = led_object->object_instance();
             M2MResource* led_res = inst->resource("5850");
             led_res->send_delayed_post_response();
-            red_led = 1;
+            red_led = 0;
             status_ticker.attach_us(blinky, 250000);
             return;
         }
@@ -373,8 +373,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     srand(seed);
-    red_led = 1;
-    blue_led = 1;
+    red_led = 0;
+    blue_led = 0;
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
     mainThread = osThreadGetId();
