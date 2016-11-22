@@ -35,6 +35,7 @@
 #define MESH_THREAD     4
 #define ATMEL           5
 #define MCR20           6
+#define SPIRIT1         7
 
 #define STRINGIFY(s) #s
 

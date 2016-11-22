@@ -49,6 +49,10 @@ NanostackRfPhyAtmel rf_phy(ATMEL_SPI_MOSI, ATMEL_SPI_MISO, ATMEL_SPI_SCLK, ATMEL
 #elif MBED_CONF_APP_MESH_RADIO_TYPE == MCR20
 #include "NanostackRfPhyMcr20a.h"
 NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, MCR20A_SPI_CS, MCR20A_SPI_RST, MCR20A_SPI_IRQ);
+#elif MBED_CONF_APP_MESH_RADIO_TYPE == SPIRIT1
+#include "NanostackRfPhySpirit1.h"
+NanostackRfPhySpirit1 rf_phy(SPIRIT1_SPI_MOSI, SPIRIT1_SPI_MISO, SPIRIT1_SPI_SCLK,
+							 SPIRIT1_DEV_IRQ, SPIRIT1_DEV_CS, SPIRIT1_DEV_SDN, SPIRIT1_BRD_LED);
 #endif //MBED_CONF_APP_RADIO_TYPE
 #endif //MESH
 
@@ -343,12 +347,6 @@ void button_clicked() {
 void trace_printer(const char* str) {
     printf("%s\r\n", str);
 }
-
-// Status indication
-Ticker status_ticker;
-DigitalOut status_led(LED1);
-void blinky() { status_led = !status_led; }
-
 
 // Entry point to the program
 int main() {

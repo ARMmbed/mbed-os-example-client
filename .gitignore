@@ -39,3 +39,5 @@ sal-stack-nanostack-private/*
 atmel-rf-driver/*
 esp8266-driver/*
 BUILD/*
+stm-spirit1-rf-driver/*
+stm-spirit1-rf-driver

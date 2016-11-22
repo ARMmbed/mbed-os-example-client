@@ -5,8 +5,8 @@
             "value": "MESH_LOWPAN_ND"
         },
         "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20",
-        	"value": "ATMEL"
+        	"help": "options are ATMEL, MCR20, SPIRIT1",
+        	"value": "SPIRIT1"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
@@ -25,9 +25,7 @@
             "value": "D0"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
-    	       "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
-               "MBEDTLS_TEST_NULL_ENTROPY"],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
             "spirit1.mac-address-0": "0x0",
