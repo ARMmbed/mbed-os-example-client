@@ -4,6 +4,10 @@
             "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
             "value": "MESH_LOWPAN_ND"
         },
+        "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20",
+        	"value": "ATMEL"
+        },
         "wifi-ssid": {
             "help": "WiFi SSID",
             "value": "\"SSID\""
@@ -34,14 +38,10 @@
     	    "spirit1.mac-address-5": "0x5",
     	    "spirit1.mac-address-6": "0x6",
     	    "spirit1.mac-address-7": "0x7",
-            "mbed-mesh-api.6lowpan-nd-channel": 0,
+            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
             "mbed-mesh-api.6lowpan-nd-channel-page": 2,
-            "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<0)",
-	    "mbed-trace.enable": 1,
-            "target.features_add": ["CLIENT", "COMMON_PAL", "IPV6"],
-	    "target.macros_remove": ["MBEDTLS_ENTROPY_HARDWARE_ALT"],
-            "mbed-client.reconnection-count": 3,
-            "mbed-client.reconnection-interval": 5
+            "mbed-mesh-api.6lowpan-nd-channel": 0,
+            "mbed-trace.enable": 1
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",

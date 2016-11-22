@@ -25,11 +25,25 @@
 #include "mbed-client/m2mobjectinstance.h"
 #include "mbed-client/m2mresource.h"
 #include "mbed-client/m2mconfig.h"
+#include "mbed-client/m2mblockmessage.h"
 #include "security.h"
 #include "mbed.h"
 
+#define ETHERNET        1
+#define WIFI            2
+#define MESH_LOWPAN_ND  3
+#define MESH_THREAD     4
+#define ATMEL           5
+#define MCR20           6
+
+#define STRINGIFY(s) #s
+
+//Select network stack mode: IPv4 or IPv6
+M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv4;
+
 //Select binding mode: UDP or TCP
 M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+
 
 // MBED_DOMAIN and MBED_ENDPOINT_NAME come
 // from the security.h file copied from connector.mbed.com
@@ -89,9 +103,16 @@ public:
     */
     void create_interface(const char *server_address,
                           void *handler=NULL) {
-	// Randomizing listening port for Certificate mode connectivity
+    // Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-	uint16_t port = rand() % 65535 + 12345;
+    uint16_t port = rand() % 65535 + 12345;
+
+    // In case of Mesh or Thread use M2MInterface::Nanostack_IPv6
+#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
+    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
+    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
+#endif
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
@@ -101,7 +122,7 @@ public:
                                                       port,                     // listen port
                                                       MBED_DOMAIN,              // domain string
                                                       SOCKET_MODE,              // binding mode
-                                                      M2MInterface::LwIP_IPv4,  // network stack
+                                                      NETWORK_STACK,            // network stack
                                                       "");                      // context address string
     const char *binding_mode = (SOCKET_MODE == M2MInterface::UDP) ? "UDP" : "TCP";
     printf("\r\nSOCKET_MODE : %s\r\n", binding_mode);
@@ -213,7 +234,7 @@ public:
     void object_unregistered(M2MSecurity */*server_object*/){
         trace_printer("Unregistered Object Successfully");
         _unregistered = true;
-        _registered = false;               
+        _registered = false;
     }
 
     /*
