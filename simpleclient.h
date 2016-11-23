@@ -103,10 +103,16 @@ public:
     */
     void create_interface(const char *server_address,
                           void *handler=NULL) {
-    // Set port to zero, network stack randomizes it then.
+    // Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-    uint16_t port = 0;
+    uint16_t port = rand() % 65535 + 12345;
 
+    // In case of Mesh or Thread use M2MInterface::Nanostack_IPv6
+#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
+    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
+    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
+#endif
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
