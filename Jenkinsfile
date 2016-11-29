@@ -1,3 +1,16 @@
+properties ([[$class: 'ParametersDefinitionProperty', parameterDefinitions: [
+  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build']
+  ]]])
+
+try {
+  echo "Verifying build with mbed-os version ${mbed_os_revision}"
+  env.MBED_OS_REVISION = "${mbed_os_revision}"
+} catch (err) {
+  def mbed_os_revision = "latest"
+  echo "Verifying build with mbed-os version ${mbed_os_revision}"
+  env.MBED_OS_REVISION = "${mbed_os_revision}"
+}
+
 // List of targets to compile
 def targets = [
   "K64F",
@@ -82,16 +95,16 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
 
           // Copy security.h to build
           mbed.getSecurityFile()
-  
-          execute ("mbed deploy --protocol ssh")
 
+          // Set mbed-os to revision received as parameter
+          execute ("mbed deploy --protocol ssh")
           dir("mbed-os") {
-            execute ("git fetch origin latest")
-            execute ("git checkout FETCH_HEAD")
+            execute ("git checkout ${env.MBED_OS_REVISION}")
           }
           execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c")
         }
         archive '**/mbed-os-example-client.bin'
+        step([$class: 'WsCleanup'])
       }
     }
   }
