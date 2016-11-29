@@ -78,6 +78,10 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
             execute("sed -i 's/\"NANOSTACK\", \"LOWPAN_ROUTER\", \"COMMON_PAL\"/\"NANOSTACK\", \"THREAD_ROUTER\", \"COMMON_PAL\"/' mbed_app.json")
             // Change connection type to thread
             execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
+            // Reuse 6lowpan channel to Thread channel
+            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.thread-config-channel\": 18/' mbed_app.json")
+            // Reuse 6lowpan channel page to Thread PANID
+            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel-page\": 0/\"mbed-mesh-api.thread-config-panid\": \"0xBAAB\"/' mbed_app.json")
           }
 
           if ("${configName}" == "6lp") {
