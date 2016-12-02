@@ -42,7 +42,7 @@
 M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv4;
 
 //Select binding mode: UDP or TCP
-M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
 
 
 // MBED_DOMAIN and MBED_ENDPOINT_NAME come
