@@ -238,12 +238,12 @@ If your network does not have DHCP enabled, you have to manually assign a static
 
 ### Changing socket type
 
-Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default is UDP. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default is TCP. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP`.
-1. To switch to TCP, change it to `M2MInterface::TCP`.
+1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::TCP`.
+1. To switch to UDP, change it to `M2MInterface::UDP`.
 1. Rebuild and flash the application.
 
 <span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
