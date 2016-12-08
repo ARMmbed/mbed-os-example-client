@@ -57,13 +57,21 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #endif //MBED_CONF_APP_RADIO_TYPE
 #endif //MESH
 
-#if not defined (MESH) || (MBED_CONF_LWIP_IPV4_ENABLED) || (MBED_CONF_LWIP_IP_VER_PREF == 4)
-// This is IPv4 address to mbed Device Connector
-#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
+#if defined MESH
+#define IPV6
+#elif MBED_CONF_LWIP_IPV6_ENABLED==true
+#define IPV6
 #else
-// This is IPv6 address to mbed Device Connector
-// mesh is always IPv6
-#define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
+#define IPV4
+#endif
+
+#ifdef IPV6
+    // This is IPv6 address to mbed Device Connector
+    // mesh is always IPv6
+    #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
+#else
+    // This is IPv4 address to mbed Device Connector
+    #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #endif
 
 RawSerial output(USBTX, USBRX);
@@ -391,7 +399,6 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rUsing WiFi \r\n");
     output.printf("\n\rConnecting to WiFi..\r\n");
     connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
     network_interface = &wifi;
@@ -419,7 +426,6 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     } else {
         output.printf("No IP address\r\n");
     }
-
     // we create our button and LED resources
     ButtonResource button_resource;
     LedResource led_resource;
