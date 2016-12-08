@@ -37,6 +37,7 @@ EthernetInterface eth;
 LoWPANNDInterface mesh;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
 #define MESH
+#define IPV6
 #include "NanostackInterface.h"
 ThreadInterface mesh;
 #endif
@@ -52,11 +53,12 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #endif //MBED_CONF_APP_RADIO_TYPE
 #endif //MESH
 
-#ifndef MESH
-// This is address to mbed Device Connector
+#if not defined (MESH) || (MBED_CONF_LWIP_IPV4_ENABLED) || (MBED_CONF_LWIP_IP_VER_PREF == 4)
+// This is IPv4 address to mbed Device Connector
 #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #else
-// This is address to mbed Device Connector
+// This is IPv6 address to mbed Device Connector
+// mesh is always IPv6
 #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
 #endif
 

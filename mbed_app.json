@@ -28,7 +28,8 @@
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "target.features_add": ["LWIP", "NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "lwip.ipv4-enabled":1, "lwip.ipv6-enabled":0,
             "mbed-mesh-api.6lowpan-nd-channel-page": 0,
             "mbed-mesh-api.6lowpan-nd-channel": 12,
             "mbed-trace.enable": 0
