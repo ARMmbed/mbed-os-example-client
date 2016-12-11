@@ -232,7 +232,19 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 ### IP address setup
 
-This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. The example program should automatically get an IPv4 address from the router when connected over Ethernet.
+This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6
+by changing the mbed_app.json you make:
+```    "target_overrides": {
+        "*": {
+            "target.features_add": ["LWIP", "NANOSTACK", "COMMON_PAL"],
+            "lwip.ipv4-enabled": false,
+            "lwip.ipv6-enabled": true,
+            "mbed-trace.enable": 0
+        }
+```
+by modifying the ipv4-enable or ipv6-enable to true/false. Only one should be true.
+
+The example program should automatically get an IP address from the router when connected over Ethernet or WiFi.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
@@ -260,7 +272,8 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. [Configure](#application-setup) the client application.
+3. Copy the relevant example configuration file from configs/xxx.json to mbed_app.json and
+   [Configure](#application-setup) the client application.
 
 4. To build the application, select the hardware board and build the toolchain using the command:
 
