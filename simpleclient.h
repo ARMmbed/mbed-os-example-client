@@ -38,6 +38,13 @@
 
 #define STRINGIFY(s) #s
 
+// Check if using mesh networking, define helper
+#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
+    #define MESH
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
+    #define MESH
+#endif
+
 #if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
     // Mesh is always IPV6 - also WiFi and ETH can be IPV6 if IPV6 is enabled
     M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv6;
