@@ -26,19 +26,24 @@
 #include "rtos.h"
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-#include "ESP8266Interface.h"
-ESP8266Interface esp(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+    #if TARGET_UBLOX_EVK_ODIN_W2
+        #include "OdinWiFiInterface.h"
+        OdinWiFiInterface wifi;
+	#else
+		#include "ESP8266Interface.h"
+		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+    #endif
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-#include "EthernetInterface.h"
-EthernetInterface eth;
+    #include "EthernetInterface.h"
+    EthernetInterface eth;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-#define MESH
-#include "NanostackInterface.h"
-LoWPANNDInterface mesh;
+    #define MESH
+    #include "NanostackInterface.h"
+    LoWPANNDInterface mesh;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-#define MESH
-#include "NanostackInterface.h"
-ThreadInterface mesh;
+    #define MESH
+    #include "NanostackInterface.h"
+    ThreadInterface mesh;
 #endif
 
 #if defined(MESH)
@@ -52,15 +57,16 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #endif //MBED_CONF_APP_RADIO_TYPE
 #endif //MESH
 
-#ifndef MESH
-// This is address to mbed Device Connector
-#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
+#ifdef MESH
+    // Mesh does not have DNS, so must use direct IPV6 address
+    #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
 #else
-// This is address to mbed Device Connector
-#define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
+    // This is address to mbed Device Connector, name based
+    // assume all other stacks support DNS properly
+    #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #endif
 
-Serial output(USBTX, USBRX);
+RawSerial output(USBTX, USBRX);
 
 // Status indication
 DigitalOut red_led(LED1);
@@ -387,8 +393,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     output.printf("\n\rUsing WiFi \r\n");
     output.printf("\n\rConnecting to WiFi..\r\n");
-    connect_success = esp.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
-    network_interface = &esp;
+    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
+    network_interface = &wifi;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
     output.printf("Using Ethernet\r\n");
     connect_success = eth.connect();
