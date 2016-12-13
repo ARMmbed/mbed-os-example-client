@@ -72,9 +72,6 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
         deleteDir()
         dir("mbed-os-example-client") {
           checkout scm
-          // Make us "backwards compatible" the easy way...
-          execute ("cp configs/example.json mbed_app.json")
-
           
           if ("${configName}" == "thd") {
             // Change device type to Thread router
