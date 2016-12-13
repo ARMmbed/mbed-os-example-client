@@ -1,0 +1,21 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "value": "MESH_THREAD"
+        },
+        "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20",
+        	"value": "ATMEL"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["NANOSTACK", "THREAD_ROUTER", "COMMON_PAL"],
+            "mbed-mesh-api.thread-config-channel": 18,
+            "mbed-mesh-api.thread-config-panid": "0xBAAB",
+            "mbed-trace.enable": 0
+        }
+    }
+}
