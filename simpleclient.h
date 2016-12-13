@@ -29,12 +29,14 @@
 #include "security.h"
 #include "mbed.h"
 
-#define ETHERNET        1
-#define WIFI            2
-#define MESH_LOWPAN_ND  3
-#define MESH_THREAD     4
-#define ATMEL           5
-#define MCR20           6
+#define ETHERNET                1
+#define LWIP_ETHERNET           1
+#define WIFI                    2
+#define MESH_LOWPAN_ND          3
+#define MESH_THREAD             4
+#define ATMEL                   5
+#define MCR20                   6
+#define NANOSTACK_ETHERNET      7
 
 #define STRINGIFY(s) #s
 
@@ -45,7 +47,9 @@
     #define MESH
 #endif
 
-#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
+#if MBED_CONF_APP_NETWORK_INTERFACE == NANOSTACK_ETHERNET
+    M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::Nanostack_IPv6;
+#elif defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
     // Mesh is always IPV6 - also WiFi and ETH can be IPV6 if IPV6 is enabled
     M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv6;
 #else

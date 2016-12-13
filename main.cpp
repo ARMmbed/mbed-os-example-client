@@ -33,7 +33,7 @@
 		#include "ESP8266Interface.h"
 		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
     #endif
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
+#elif MBED_CONF_APP_NETWORK_INTERFACE == LWIP_ETHERNET
     #include "EthernetInterface.h"
     EthernetInterface eth;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
@@ -41,10 +41,14 @@
     #include "NanostackInterface.h"
     LoWPANNDInterface mesh;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    #define MESH
-    #include "NanostackInterface.h"
-    ThreadInterface mesh;
+#define MESH
+#include "NanostackInterface.h"
+ThreadInterface mesh;
+#elif MBED_CONF_APP_NETWORK_INTERFACE == NANOSTACK_ETHERNET
+#include "NanostackInterface.h"
+NanostackEthernetInterface eth;
 #endif
+
 
 #if defined(MESH)
 #if MBED_CONF_APP_MESH_RADIO_TYPE == ATMEL
@@ -395,7 +399,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     output.printf("\n\rConnecting to WiFi..\r\n");
     connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
     network_interface = &wifi;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
+#elif MBED_CONF_APP_NETWORK_INTERFACE == LWIP_ETHERNET || MBED_CONF_APP_NETWORK_INTERFACE == NANOSTACK_ETHERNET
     output.printf("Using Ethernet\r\n");
     connect_success = eth.connect();
     network_interface = &eth;
