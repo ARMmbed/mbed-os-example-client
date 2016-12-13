@@ -234,7 +234,8 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6
 by changing the mbed_app.json you make:
-```    "target_overrides": {
+```
+    "target_overrides": {
         "*": {
             "target.features_add": ["LWIP", "NANOSTACK", "COMMON_PAL"],
             "lwip.ipv4-enabled": false,
@@ -254,13 +255,14 @@ Your device can connect to mbed Device Connector via UDP or TCP binding mode. Th
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::TCP`.
+1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP` for mesh and `M2MInterface::TCP` for others.
 1. To switch to UDP, change it to `M2MInterface::UDP`.
 1. Rebuild and flash the application.
 
 <span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
 
 Possible socket types per connection:
+
 | Network  interface                    | UDP   | TCP | 
 | ------------------------------|:-----:|:-----:|
 | Ethernet (IPv4)               |   X   |   X   | 
