@@ -1,0 +1,16 @@
+{
+    "config": {
+       "network-interface":{
+            "help": "options are LWIP_ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD, NANOSTACK_ETHERNET",
+            "value": "LWIP_ETHERNET"
+        }        
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["NANOSTACK", "COMMON_PAL"],
+            "mbed-trace.enable": 1,
+            "nanostack.configuration": "ethernet_host"
+        }        
+    }
+}
