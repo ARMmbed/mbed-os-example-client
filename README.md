@@ -268,7 +268,7 @@ Possible socket types per connection:
 | Ethernet (IPv4)               |   X   |   X   | 
 | Ethernet (IPv6)               |   X   |       | 
 | Wifi (IPv4)                   |   X   |   X   |
-| Wifi (IPv6) - Not supported (?)  |       |       |
+| Wifi (IPv6) - Not supported   |       |       |
 | 6LoWPAN/Thread (IPv6)         |   X   |       |
 
 ## Building the example
