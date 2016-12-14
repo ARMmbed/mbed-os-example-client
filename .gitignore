@@ -41,3 +41,8 @@ esp8266-driver/*
 BUILD/*
 stm-spirit1-rf-driver/*
 stm-spirit1-rf-driver
+mbed-client/*
+mbed-os/*
+mbed-os
+mcr20a-rf-driver/*
+pal/*
