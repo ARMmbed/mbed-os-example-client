@@ -232,21 +232,44 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 ### IP address setup
 
-This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. The example program should automatically get an IPv4 address from the router when connected over Ethernet.
+This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6
+by changing the mbed_app.json you make:
+```
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["LWIP", "NANOSTACK", "COMMON_PAL"],
+            "lwip.ipv4-enabled": false,
+            "lwip.ipv6-enabled": true,
+            "mbed-trace.enable": 0
+        }
+```
+by modifying the ipv4-enable or ipv6-enable to true/false. Only one should be true.
+
+The example program should automatically get an IP address from the router when connected over Ethernet or WiFi.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
 ### Changing socket type
 
-Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default is UDP. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LowPan. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP`.
-1. To switch to TCP, change it to `M2MInterface::TCP`.
+1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP` for mesh and `M2MInterface::TCP` for others.
+1. To switch to UDP, change it to `M2MInterface::UDP`.
 1. Rebuild and flash the application.
 
 <span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
+
+Possible socket types per connection:
+
+| Network  interface                    | UDP   | TCP | 
+| ------------------------------|:-----:|:-----:|
+| Ethernet (IPv4)               |   X   |   X   | 
+| Ethernet (IPv6)               |   X   |       | 
+| Wifi (IPv4)                   |   X   |   X   |
+| Wifi (IPv6) - Not supported   |       |       |
+| 6LoWPAN/Thread (IPv6)         |   X   |       |
 
 ## Building the example
 
@@ -260,7 +283,8 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. [Configure](#application-setup) the client application.
+3. Copy the relevant example configuration file from configs/xxx.json to mbed_app.json and
+   [Configure](#application-setup) the client application.
 
 4. To build the application, select the hardware board and build the toolchain using the command:
 

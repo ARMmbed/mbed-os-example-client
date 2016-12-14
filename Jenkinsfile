@@ -1,3 +1,16 @@
+properties ([[$class: 'ParametersDefinitionProperty', parameterDefinitions: [
+  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build']
+  ]]])
+
+try {
+  echo "Verifying build with mbed-os version ${mbed_os_revision}"
+  env.MBED_OS_REVISION = "${mbed_os_revision}"
+} catch (err) {
+  def mbed_os_revision = "latest"
+  echo "Verifying build with mbed-os version ${mbed_os_revision}"
+  env.MBED_OS_REVISION = "${mbed_os_revision}"
+}
+
 // List of targets to compile
 def targets = [
   "K64F",
@@ -65,6 +78,10 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
             execute("sed -i 's/\"NANOSTACK\", \"LOWPAN_ROUTER\", \"COMMON_PAL\"/\"NANOSTACK\", \"THREAD_ROUTER\", \"COMMON_PAL\"/' mbed_app.json")
             // Change connection type to thread
             execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
+            // Reuse 6lowpan channel to Thread channel
+            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.thread-config-channel\": 18/' mbed_app.json")
+            // Reuse 6lowpan channel page to Thread PANID
+            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel-page\": 0/\"mbed-mesh-api.thread-config-panid\": \"0xBAAB\"/' mbed_app.json")
           }
 
           if ("${configName}" == "6lp") {
@@ -82,16 +99,16 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
 
           // Copy security.h to build
           mbed.getSecurityFile()
-  
-          execute ("mbed deploy --protocol ssh")
 
+          // Set mbed-os to revision received as parameter
+          execute ("mbed deploy --protocol ssh")
           dir("mbed-os") {
-            execute ("git fetch origin latest")
-            execute ("git checkout FETCH_HEAD")
+            execute ("git checkout ${env.MBED_OS_REVISION}")
           }
           execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c")
         }
         archive '**/mbed-os-example-client.bin'
+        step([$class: 'WsCleanup'])
       }
     }
   }

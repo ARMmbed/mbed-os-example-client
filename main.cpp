@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 ARM Limited. All rights reserved.
+ * Copyright (c) 2015, 2016 ARM Limited. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  * Licensed under the Apache License, Version 2.0 (the License); you may
  * not use this file except in compliance with the License.
@@ -26,8 +26,13 @@
 #include "rtos.h"
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
+    #if TARGET_UBLOX_EVK_ODIN_W2
+        #include "OdinWiFiInterface.h"
+        OdinWiFiInterface wifi;
+	#else
 #include "ESP8266Interface.h"
-ESP8266Interface esp(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+    #endif
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
 #include "EthernetInterface.h"
 EthernetInterface eth;
@@ -56,15 +61,16 @@ NanostackRfPhySpirit1 rf_phy(SPIRIT1_SPI_MOSI, SPIRIT1_SPI_MISO, SPIRIT1_SPI_SCL
 #endif //MBED_CONF_APP_RADIO_TYPE
 #endif //MESH
 
-#ifndef MESH
-// This is address to mbed Device Connector
-#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
+#ifdef MESH
+    // Mesh does not have DNS, so must use direct IPV6 address
+    #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
 #else
-// This is address to mbed Device Connector
-#define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
+    // This is address to mbed Device Connector, name based
+    // assume all other stacks support DNS properly
+    #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #endif
 
-Serial output(USBTX, USBRX);
+RawSerial output(USBTX, USBRX);
 
 // Status indication
 DigitalOut red_led(LED3);
@@ -242,7 +248,7 @@ public:
         btn_res->set_operation(M2MBase::GET_ALLOWED);
         // set initial value (all values in mbed Client are buffers)
         // to be able to read this data easily in the Connector console, we'll use a string
-        btn_res->set_value((uint8_t*)"0", 1);        
+        btn_res->set_value((uint8_t*)"0", 1);
     }
 
     ~ButtonResource() {
@@ -382,7 +388,12 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Sets the console baud-rate
     output.baud(115200);
 
-    output.printf("Starting mbed Client example...\r\n");
+    output.printf("\r\nStarting mbed Client example in ");
+#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
+    output.printf("IPv6 mode\r\n");
+#else
+    output.printf("IPv4 mode\r\n");
+#endif
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
@@ -391,18 +402,16 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rUsing WiFi \r\n");
-    output.printf("\n\rConnecting to WiFi..\r\n");
-    connect_success = esp.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
-    network_interface = &esp;
+    output.printf("\n\rConnecting to WiFi...\r\n");
+    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
+    network_interface = &wifi;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("Using Ethernet\r\n");
+    output.printf("\n\rConnecting to ethernet...\r\n");
     connect_success = eth.connect();
     network_interface = &eth;
 #endif
 #ifdef MESH
-    output.printf("Using Mesh\r\n");
-    output.printf("\n\rConnecting to Mesh..\r\n");
+    output.printf("\n\rConnecting to Mesh...\r\n");
     mesh.initialize(&rf_phy);
     connect_success = mesh.connect();
     network_interface = &mesh;
