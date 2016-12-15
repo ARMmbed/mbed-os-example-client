@@ -208,22 +208,23 @@ private:
     Thread blinky_thread;
     BlinkArgs *blink_args;
     void do_blink() {
-        // blink the LED
-        red_led = !red_led;
-        // up the position, if we reached the end of the vector
-        if (blink_args->position >= blink_args->blink_pattern.size()) {
-            // send delayed response after blink is done
-            M2MObjectInstance* inst = led_object->object_instance();
-            M2MResource* led_res = inst->resource("5850");
-            led_res->send_delayed_post_response();
-            red_led = 1;
-            status_ticker.attach_us(blinky, 250000);
-            return;
+        for(;;){
+            // blink the LED
+            red_led = !red_led;
+            // up the position, if we reached the end of the vector
+            if (blink_args->position >= blink_args->blink_pattern.size()) {
+                // send delayed response after blink is done
+                M2MObjectInstance* inst = led_object->object_instance();
+                M2MResource* led_res = inst->resource("5850");
+                led_res->send_delayed_post_response();
+                red_led = 1;
+                status_ticker.attach_us(blinky, 250000);
+                return;
+            }
+            // Wait requested time, then continue prosessing the blink pattern from next position.
+            Thread::wait(blink_args->blink_pattern.at(blink_args->position));
+            blink_args->position++;
         }
-        // Invoke same function after `delay_ms` (upping position)
-        Thread::wait(blink_args->blink_pattern.at(blink_args->position));
-        blink_args->position++;
-        do_blink();
     }
 };
 
