@@ -124,7 +124,7 @@ public:
                           void *handler=NULL) {
     // Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-    uint16_t port = rand() % 65535 + 12345;
+    uint16_t port = 0;  // network interface will randomize with port 0
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
