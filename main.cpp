@@ -13,58 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "simpleclient.h"
 #include <string>
 #include <sstream>
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
 
+#include "client_net.h"
 #include "security.h"
+#include "simpleclient.h"
 
 #include "mbed.h"
 #include "rtos.h"
-
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    #if TARGET_UBLOX_EVK_ODIN_W2
-        #include "OdinWiFiInterface.h"
-        OdinWiFiInterface wifi;
-	#else
-		#include "ESP8266Interface.h"
-		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
-    #endif
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    #include "EthernetInterface.h"
-    EthernetInterface eth;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-    #define MESH
-    #include "NanostackInterface.h"
-    LoWPANNDInterface mesh;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    #define MESH
-    #include "NanostackInterface.h"
-    ThreadInterface mesh;
-#endif
-
-#if defined(MESH)
-#if MBED_CONF_APP_MESH_RADIO_TYPE == ATMEL
-#include "NanostackRfPhyAtmel.h"
-NanostackRfPhyAtmel rf_phy(ATMEL_SPI_MOSI, ATMEL_SPI_MISO, ATMEL_SPI_SCLK, ATMEL_SPI_CS,
-                           ATMEL_SPI_RST, ATMEL_SPI_SLP, ATMEL_SPI_IRQ, ATMEL_I2C_SDA, ATMEL_I2C_SCL);
-#elif MBED_CONF_APP_MESH_RADIO_TYPE == MCR20
-#include "NanostackRfPhyMcr20a.h"
-NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, MCR20A_SPI_CS, MCR20A_SPI_RST, MCR20A_SPI_IRQ);
-#endif //MBED_CONF_APP_RADIO_TYPE
-#endif //MESH
-
-#ifdef MESH
-    // Mesh does not have DNS, so must use direct IPV6 address
-    #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
-#else
-    // This is address to mbed Device Connector, name based
-    // assume all other stacks support DNS properly
-    #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
-#endif
 
 RawSerial output(USBTX, USBRX);
 
@@ -385,44 +345,31 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Sets the console baud-rate
     output.baud(115200);
 
-    output.printf("\r\nStarting mbed Client example in ");
-#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
-    output.printf("IPv6 mode\r\n");
-#else
-    output.printf("IPv4 mode\r\n");
-#endif
+    mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
+
+    output.printf("\r\nStarting mbed Client example\r\n");
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
 
     NetworkInterface *network_interface = 0;
-    int connect_success = -1;
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rConnecting to WiFi...\r\n");
-    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
-    network_interface = &wifi;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("\n\rConnecting to ethernet...\r\n");
-    connect_success = eth.connect();
-    network_interface = &eth;
-#endif
-#ifdef MESH
-    output.printf("\n\rConnecting to Mesh...\r\n");
-    mesh.initialize(&rf_phy);
-    connect_success = mesh.connect();
-    network_interface = &mesh;
-#endif
+    int connect_success;
+
+    connect_success = client_net_init(&network_interface, &output);
     if(connect_success == 0) {
     output.printf("\n\rConnected to Network successfully\r\n");
     } else {
         output.printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", connect_success);
         return 0;
     }
+
     const char *ip_addr = network_interface->get_ip_address();
     if (ip_addr) {
         output.printf("IP address %s\r\n", ip_addr);
     } else {
         output.printf("No IP address\r\n");
+        return 0;
     }
 
     // we create our button and LED resources
