@@ -208,7 +208,7 @@ private:
     Thread blinky_thread;
     BlinkArgs *blink_args;
     void do_blink() {
-        for(;;){
+        for (;;) {
             // blink the LED
             red_led = !red_led;
             // up the position, if we reached the end of the vector
