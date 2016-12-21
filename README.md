@@ -10,7 +10,7 @@ The application:
 * Records the number of clicks on the device’s button and sends the number to mbed Device Connector.
 * Lets you control the blink pattern of the LED on the device (through mbed Device Connector).
 
-## Required hardware
+## Required hardwareasdsad
 
 * [FRDM-K64F](http://developer.mbed.org/platforms/frdm-k64f/) board.
 * 1-2 micro-USB cables.
