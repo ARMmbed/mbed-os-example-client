@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2016 ARM Limited. All rights reserved.
+ * Copyright (c) 2015 ARM Limited. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  * Licensed under the Apache License, Version 2.0 (the License); you may
  * not use this file except in compliance with the License.
@@ -385,29 +385,25 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Sets the console baud-rate
     output.baud(115200);
 
-    output.printf("\r\nStarting mbed Client example in ");
-#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
-    output.printf("IPv6 mode\r\n");
-#else
-    output.printf("IPv4 mode\r\n");
-#endif
+    output.printf("Starting mbed Client example...\r\n");
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
-
     NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rConnecting to WiFi...\r\n");
-    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
+    output.printf("\n\rUsing WiFi \r\n");
+    output.printf("\n\rConnecting to WiFi..\r\n");
+    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD);
     network_interface = &wifi;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("\n\rConnecting to ethernet...\r\n");
+    output.printf("Using Ethernet\r\n");
     connect_success = eth.connect();
     network_interface = &eth;
 #endif
 #ifdef MESH
-    output.printf("\n\rConnecting to Mesh...\r\n");
+    output.printf("Using Mesh\r\n");
+    output.printf("\n\rConnecting to Mesh..\r\n");
     mesh.initialize(&rf_phy);
     connect_success = mesh.connect();
     network_interface = &mesh;
