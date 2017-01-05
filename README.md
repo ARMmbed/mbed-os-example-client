@@ -400,7 +400,7 @@ compilation terminated.
 You are likely having LWIP stack in use with ethernet or WiFi and you have the mesh RF-stacks in the root of this example. You need to tell mbed to NOT compile those, please set up a .mbedignore -file to tell mbed not to compile those files.  Example file has been made available in the configs-folder.		
 		
 ```		
--cp configs/eth-wifi-mbedignore ./.mbedignore		
+cp configs/eth-wifi-mbedignore ./.mbedignore		
 ```		
  		
 Should resolve the issue.
