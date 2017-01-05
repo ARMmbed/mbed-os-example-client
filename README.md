@@ -373,7 +373,7 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 
 #### Compilation problems?		
 		
-If you encounter a problem compiling the application as follows		
+If you encounter a problem like this when compiling the application:
 		
 ```		
 Building project mbed-os-example-client (K64F, GCC_ARM)		
@@ -397,10 +397,12 @@ Compile [  0.3%]: NanostackRfPhyAtmel.cpp
 [ERROR] ./atmel-rf-driver/source/NanostackRfPhyAtmel.cpp:18:44: fatal error: nanostack/platform/arm_hal_phy.h: No such file or directory		
 compilation terminated.		
 ```		
-You are likely having LWIP stack in use with ethernet or WiFi and you have the mesh RF-stacks in the root of this example. You need to tell mbed to NOT compile those, please set up a .mbedignore -file to tell mbed not to compile those files.  Example file has been made available in the configs-folder.		
-		
+
+You probably have the LWIP stack in use with Ethernet or WiFi and you have the mesh RF stacks in the root of this example. You need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.		
+
+This should resolve the issue:
+
 ```		
 cp configs/eth-wifi-mbedignore ./.mbedignore		
 ```		
  		
-Should resolve the issue.
