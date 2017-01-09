@@ -370,3 +370,39 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
 To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
+
+#### Compilation problems?		
+		
+If you encounter a problem like this when compiling the application:
+		
+```		
+Building project mbed-os-example-client (K64F, GCC_ARM)		
+Scan: .		
+Scan: FEATURE_LWIP		
+Scan: FEATURE_UVISOR		
+Scan: FEATURE_COMMON_PAL		
+Scan: FEATURE_BLE		
+Scan: FEATURE_STORAGE		
+Scan: FEATURE_THREAD_BORDER_ROUTER		
+Scan: FEATURE_THREAD_ROUTER		
+Scan: FEATURE_LOWPAN_BORDER_ROUTER		
+Scan: FEATURE_LOWPAN_ROUTER		
+Scan: FEATURE_LOWPAN_HOST		
+Scan: FEATURE_NANOSTACK_FULL		
+Scan: FEATURE_NANOSTACK		
+Scan: FEATURE_THREAD_END_DEVICE		
+Scan: mbed		
+Scan: env		
+Compile [  0.3%]: NanostackRfPhyAtmel.cpp		
+[ERROR] ./atmel-rf-driver/source/NanostackRfPhyAtmel.cpp:18:44: fatal error: nanostack/platform/arm_hal_phy.h: No such file or directory		
+compilation terminated.		
+```		
+
+You probably have the LWIP stack in use with Ethernet or WiFi and you have the mesh RF stacks in the root of this example. You need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.		
+
+This should resolve the issue:
+
+```		
+cp configs/eth-wifi-mbedignore ./.mbedignore		
+```		
+ 		
