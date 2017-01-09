@@ -3,7 +3,7 @@
 This is the mbed Client example for mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
 
 The application:
-
+asasdasd
 * Connects to network with WiFi, Ethernet, 6LoWPAN ND or Thread connection.
 * Registers with mbed Device Connector.
 * Gives mbed Device Connector access to its resources (read and write).
