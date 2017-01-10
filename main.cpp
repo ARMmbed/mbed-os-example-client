@@ -19,11 +19,14 @@
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
-
+#include "mbed_mem_trace.h"
 #include "security.h"
 
 #include "mbed.h"
 #include "rtos.h"
+
+
+//#define ENABLE_MBED_CLIENT_MBED_TLS_DEBUGS
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     #if TARGET_UBLOX_EVK_ODIN_W2
@@ -67,11 +70,16 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #endif
 
 RawSerial output(USBTX, USBRX);
-
+#ifdef TARGET_NUCLEO_F401RE
+DigitalOut red_led(PA_0);
+DigitalOut green_led(PA_0);
+DigitalOut blue_led(PA_0);
+#else
 // Status indication
 DigitalOut red_led(LED1);
 DigitalOut green_led(LED2);
 DigitalOut blue_led(LED3);
+#endif
 Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
@@ -351,12 +359,17 @@ void trace_printer(const char* str) {
     printf("%s\r\n", str);
 }
 
+#define MBED_STACK_STATS_ENABLED
 // Entry point to the program
 int main() {
 
     unsigned int seed;
     size_t len;
-
+    //output.printf("HEAP_SIZE: %d\r\n", HEAP_SIZE);
+    //output.printf("ISR_STACK_SIZE: %d\r\n", ISR_STACK_SIZE);    
+    
+    mbed_mem_trace_set_callback(mbed_mem_trace_default_callback);
+    
 #ifdef MBEDTLS_ENTROPY_HARDWARE_ALT
     // Used to randomize source port
     mbedtls_hardware_poll(NULL, (unsigned char *) &seed, sizeof seed, &len);
@@ -420,7 +433,10 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     }
     const char *ip_addr = network_interface->get_ip_address();
     if (ip_addr) {
-        output.printf("IP address %s\r\n", ip_addr);
+        int i;
+        for (i=0;i<100;i++) {            
+            output.printf("IP address %s\r\n", network_interface->get_ip_address());        
+        }
     } else {
         output.printf("No IP address\r\n");
     }
@@ -460,12 +476,13 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     object_list.push_back(big_payload_resource.get_object());
 
     // Set endpoint registration object
-    mbed_client.set_register_object(register_object);
-
+    mbed_client.set_register_object(register_object);      
+    
+    output.printf("MSP: %d\r\n", __get_MSP());
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
-    registered = true;
-
+    registered = true;    
+    output.printf("MSP: %d\r\n", __get_MSP());
     while (true) {
         updates.wait(25000);
         if(registered) {
