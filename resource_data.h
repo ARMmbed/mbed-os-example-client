@@ -15,9 +15,8 @@
 const static sn_nsdl_static_resource_parameters_s my_params_static = {
     (char*)"",            // resource_type_ptr
     (char*)"",            // interface_description_ptr
-    (uint8_t*)"9/0/0",    // path
-    (uint8_t*)"",           // resource
-    5,                      // strlen("x/x/x")
+    (char*)"9/0/0",    // path
+    (uint8_t*)"",           // resource    
     0,                      // resourcelen
     false,                  // external_memory_block
     SN_GRS_DYNAMIC,         // mode
@@ -46,14 +45,13 @@ const static M2MBase::lwm2m_parameters my_update_params = {
     false // free_on_delete
 };
 
-/*
+
 // 2
 const static sn_nsdl_static_resource_parameters_s my_params_static_2 = {
     (char*)"",            // resource_type_ptr
     (char*)"",            // interface_description_ptr
-    (uint8_t*)"9/0/1",    // path
-    (uint8_t*)"",           // resource
-    5,                      // strlen("x/x/x")
+    (char*)"9/0/1",    // path
+    (uint8_t*)"",           // resource    
     0,                      // resourcelen
     false,                  // external_memory_block
     SN_GRS_DYNAMIC,         // mode
@@ -81,15 +79,14 @@ const static M2MBase::lwm2m_parameters my_update_params_2 = {
     M2MBase::Resource, // base_type
     false // free_on_delete
 };
-*/
+
 
 // 3
 const static sn_nsdl_static_resource_parameters_s my_params_static_3 = {
     (char*)"",            // resource_type_ptr
     (char*)"",            // interface_description_ptr
-    (uint8_t*)"9/0/2",    // path
-    (uint8_t*)"foo",           // resource
-    5,                      // strlen("x/x/x")
+    (char*)"9/0/2",    // path
+    (uint8_t*)"foo",           // resource    
     3,                      // resourcelen
     false,                  // external_memory_block
     SN_GRS_STATIC,         // mode
@@ -153,8 +150,11 @@ void const_data_test() {
         M2MResource* stat_res=NULL;
         uint32_t start = last_alloc;
                 
+        get_alloc_size();
         my_obj = M2MInterfaceFactory::create_object("9");
+        output.printf("Object SIZE %d\n", get_alloc_size());
         M2MObjectInstance* obj_instance = my_obj->create_object_instance();
+        output.printf("Object instance SIZE %d\n", get_alloc_size());
         if(obj_instance) {
             obj_instance->set_operation(M2MBase::GET_PUT_ALLOWED);        
         }
@@ -164,7 +164,7 @@ void const_data_test() {
         dyn_res_2 = obj_instance->create_dynamic_resource(&my_update_params_2, M2MResourceInstance::INTEGER, false);        
         dyn_res_2->set_value(777);
         stat_res = obj_instance->create_static_resource(&my_update_params_3, M2MResourceInstance::STRING);
-        output.printf("RESOURCE SIZE %d\n", get_alloc_size());                                                                                                      
+        output.printf("RESOURCE SIZE %d\n", get_alloc_size());                                                                                                     
         
 }
 
