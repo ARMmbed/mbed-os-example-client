@@ -115,6 +115,40 @@ const static M2MBase::lwm2m_parameters my_update_params_3 = {
     false // free_on_delete
 };
 
+// object instance
+const static sn_nsdl_static_resource_parameters_s my_params_static_4 = {
+    (char*)"",            // resource_type_ptr
+    (char*)"",            // interface_description_ptr
+    (char*)"9/0",    // path
+    (uint8_t*)"",           // resource    
+    0,                      // resourcelen
+    false,                  // external_memory_block
+    SN_GRS_STATIC,         // mode
+    false                   // free_on_delete
+};
+
+static sn_nsdl_dynamic_resource_parameters_s firmware_package_params_dynamic_4 = {
+    __nsdl_c_callback,
+    &my_params_static_4,
+    {NULL, NULL},                     // link
+    COAP_CONTENT_OMA_PLAIN_TEXT_TYPE, // coap_content_type
+    M2MBase::GET_ALLOWED,   // access
+    0,                      // registered
+    true,                  // publish_uri
+    false,                  // free_on_delete
+    false                    // observable
+};
+
+const static M2MBase::lwm2m_parameters my_obj_instance_params = {
+    0, // max_age
+    0, // instance_id
+    0, // name_id
+    (char*)"0", // name
+    &firmware_package_params_dynamic_4,
+    M2MBase::Resource, // base_type
+    false // free_on_delete
+};
+
 volatile uint32_t last_alloc=0;
 M2MObject* my_obj;
 
@@ -153,7 +187,7 @@ void const_data_test() {
         get_alloc_size();
         my_obj = M2MInterfaceFactory::create_object("9");
         output.printf("Object SIZE %d\n", get_alloc_size());
-        M2MObjectInstance* obj_instance = my_obj->create_object_instance();
+        M2MObjectInstance* obj_instance = my_obj->create_object_instance(&my_obj_instance_params);
         output.printf("Object instance SIZE %d\n", get_alloc_size());
         if(obj_instance) {
             obj_instance->set_operation(M2MBase::GET_PUT_ALLOWED);        
