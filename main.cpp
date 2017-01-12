@@ -19,14 +19,11 @@
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
-#include "mbed_mem_trace.h"
+#include "mbed_assert.h"
 #include "security.h"
-
 #include "mbed.h"
 #include "rtos.h"
 
-
-//#define ENABLE_MBED_CLIENT_MBED_TLS_DEBUGS
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     #if TARGET_UBLOX_EVK_ODIN_W2
@@ -70,7 +67,14 @@ NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, M
 #endif
 
 RawSerial output(USBTX, USBRX);
+
 #ifdef TARGET_NUCLEO_F401RE
+
+#include "include/nsdlaccesshelper.h"
+#include "m2mconstants.h"
+#include "m2mbase.h"
+#include "resource_data.h"
+
 DigitalOut red_led(PA_0);
 DigitalOut green_led(PA_0);
 DigitalOut blue_led(PA_0);
@@ -359,16 +363,12 @@ void trace_printer(const char* str) {
     printf("%s\r\n", str);
 }
 
-#define MBED_STACK_STATS_ENABLED
+//#define MBED_STACK_STATS_ENABLED
 // Entry point to the program
 int main() {
 
     unsigned int seed;
-    size_t len;
-    //output.printf("HEAP_SIZE: %d\r\n", HEAP_SIZE);
-    //output.printf("ISR_STACK_SIZE: %d\r\n", ISR_STACK_SIZE);    
-    
-    mbed_mem_trace_set_callback(mbed_mem_trace_default_callback);
+    size_t len;    
     
 #ifdef MBEDTLS_ENTROPY_HARDWARE_ALT
     // Used to randomize source port
@@ -407,7 +407,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     mbed_trace_init();
     mbed_trace_print_function_set(trace_printer);
-
+    
+    get_alloc_size();
     NetworkInterface *network_interface = 0;
     int connect_success = -1;
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
@@ -434,7 +435,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     const char *ip_addr = network_interface->get_ip_address();
     if (ip_addr) {
         int i;
-        for (i=0;i<100;i++) {            
+        for (i=0;i<1;i++) {            
             output.printf("IP address %s\r\n", network_interface->get_ip_address());        
         }
     } else {
@@ -446,19 +447,6 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
 
-#ifdef TARGET_K64F
-    // On press of SW3 button on K64F board, example application
-    // will call unregister API towards mbed Device Connector
-    //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
-    unreg_button.fall(&unregister);
-
-    // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(&button_clicked);
-#else
-    // Send update of endpoint resource values to connector every 15 seconds periodically
-    timer.attach(&button_clicked, 15.0);
-#endif
-
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(MBED_SERVER_ADDRESS, network_interface);
 
@@ -467,22 +455,41 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     M2MDevice*   device_object   = mbed_client.create_device_object();   // device resources object
 
     // Create list of Objects to register
-    M2MObjectList object_list;
-
+    M2MObjectList object_list;    
+    
+    output.printf("Resource mem after mandatory objects: %d\r\n", get_alloc_size());
     // Add objects to list
     object_list.push_back(device_object);
     object_list.push_back(button_resource.get_object());
     object_list.push_back(led_resource.get_object());
-    object_list.push_back(big_payload_resource.get_object());
-
+    object_list.push_back(big_payload_resource.get_object());    
+    #ifdef TARGET_NUCLEO_F401RE
+    const_data_test();
+    object_list.push_back(my_obj);    
+    #endif
     // Set endpoint registration object
-    mbed_client.set_register_object(register_object);      
+    mbed_client.set_register_object(register_object);              
     
-    output.printf("MSP: %d\r\n", __get_MSP());
+    get_alloc_size();
     // Register with mbed Device Connector
-    mbed_client.test_register(register_object, object_list);
-    registered = true;    
-    output.printf("MSP: %d\r\n", __get_MSP());
+    mbed_client.test_register(register_object, object_list);    
+    output.printf("Resource mem after register: %d\r\n", get_alloc_size());
+    registered = true;        
+    
+    #ifdef TARGET_K64F
+    // On press of SW3 button on K64F board, example application
+    // will call unregister API towards mbed Device Connector
+    //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
+    unreg_button.fall(&unregister);
+
+    // Observation Button (SW2) press will send update of endpoint resource values to connector
+    obs_button.fall(&button_clicked);
+    #else
+        // Send update of endpoint resource values to connector every 15 seconds periodically
+        timer.attach(&button_clicked, 15.0);
+    #endif
+
+
     while (true) {
         updates.wait(25000);
         if(registered) {
