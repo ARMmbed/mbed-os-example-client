@@ -4,9 +4,13 @@ Here is explained how the NUCLEO_F401RE board is configured to use mbed-TLS and 
 
 The application:
 
-* Connects to Thread connection.
+* Connects to Thread network.
 * Registers with mbed Device Connector.
 * Gives mbed Device Connector access to its resources (read and write).
+* The example also uses new mbed-client API functions (from the memory_optimization branches)
+	* [mbed-client](https://github.com/ARMmbed/mbed-client/tree/memory_optimizations)
+	* [mbed-client-c](https://github.com/ARMmbed/mbed-client/tree/memory_optimizations)
+
 
 ## Required hardware
 
@@ -14,7 +18,7 @@ The application:
 * 1-2 micro-USB cables.
 * mbed 6LoWPAN gateway router](https://firefly-iot.com/product/firefly-6lowpan-gateway-2-4ghz/) for 6LoWPAN ND and Thread.
 * mbed 6LoWPAN shield (AT86RF212B/[AT86RF233](https://firefly-iot.com/product/firefly-arduino-shield-2-4ghz/)) for 6LoWPAN ND and Thread.
-* Ethernet cable and connection to the internet.
+
 
 ## Supported Target hardware configurations
 
@@ -31,18 +35,17 @@ The application:
 
 ### Configuration
 
-The mbed_app_thread_NUCLEO_F401RE_ATMEL.json configuration file can be found under [configs](./configs) directory.
+The `mbed_app_thread_NUCLEO_F401RE_ATMEL.json` configuration file can be found under the [configs](./configs) directory.
 
-The file defines MBEDTLS_ENTROPY_HARDWARE_ALT flag, which means that we provide hardware entropy, but in this case it is faked. 
-The mbedtls_mbed_client_config_nucleo.h file defines the mbed-TLS configuration. Note that this file is appended after the mbed-TLS config file, so it changes some mbed-TLS system configuration.
+The file defines MBEDTLS_ENTROPY_HARDWARE_ALT flag, which means that we provide hardware entropy, but in this case it is faked (not true random number).
+The `mbedtls_mbed_client_config_nucleo.h` file defines the mbed-TLS configuration. Note that this file is appended after the system mbed-TLS config file, so it changes some mbed-TLS system configuration.
 
 The entropy related flags:
 
-* #undef MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES (Do not add default entropy sources. These are the platform specific, mbedtls_timing_hardclock and HAVEGE based poll functions.)
-* #define MBEDTLS_NO_PLATFORM_ENTROPY (Do not use built-in platform entropy functions, e.g. /dev/urandom or Windows CryptoAPI.)
-* #define MBEDTLS_ENTROPY_C (Enable the platform-specific entropy code)
-
-The faked entropy function is implemented in the hw_test_entropy.c file.
+* `#undef MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES` (Do not add default entropy sources. These are the platform specific, `mbedtls_timing_hardclock` and `HAVEGE` based poll functions.)
+* `#define MBEDTLS_NO_PLATFORM_ENTROPY` (Do not use built-in platform entropy functions, e.g. `/dev/urandom` or `Windows CryptoAPI`.)
+* `#define MBEDTLS_ENTROPY_C` (Enable the platform-specific entropy code)
+	* The faked entropy function is implemented in the `hw_test_entropy.c` file.
 
 ### Client credentials
 
@@ -59,8 +62,7 @@ To connect the example application in 6LoWPAN ND or Thread mode to Connector, yo
 1. Use an Ethernet cable to connect the mbed 6LoWPAN gateway router to the internet.
 2. Use a micro-USB cable to connect the mbed 6LoWPAN gateway router to your computer. The computer will list the router as removable storage.
 3. The firmware for the gateway is located in the `GW_Binary` folder in the root of this example. Select the binary matching your application bootstrap mode:
-
-	* For the **6LoWPAN ND** bootstrap, use `gateway6LoWPANDynamic.bin`.
+	
 	* For the **Thread** bootstrap, use `gatewayThreadDynamic.bin`.
 
 	The dynamic binaries use IPv6 autoconfiguration and enable the client to connect to the Connector service. The static binaries create a site-local IPv6 network and packets cannot be routed outside.
@@ -96,7 +98,11 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. Check out the branch -> 
+3. Check out the necessary development branches
+	1. `git checkout NUCLEO_F401RE_trial`
+	2. go to the mbed-client directory -> `git checkout memory_optimizations`
+	3. go to the mbed-client-c directory (mbed-os\features\FEATURE_COMMON_PAL\mbed-client-c) -> `git checkout memory_optimizations`
+	
 
 4. To build the application, select the hardware board and build the toolchain using the command:
 

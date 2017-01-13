@@ -9,6 +9,7 @@
 #include "mbed_mem_trace.h"
 #endif
 
+#include "m2mreporthandler.h"
 //#define ENABLE_MBED_CLIENT_MBED_TLS_DEBUGS
 
 // 1
@@ -177,7 +178,8 @@ void const_data_test() {
         output.printf("M2MObjectInstance size %d\n", sizeof(M2MObjectInstance));
         output.printf("M2MResourceInstance size %d\n", sizeof(M2MResourceInstance));
         output.printf("M2MBase size %d\n", sizeof(M2MBase));
-        output.printf("String size %d\n", sizeof(String));               
+        output.printf("M2MReportHandler size %d\n", sizeof(M2MReportHandler));
+        output.printf("String size %d\n", sizeof(String));
         
         M2MResource* dyn_res=NULL;
         M2MResource* dyn_res_2=NULL;
@@ -198,7 +200,7 @@ void const_data_test() {
         dyn_res_2 = obj_instance->create_dynamic_resource(&my_update_params_2, M2MResourceInstance::INTEGER, false);        
         dyn_res_2->set_value(777);
         stat_res = obj_instance->create_static_resource(&my_update_params_3, M2MResourceInstance::STRING);
-        output.printf("RESOURCE SIZE %d\n", get_alloc_size());                                                                                                     
+        output.printf("RESOURCE SIZE per resource %d\n", get_alloc_size()/3);                                                                                                     
         
 }
 
