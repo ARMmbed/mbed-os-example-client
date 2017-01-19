@@ -441,15 +441,17 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     } else {
         output.printf("No IP address\r\n");
     }
-
+    output.printf("Resource mem after mesh connect: %d\r\n", get_alloc_size());
+    
     // we create our button and LED resources
     ButtonResource button_resource;
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
-
+    get_alloc_size();
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(MBED_SERVER_ADDRESS, network_interface);
-
+    output.printf("Resource mem after create interface: %d\r\n", get_alloc_size());
+    
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
     M2MDevice*   device_object   = mbed_client.create_device_object();   // device resources object
