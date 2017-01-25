@@ -318,9 +318,9 @@ public:
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
         printf("\r\nPUT Request Received!");
         printf("\r\nName :'%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
-               base->name().c_str(),
+               base->name(),
                type,
-               base->resource_type().c_str()
+               base->resource_type()
                );
     }
 
