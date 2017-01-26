@@ -25,7 +25,7 @@ The application:
  * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
  * K64F (Ethernet)
  * NUCLEO_F429ZI (Ethernet)
- * UBLOX_EVK_ODIN_W2 (Ethernet)
+ * UBLOX_EVK_ODIN_W2 (WiFi - ethernet does not seem to work)
  * K64F + GROVE SEEED shield (Wifi)
  * NUCLEO_F429ZI + GROVE SEEED shield (Wifi)
 
