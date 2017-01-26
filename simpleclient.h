@@ -55,11 +55,11 @@
 
 //Select binding mode: UDP or TCP -- note - Mesh networking is IPv6 UDP ONLY
 #ifdef MESH
-	M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 #else
-	// WiFi or Ethernet supports both - TCP by default to avoid
-	// NAT problems, but UDP will also work - IF you configure
-	// your network right.
+    // WiFi or Ethernet supports both - TCP by default to avoid
+    // NAT problems, but UDP will also work - IF you configure
+    // your network right.
     M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
 #endif
 
@@ -316,10 +316,11 @@ public:
     */
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
         printf("\r\nPUT Request Received!");
-        printf("\r\nName :'%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
-               base->name().c_str(),
+        printf("\r\nName :'%s', \r\nPath : '%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
+               base->name(),
+               base->uri_path(),
                type,
-               base->resource_type().c_str()
+               base->resource_type()
                );
     }
 
