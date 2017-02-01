@@ -25,11 +25,13 @@ The application:
  * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
  * K64F (Ethernet)
  * NUCLEO_F429ZI (Ethernet)
- * UBLOX_EVK_ODIN_W2 (WiFi - ethernet does not seem to work)
+ * UBLOX_EVK_ODIN_W2 (WiFi & Ethernet - use the supplied `configs/eth_v4.json` for Ethernet)
  * K64F + GROVE SEEED shield (Wifi)
  * NUCLEO_F429ZI + GROVE SEEED shield (Wifi)
 
 Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). 
+
+To see how different targets are built please see the supplied `build_all.sh script`.
 
 ## Requirements for non-K64F boards
 
