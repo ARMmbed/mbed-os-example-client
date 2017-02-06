@@ -19,19 +19,18 @@
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
-
 #include "security.h"
-
+#include "client_buttons.h"
 #include "mbed.h"
 #include "rtos.h"
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
     #if TARGET_UBLOX_EVK_ODIN_W2
         #include "OdinWiFiInterface.h"
-        OdinWiFiInterface wifi;
+            OdinWiFiInterface wifi;
 	#else
-		#include "ESP8266Interface.h"
-		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+            #include "ESP8266Interface.h"
+            ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
     #endif
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
     #include "EthernetInterface.h"
@@ -89,17 +88,14 @@ struct MbedClientDevice device = {
 // Instantiate the class which implements LWM2M Client API (from simpleclient.h)
 MbedClient mbed_client(device);
 
-
-// In case of K64F board , there is button resource available
-// to change resource value and unregister
-#ifdef TARGET_K64F
-// Set up Hardware interrupt button.
-InterruptIn obs_button(SW2);
-InterruptIn unreg_button(SW3);
+#ifdef BUTTONS_DEFINED
+    // Actual buttons defined in the client_buttons.h -- update your board there if not already there
+    InterruptIn obs_button(CLIENT_OBS_BUTTON);
+    InterruptIn unreg_button(CLIENT_UNREG_BUTTON);
 #else
-//In non K64F boards , set up a timer to simulate updating resource,
-// there is no functionality to unregister.
-Ticker timer;
+    // In boards w/o buttons, set up a timer to simulate updating resource and
+    // there is no functionality to unregister.
+    Ticker timer;
 #endif
 
 /*
@@ -262,10 +258,9 @@ public:
     void handle_button_click() {
         M2MObjectInstance* inst = btn_object->object_instance();
         M2MResource* res = inst->resource("5501");
-
         // up counter
         counter++;
-#ifdef TARGET_K64F
+#ifdef BUTTONS_DEFINED
         printf("handle_button_click, new value of counter is %d\r\n", counter);
 #else
         printf("simulate button_click, new value of counter is %d\r\n", counter);
@@ -430,7 +425,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
 
-#ifdef TARGET_K64F
+#ifdef BUTTONS_DEFINED
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Connector
     //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
