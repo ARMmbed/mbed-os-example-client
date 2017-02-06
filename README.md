@@ -257,7 +257,7 @@ Your device can connect to mbed Device Connector via UDP or TCP binding mode. Th
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP` for mesh and `M2MInterface::TCP` for others.
+1. In the `client_net.cpp` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP` for mesh and `M2MInterface::TCP` for others.
 1. To switch to UDP, change it to `M2MInterface::UDP`.
 1. Rebuild and flash the application.
 
@@ -329,7 +329,7 @@ Using <Network Interface>
 Connected to Network successfully
 IP address xxx.xxx.xxx.xxx
 
-SOCKET_MODE : UDP
+SOCKET_MODE : TCP
 Connecting to coap://api.connector.mbed.com:5684
 
 ```
