@@ -1,3 +1,3 @@
-atmel-rf-driver/*
-mcr20a-rf-driver/*
+easy-connect/atmel-rf-driver/*
+easy-connect/mcr20a-rf-driver/*
 

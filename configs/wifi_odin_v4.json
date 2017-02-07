@@ -2,11 +2,7 @@
     "config": {
         "network-interface":{
             "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "ETHERNET"
-        },
-        "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20",
-        	"value": "ATMEL"
+            "value": "WIFI_ODIN"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
@@ -28,11 +24,11 @@
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "target.features_add": ["LWIP", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
-            "platform.stdio-convert-newlines": true,
-            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
-            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "platform.stdio-convert-newlines":true,
+            "lwip.ipv4-enabled": true,
+            "lwip.ipv6-enabled": false,
             "mbed-trace.enable": 0
         },
         "NUCLEO_F401RE": {
@@ -42,9 +38,6 @@
         "NUCLEO_F411RE": {
             "wifi-tx": "PA_11",
             "wifi-rx": "PA_12"
-        },
-        "UBLOX_EVK_ODIN_W2": {
-        "target.device_has_remove": ["EMAC"]
         }
     }
 }

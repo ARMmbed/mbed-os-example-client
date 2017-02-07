@@ -1,8 +1,8 @@
 {
     "config": {
         "network-interface":{
-            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
-            "value": "WIFI"
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "WIFI_ESP8266"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
@@ -25,6 +25,8 @@
     "target_overrides": {
         "*": {
             "target.features_add": ["LWIP", "COMMON_PAL"],
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-convert-newlines": true,
             "lwip.ipv4-enabled": true,
             "lwip.ipv6-enabled": false,
             "mbed-trace.enable": 0
