@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include "simpleclient.h"
 #include <string>
 #include <sstream>
 #include <vector>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
 
