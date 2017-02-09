@@ -25,11 +25,13 @@ The application:
  * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
  * K64F (Ethernet)
  * NUCLEO_F429ZI (Ethernet)
- * UBLOX_EVK_ODIN_W2 (Ethernet)
+ * UBLOX_EVK_ODIN_W2 (WiFi & Ethernet - use the supplied `configs/eth_v4.json` for Ethernet)
  * K64F + GROVE SEEED shield (Wifi)
  * NUCLEO_F429ZI + GROVE SEEED shield (Wifi)
 
 Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). 
+
+To see how different targets are built please see the supplied `build_all.sh script`.
 
 ## Requirements for non-K64F boards
 
@@ -232,21 +234,44 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 ### IP address setup
 
-This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. The example program should automatically get an IPv4 address from the router when connected over Ethernet.
+This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6
+by changing the mbed_app.json you make:
+```
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["LWIP", "NANOSTACK", "COMMON_PAL"],
+            "lwip.ipv4-enabled": false,
+            "lwip.ipv6-enabled": true,
+            "mbed-trace.enable": 0
+        }
+```
+by modifying the ipv4-enable or ipv6-enable to true/false. Only one should be true.
+
+The example program should automatically get an IP address from the router when connected over Ethernet or WiFi.
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
 ### Changing socket type
 
-Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default is UDP. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LowPan. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
-1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP`.
-1. To switch to TCP, change it to `M2MInterface::TCP`.
+1. In the `simpleclient.h` file, find the parameter `SOCKET_MODE`. The default is `M2MInterface::UDP` for mesh and `M2MInterface::TCP` for others.
+1. To switch to UDP, change it to `M2MInterface::UDP`.
 1. Rebuild and flash the application.
 
 <span class="tips">**Tip:** The instructions in this document remain the same, irrespective of the socket mode you select.</span>
+
+Possible socket types per connection:
+
+| Network  interface                    | UDP   | TCP | 
+| ------------------------------|:-----:|:-----:|
+| Ethernet (IPv4)               |   X   |   X   | 
+| Ethernet (IPv6)               |   X   |       | 
+| Wifi (IPv4)                   |   X   |   X   |
+| Wifi (IPv6) - Not supported   |       |       |
+| 6LoWPAN/Thread (IPv6)         |   X   |       |
 
 ## Building the example
 
@@ -260,7 +285,8 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. [Configure](#application-setup) the client application.
+3. Copy the relevant example configuration file from configs/xxx.json to mbed_app.json and
+   [Configure](#application-setup) the client application.
 
 4. To build the application, select the hardware board and build the toolchain using the command:
 
@@ -346,3 +372,39 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
 To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
+
+#### Compilation problems?		
+		
+If you encounter a problem like this when compiling the application:
+		
+```		
+Building project mbed-os-example-client (K64F, GCC_ARM)		
+Scan: .		
+Scan: FEATURE_LWIP		
+Scan: FEATURE_UVISOR		
+Scan: FEATURE_COMMON_PAL		
+Scan: FEATURE_BLE		
+Scan: FEATURE_STORAGE		
+Scan: FEATURE_THREAD_BORDER_ROUTER		
+Scan: FEATURE_THREAD_ROUTER		
+Scan: FEATURE_LOWPAN_BORDER_ROUTER		
+Scan: FEATURE_LOWPAN_ROUTER		
+Scan: FEATURE_LOWPAN_HOST		
+Scan: FEATURE_NANOSTACK_FULL		
+Scan: FEATURE_NANOSTACK		
+Scan: FEATURE_THREAD_END_DEVICE		
+Scan: mbed		
+Scan: env		
+Compile [  0.3%]: NanostackRfPhyAtmel.cpp		
+[ERROR] ./atmel-rf-driver/source/NanostackRfPhyAtmel.cpp:18:44: fatal error: nanostack/platform/arm_hal_phy.h: No such file or directory		
+compilation terminated.		
+```		
+
+You probably have the LWIP stack in use with Ethernet or WiFi and you have the mesh RF stacks in the root of this example. You need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.		
+
+This should resolve the issue:
+
+```		
+cp configs/eth-wifi-mbedignore ./.mbedignore		
+```		
+ 		

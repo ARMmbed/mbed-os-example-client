@@ -38,11 +38,30 @@
 
 #define STRINGIFY(s) #s
 
-//Select network stack mode: IPv4 or IPv6
-M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv4;
+// Check if using mesh networking, define helper
+#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
+    #define MESH
+#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
+    #define MESH
+#endif
 
-//Select binding mode: UDP or TCP
-M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
+    // Mesh is always IPV6 - also WiFi and ETH can be IPV6 if IPV6 is enabled
+    M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv6;
+#else
+    // Everything else - we assume it's IPv4
+    M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv4;
+#endif
+
+//Select binding mode: UDP or TCP -- note - Mesh networking is IPv6 UDP ONLY
+#ifdef MESH
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+#else
+    // WiFi or Ethernet supports both - TCP by default to avoid
+    // NAT problems, but UDP will also work - IF you configure
+    // your network right.
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
+#endif
 
 
 // MBED_DOMAIN and MBED_ENDPOINT_NAME come
@@ -105,14 +124,7 @@ public:
                           void *handler=NULL) {
     // Randomizing listening port for Certificate mode connectivity
     _server_address = server_address;
-    uint16_t port = rand() % 65535 + 12345;
-
-    // In case of Mesh or Thread use M2MInterface::Nanostack_IPv6
-#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    NETWORK_STACK = M2MInterface::Nanostack_IPv6;
-#endif
+    uint16_t port = 0; // Network interface will randomize with port 0
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
@@ -162,9 +174,9 @@ public:
             // Add ResourceID's and values to the security ObjectID/ObjectInstance
             security->set_resource_value(M2MSecurity::M2MServerUri, _server_address);
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT));
-            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT));
-            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY));
+            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT) - 1);
+            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT) - 1);
+            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY) - 1);
         }
         return security;
     }
@@ -304,10 +316,11 @@ public:
     */
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
         printf("\r\nPUT Request Received!");
-        printf("\r\nName :'%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
-               base->name().c_str(),
+        printf("\r\nName :'%s', \r\nPath : '%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
+               base->name(),
+               base->uri_path(),
                type,
-               base->resource_type().c_str()
+               base->resource_type()
                );
     }
 
