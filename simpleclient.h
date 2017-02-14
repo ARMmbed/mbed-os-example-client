@@ -175,9 +175,9 @@ public:
             // Add ResourceID's and values to the security ObjectID/ObjectInstance
             security->set_resource_value(M2MSecurity::M2MServerUri, _server_address);
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT));
-            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT));
-            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY));
+            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT) - 1);
+            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT) - 1);
+            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY) - 1);
         }
         return security;
     }
@@ -317,8 +317,9 @@ public:
     */
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
         printf("\r\nPUT Request Received!");
-        printf("\r\nName :'%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
+        printf("\r\nName :'%s', \r\nPath : '%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
                base->name(),
+               base->uri_path(),
                type,
                base->resource_type()
                );
