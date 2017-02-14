@@ -22,6 +22,7 @@ The application:
 
  This example has been tested in following configuration
  * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
+ * [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
  * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
  * K64F (Ethernet)
  * NUCLEO_F429ZI (Ethernet)
@@ -84,14 +85,14 @@ To register the application with the Connector service, you need to create and s
 
 ### 6LoWPAN ND and Thread settings
 
-First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver) and [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver) radio shields.
+First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver), [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver), and [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields.
 
-To add the Atmel driver to you application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`.
+To add the Atmel driver to your application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`.
 Please make sure that the `mbed_app.json` file points to the correct radio driver type:
 
 ```json
     "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20",
+        	"help": "options are ATMEL, MCR20, SPIRIT1",
         	"value": "ATMEL"
         },
 ```
@@ -130,6 +131,42 @@ Alternatively, you can remove the link layer security from the `k64f-border-rout
         }
 ```
 
+<span class="notes">**Note:** In case you want to use the NUCLEO_F429ZI + X-NUCLEO-IDS01A4 target hardware configuration, you need also to use the [stm32-border-router](https://github.com/ARMmbed/stm32-border-router) (that can be used only as a 6LoWPAN BR and only with NUCLEO_F429ZI) as gateway router. In this case you need to enable another security feature. By default, the `stm32-border-router` uses `PSK` as security.</span>
+
+You can enable the security here on your mbed-os-example-client application, for example:
+
+```json
+    "target_overrides": {
+        "*": {
+            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
+        }
+	}
+```
+
+Alternatively, you can remove the link layer security from the `stm32-border-router`. To do that, change the [mbed_app.json](https://github.com/ARMmbed/stm32-border-router/blob/master/mbed_app.json) fetched from the `stm32-border-router` repository, for example: 
+
+```json
+    "config": {
+            "security-mode": "NONE",
+        }
+```
+
+Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4) you need also to configure its MAC address in the `mbed_app.json` file, e.g.:
+```json
+    "target_overrides": {
+        "*": {
+            "spirit1.mac-address-0": "0x0",
+    	    "spirit1.mac-address-1": "0x1",
+    	    "spirit1.mac-address-2": "0x2",
+    	    "spirit1.mac-address-3": "0x3",
+    	    "spirit1.mac-address-4": "0x4",
+    	    "spirit1.mac-address-5": "0x5",
+    	    "spirit1.mac-address-6": "0x6",
+    	    "spirit1.mac-address-7": "0x7"
+        },
+    }
+```
+
 #### mbed gateway
 
 To connect the example application in 6LoWPAN ND or Thread mode to Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
@@ -162,7 +199,7 @@ The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](h
     }
 ```
 
-For sub-GHz shields (AT86RF212B) use the following overrides, **6LoWPAN ND only**:
+For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver) or AT86RF212B) use the following overrides, **6LoWPAN ND only**:
 
 ```json
 "mbed-mesh-api.6lowpan-nd-channel-page": 2,
