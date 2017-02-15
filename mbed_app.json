@@ -2,49 +2,32 @@
     "config": {
         "network-interface":{
             "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "ETHERNET"
+            "value": "MESH_LOWPAN_ND"
         },
         "mesh_radio_type": {
         	"help": "options are ATMEL, MCR20, SPIRIT1",
-        	"value": "ATMEL"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        },
-        "wifi-tx": {
-            "help": "TX pin for serial connection to external device",
-            "value": "D1"
-        },
-        "wifi-rx": {
-            "help": "RX pin for serial connection to external device",
-            "value": "D0"
+        	"value": "SPIRIT1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
+            "spirit1.mac-address-0": "0x0",
+    	    "spirit1.mac-address-1": "0x1",
+    	    "spirit1.mac-address-2": "0x2",
+    	    "spirit1.mac-address-3": "0x3",
+    	    "spirit1.mac-address-4": "0x4",
+    	    "spirit1.mac-address-5": "0x5",
+    	    "spirit1.mac-address-6": "0x6",
+    	    "spirit1.mac-address-7": "0x7",
             "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
-            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
+            "mbed-mesh-api.6lowpan-nd-channel-page": 2,
+            "mbed-mesh-api.6lowpan-nd-channel": 1,
+            "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)",
             "mbed-trace.enable": 0
-        },
-        "NUCLEO_F401RE": {
-            "wifi-tx": "PA_11",
-            "wifi-rx": "PA_12"
-        },
-        "NUCLEO_F411RE": {
-            "wifi-tx": "PA_11",
-            "wifi-rx": "PA_12"
-        },
-        "UBLOX_EVK_ODIN_W2": {
-        "target.device_has_remove": ["EMAC"]
         }
     }
 }

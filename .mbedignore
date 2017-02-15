@@ -1,3 +1,1 @@
-atmel-rf-driver/*
-mcr20a-rf-driver/*
-esp8266-driver/*
+easy-connect/esp8266-driver/*
