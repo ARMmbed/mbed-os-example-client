@@ -360,15 +360,17 @@ The application prints debug messages over the serial port, so you can monitor i
 After connecting, you should see messages about connecting to mbed Device Connector:
 
 ```
-Starting mbed Client example...
-Using <Network Interface>
+Starting mbed Client example in IPv4 mode
+[EasyConnect] Using Ethernet
+[EasyConnect] Connected to Network successfully
+[EasyConnect] IP address  192.168.8.110
+[EasyConnect] MAC address 5c:cf:7f:86:de:bf
 
-Connected to Network successfully
-IP address xxx.xxx.xxx.xxx
+SOCKET_MODE : TCP
 
-SOCKET_MODE : UDP
 Connecting to coap://api.connector.mbed.com:5684
 
+Registered object succesfully!
 ```
 
 <span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-os-example-client#testing-the-application).</span>
