@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include "simpleclient.h"
 #include <string>
 #include <sstream>
@@ -23,63 +25,33 @@
 #include "security.h"
 
 #include "mbed.h"
-#include "rtos.h"
 
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    #if TARGET_UBLOX_EVK_ODIN_W2
-        #include "OdinWiFiInterface.h"
-        OdinWiFiInterface wifi;
-	#else
-		#include "ESP8266Interface.h"
-		ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
-    #endif
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    #include "EthernetInterface.h"
-    EthernetInterface eth;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-    #define MESH
-    #include "NanostackInterface.h"
-    LoWPANNDInterface mesh;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    #define MESH
-    #include "NanostackInterface.h"
-    ThreadInterface mesh;
-#endif
+// easy-connect compliancy, it has 2 sets of wifi pins we have only one
+#define MBED_CONF_APP_ESP8266_TX MBED_CONF_APP_WIFI_TX
+#define MBED_CONF_APP_ESP8266_RX MBED_CONF_APP_WIFI_RX
+#include "easy-connect/easy-connect.h"
 
-#if defined(MESH)
-#if MBED_CONF_APP_MESH_RADIO_TYPE == ATMEL
-#include "NanostackRfPhyAtmel.h"
-NanostackRfPhyAtmel rf_phy(ATMEL_SPI_MOSI, ATMEL_SPI_MISO, ATMEL_SPI_SCLK, ATMEL_SPI_CS,
-                           ATMEL_SPI_RST, ATMEL_SPI_SLP, ATMEL_SPI_IRQ, ATMEL_I2C_SDA, ATMEL_I2C_SCL);
-#elif MBED_CONF_APP_MESH_RADIO_TYPE == MCR20
-#include "NanostackRfPhyMcr20a.h"
-NanostackRfPhyMcr20a rf_phy(MCR20A_SPI_MOSI, MCR20A_SPI_MISO, MCR20A_SPI_SCLK, MCR20A_SPI_CS, MCR20A_SPI_RST, MCR20A_SPI_IRQ);
-#elif MBED_CONF_APP_MESH_RADIO_TYPE == SPIRIT1
-#include "NanostackRfPhySpirit1.h"
-NanostackRfPhySpirit1 rf_phy(SPIRIT1_SPI_MOSI, SPIRIT1_SPI_MISO, SPIRIT1_SPI_SCLK,
-							 SPIRIT1_DEV_IRQ, SPIRIT1_DEV_CS, SPIRIT1_DEV_SDN, SPIRIT1_BRD_LED);
-#endif //MBED_CONF_APP_RADIO_TYPE
-#endif //MESH
-
-#ifdef MESH
-    // Mesh does not have DNS, so must use direct IPV6 address
-    #define MBED_SERVER_ADDRESS "coaps://[2607:f0d0:2601:52::20]:5684"
-#else
-    // This is address to mbed Device Connector, name based
-    // assume all other stacks support DNS properly
-    #define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
-#endif
-
-RawSerial output(USBTX, USBRX);
+#ifdef TARGET_STM
+#define RED_LED (LED3)
+#define GREEN_LED (LED1)
+#define BLUE_LED (LED2)
+#define LED_ON (1)		     
+#else // !TARGET_STM
+#define RED_LED (LED1)
+#define GREEN_LED (LED2)
+#define BLUE_LED (LED3)			     
+#define LED_ON (0) 
+#endif // !TARGET_STM
+#define LED_OFF (!LED_ON)
 
 // Status indication
-DigitalOut red_led(LED3);
-DigitalOut green_led(LED1);
-DigitalOut blue_led(LED2);
+DigitalOut red_led(RED_LED);
+DigitalOut green_led(GREEN_LED);
+DigitalOut blue_led(BLUE_LED);
+
 Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
-
 }
 
 // These are example resource values for the Device Object
@@ -165,7 +137,7 @@ public:
     void blink(void *argument) {
         // read the value of 'Pattern'
         status_ticker.detach();
-        green_led = 0;
+        green_led = LED_OFF;
 
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource("5853");
@@ -180,7 +152,7 @@ public:
         // turn the buffer into a string, and initialize a vector<int> on the heap
         std::string s((char*)buffIn, sizeIn);
         free(buffIn);
-        output.printf("led_execute_callback pattern=%s\r\n", s.c_str());
+        printf("led_execute_callback pattern=%s\n", s.c_str());
 
         // our pattern is something like 500:200:500, so parse that
         std::size_t found = s.find_first_of(":");
@@ -200,11 +172,11 @@ public:
             String resource_name = param->get_argument_resource_name();
             int payload_length = param->get_argument_value_length();
             uint8_t* payload = param->get_argument_value();
-            output.printf("Resource: %s/%d/%s executed\r\n", object_name.c_str(), object_instance_id, resource_name.c_str());
-            output.printf("Payload: %.*s\r\n", payload_length, payload);
+            printf("Resource: %s/%d/%s executed\n", object_name.c_str(), object_instance_id, resource_name.c_str());
+            printf("Payload: %.*s\n", payload_length, payload);
         }
         // do_blink is called with the vector, and starting at -1
-        blinky_thread.start(this, &LedResource::do_blink);
+        blinky_thread.start(callback(this, &LedResource::do_blink));
     }
 
 private:
@@ -213,21 +185,21 @@ private:
     BlinkArgs *blink_args;
     void do_blink() {
         for (;;) {
-	    // blink the LED
-	    red_led = !red_led;
-	    // up the position, if we reached the end of the vector
-	    if (blink_args->position >= blink_args->blink_pattern.size()) {
-		// send delayed response after blink is done
-		M2MObjectInstance* inst = led_object->object_instance();
-		M2MResource* led_res = inst->resource("5850");
-		led_res->send_delayed_post_response();
-		red_led = 0;
-		status_ticker.attach_us(blinky, 250000);
-		return;
-	    }
+            // blink the LED
+            red_led = !red_led;
+            // up the position, if we reached the end of the vector
+            if (blink_args->position >= blink_args->blink_pattern.size()) {
+                // send delayed response after blink is done
+                M2MObjectInstance* inst = led_object->object_instance();
+                M2MResource* led_res = inst->resource("5850");
+                led_res->send_delayed_post_response();
+                red_led = LED_OFF;
+                status_ticker.attach_us(blinky, 250000);
+                return;
+            }
             // Wait requested time, then continue prosessing the blink pattern from next position.
-	    Thread::wait(blink_args->blink_pattern.at(blink_args->position));
-	    blink_args->position++;
+            Thread::wait(blink_args->blink_pattern.at(blink_args->position));
+            blink_args->position++;
         }
     }
 };
@@ -270,9 +242,9 @@ public:
         // up counter
         counter++;
 #ifdef TARGET_K64F
-        printf("handle_button_click, new value of counter is %d\r\n", counter);
+        printf("handle_button_click, new value of counter is %d\n", counter);
 #else
-        printf("simulate button_click, new value of counter is %d\r\n", counter);
+        printf("simulate button_click, new value of counter is %d\n", counter);
 #endif
         // serialize the value of counter as a string, and tell connector
         char buffer[20];
@@ -308,9 +280,9 @@ public:
         if (argument) {
             if (M2MBlockMessage::ErrorNone == argument->error_code()) {
                 if (argument->is_last_block()) {
-                    output.printf("Last block received\r\n");
+                    printf("Last block received\n");
                 }
-                output.printf("Block number: %d\r\n", argument->block_number());
+                printf("Block number: %d\n", argument->block_number());
                 // First block received
                 if (argument->block_number() == 0) {
                     // Store block
@@ -319,14 +291,14 @@ public:
                     // Store blocks
                 }
             } else {
-                output.printf("Error when receiving block message!  - EntityTooLarge\r\n");
+                printf("Error when receiving block message!  - EntityTooLarge\n");
             }
-            output.printf("Total message size: %d\r\n", argument->total_message_size());
+            printf("Total message size: %" PRIu32 "\n", argument->total_message_size());
         }
     }
 
     void block_message_requested(const String& resource, uint8_t *&/*data*/, uint32_t &/*len*/) {
-        output.printf("GET request received for resource: %s\r\n", resource.c_str());
+        printf("GET request received for resource: %s\n", resource.c_str());
         // Copy data and length to coap response
     }
 
@@ -348,11 +320,6 @@ void unregister() {
 void button_clicked() {
     clicked = true;
     updates.release();
-}
-
-// debug printf function
-void trace_printer(const char* str) {
-    printf("%s\r\n", str);
 }
 
 // Entry point to the program
@@ -380,54 +347,26 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     srand(seed);
-    red_led = 0;
-    blue_led = 0;
+    red_led = LED_OFF;
+    blue_led = LED_OFF;
+
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
     mainThread = osThreadGetId();
 
-    // Sets the console baud-rate
-    output.baud(115200);
-
-    output.printf("\r\nStarting mbed Client example in ");
+    printf("\nStarting mbed Client example in ");
 #if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
-    output.printf("IPv6 mode\r\n");
+    printf("IPv6 mode\n");
 #else
-    output.printf("IPv4 mode\r\n");
+    printf("IPv4 mode\n");
 #endif
 
     mbed_trace_init();
-    mbed_trace_print_function_set(trace_printer);
-    mbed_trace_config_set(TRACE_MODE_COLOR | TRACE_ACTIVE_LEVEL_INFO | TRACE_CARRIAGE_RETURN);
 
-    NetworkInterface *network_interface = 0;
-    int connect_success = -1;
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rConnecting to WiFi...\r\n");
-    connect_success = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
-    network_interface = &wifi;
-#elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("\n\rConnecting to ethernet...\r\n");
-    connect_success = eth.connect();
-    network_interface = &eth;
-#endif
-#ifdef MESH
-    output.printf("\n\rConnecting to Mesh...\r\n");
-    mesh.initialize(&rf_phy);
-    connect_success = mesh.connect();
-    network_interface = &mesh;
-#endif
-    if(connect_success == 0) {
-    output.printf("\n\rConnected to Network successfully\r\n");
-    } else {
-        output.printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", connect_success);
-        return 0;
-    }
-    const char *ip_addr = network_interface->get_ip_address();
-    if (ip_addr) {
-        output.printf("IP address %s\r\n", ip_addr);
-    } else {
-        output.printf("No IP address\r\n");
+    NetworkInterface* network = easy_connect(true);
+    if(network == NULL) {
+        printf("\nConnection to Network Failed - exiting application...\n");
+        return -1;
     }
 
     // we create our button and LED resources
@@ -449,7 +388,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     // Create endpoint interface to manage register and unregister
-    mbed_client.create_interface(MBED_SERVER_ADDRESS, network_interface);
+    mbed_client.create_interface(MBED_SERVER_ADDRESS, network);
 
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
