@@ -322,6 +322,11 @@ void button_clicked() {
     updates.release();
 }
 
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
+}
+
 // Entry point to the program
 int main() {
 
@@ -362,6 +367,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
+    mbed_trace_config_set(TRACE_MODE_COLOR | TRACE_ACTIVE_LEVEL_INFO | TRACE_CARRIAGE_RETURN);
 
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
