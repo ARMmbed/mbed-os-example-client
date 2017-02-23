@@ -155,14 +155,7 @@ Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4)
 ```json
     "target_overrides": {
         "*": {
-            "spirit1.mac-address-0": "0x0",
-    	    "spirit1.mac-address-1": "0x1",
-    	    "spirit1.mac-address-2": "0x2",
-    	    "spirit1.mac-address-3": "0x3",
-    	    "spirit1.mac-address-4": "0x4",
-    	    "spirit1.mac-address-5": "0x5",
-    	    "spirit1.mac-address-6": "0x6",
-    	    "spirit1.mac-address-7": "0x7"
+            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}"
         },
     }
 ```
