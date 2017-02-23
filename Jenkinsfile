@@ -17,7 +17,7 @@ def targets = [
   "NUCLEO_F429ZI",
   "UBLOX_EVK_ODIN_W2"
   ]
-  
+
 // Map toolchains to compilers
 def toolchains = [
   ARM: "armcc",
@@ -72,7 +72,7 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
         deleteDir()
         dir("mbed-os-example-client") {
           checkout scm
-          
+
           if ("${configName}" == "thd") {
             // Change device type to Thread router
             execute("sed -i 's/\"NANOSTACK\", \"LOWPAN_ROUTER\", \"COMMON_PAL\"/\"NANOSTACK\", \"THREAD_ROUTER\", \"COMMON_PAL\"/' mbed_app.json")
@@ -89,7 +89,10 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
             execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_LOWPAN_ND\"/' mbed_app.json")
 
             // Change channel for HW tests
-            execute ("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.6lowpan-nd-channel\": 18/' mbed_app.json")
+            execute ("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.6lowpan-nd-channel\": 17/' mbed_app.json")
+
+            //Use PANID filter
+            execute ("sed -i '/6lowpan-nd-channel\":/a \"mbed-mesh-api.6lowpan-nd-panid-filter\": \"0xABBA\",' mbed_app.json")
           }
 
           if ("${connectiontype}" == "MCR20") {
