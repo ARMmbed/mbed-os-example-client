@@ -12,14 +12,7 @@
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "spirit1.mac-address-0": "0x0",
-    	    "spirit1.mac-address-1": "0x1",
-    	    "spirit1.mac-address-2": "0x2",
-    	    "spirit1.mac-address-3": "0x3",
-    	    "spirit1.mac-address-4": "0x4",
-    	    "spirit1.mac-address-5": "0x5",
-    	    "spirit1.mac-address-6": "0x6",
-    	    "spirit1.mac-address-7": "0x7",
+            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}",
             "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
