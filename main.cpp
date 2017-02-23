@@ -223,20 +223,24 @@ public:
      * from mbed Device Connector, then up the value with one.
      */
     void handle_button_click() {
-        M2MObjectInstance* inst = btn_object->object_instance();
-        M2MResource* res = inst->resource("5501");
+        if (mbed_client.register_successful()) {
+            M2MObjectInstance* inst = btn_object->object_instance();
+            M2MResource* res = inst->resource("5501");
 
-        // up counter
-        counter++;
-#ifdef TARGET_K64F
-        printf("handle_button_click, new value of counter is %d\n", counter);
-#else
-        printf("simulate button_click, new value of counter is %d\n", counter);
-#endif
-        // serialize the value of counter as a string, and tell connector
-        char buffer[20];
-        int size = sprintf(buffer,"%d",counter);
-        res->set_value((uint8_t*)buffer, size);
+            // up counter
+            counter++;
+    #ifdef TARGET_K64F
+            printf("handle_button_click, new value of counter is %d\n", counter);
+    #else
+            printf("simulate button_click, new value of counter is %d\n", counter);
+    #endif
+            // serialize the value of counter as a string, and tell connector
+            char buffer[20];
+            int size = sprintf(buffer,"%d",counter);
+            res->set_value((uint8_t*)buffer, size);
+        } else {
+            printf("simulate button_click, device not registered\n");
+        }
     }
 
 private:
@@ -407,7 +411,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
             break;
         }
         if(clicked) {
-           clicked = false;
+            clicked = false;
             button_resource.handle_button_click();
         }
     }
