@@ -409,4 +409,8 @@ This should resolve the issue:
 ```		
 cp configs/eth-wifi-mbedignore ./.mbedignore		
 ```		
- 		
+
+#### Linking problems?
+
+Due to re-structuring of mbed-client-c the CoAP library might exist twice in your directory tree, if you updated to the latest version of this repository. If moving from an older mbedOS version mbedOS 5.4 based release, please run `mbed deploy` to ensure all repos get updated.
+
