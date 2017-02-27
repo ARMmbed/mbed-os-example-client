@@ -21,7 +21,7 @@
 #include <vector>
 #include "mbed-trace/mbed_trace.h"
 #include "mbedtls/entropy_poll.h"
-
+#include "mbed_assert.h"
 #include "security.h"
 
 #include "mbed.h"
@@ -30,11 +30,25 @@
 #define MBED_CONF_APP_ESP8266_TX MBED_CONF_APP_WIFI_TX
 #define MBED_CONF_APP_ESP8266_RX MBED_CONF_APP_WIFI_RX
 #include "easy-connect/easy-connect.h"
+#define TRACE_GROUP "nucleo"
+RawSerial output(USBTX, USBRX);
 
+#ifdef TARGET_NUCLEO_F401RE
+
+#include "include/nsdlaccesshelper.h"
+#include "m2mconstants.h"
+#include "m2mbase.h"
+#include "resource_data.h"
+
+DigitalOut red_led(PA_0);
+DigitalOut green_led(PA_0);
+DigitalOut blue_led(PA_0);
+#else
 // Status indication
 DigitalOut red_led(LED1);
 DigitalOut green_led(LED2);
 DigitalOut blue_led(LED3);
+#endif
 Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
@@ -313,6 +327,12 @@ void button_clicked() {
     updates.release();
 }
 
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
+}
+
+//#define MBED_STACK_STATS_ENABLED
 // Entry point to the program
 int main() {
 
@@ -345,15 +365,20 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Keep track of the main thread
     mainThread = osThreadGetId();
 
-    printf("\nStarting mbed Client example in ");
+    // Sets the console baud-rate
+    output.baud(115200);
+
+    output.printf("\r\nStarting mbed Client example in ");
 #if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
-    printf("IPv6 mode\n");
+    output.printf("IPv6 mode\r\n");
 #else
-    printf("IPv4 mode\n");
+    output.printf("IPv4 mode\r\n");
 #endif
 
     mbed_trace_init();
-
+    mbed_trace_print_function_set(trace_printer);
+    
+    get_alloc_size();
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
         printf("\nConnection to Network Failed - exiting application...\n");
@@ -364,7 +389,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     ButtonResource button_resource;
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
-
+    get_alloc_size();
 #ifdef TARGET_K64F
     // On press of SW3 button on K64F board, example application
     // will call unregister API towards mbed Device Connector
@@ -392,13 +417,18 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     object_list.push_back(device_object);
     object_list.push_back(button_resource.get_object());
     object_list.push_back(led_resource.get_object());
-    object_list.push_back(big_payload_resource.get_object());
-
+    object_list.push_back(big_payload_resource.get_object());    
+    #ifdef TARGET_NUCLEO_F401RE
+    const_data_test();
+    object_list.push_back(my_obj);    
+    #endif
     // Set endpoint registration object
-    mbed_client.set_register_object(register_object);
-
+    mbed_client.set_register_object(register_object);              
+    
+    get_alloc_size();
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
+    tr_debug("Resource mem after register: %d\r\n", get_alloc_size());
     registered = true;
 
     while (true) {
