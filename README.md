@@ -87,8 +87,7 @@ To register the application with the Connector service, you need to create and s
 
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver), [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver), and [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields.
 
-To add the Atmel driver to your application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`.
-Please make sure that the `mbed_app.json` file points to the correct radio driver type:
+To choose the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
 
 ```json
     "mesh_radio_type": {
