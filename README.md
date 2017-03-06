@@ -18,7 +18,7 @@ The application:
 * mbed 6LoWPAN shield (AT86RF212B/[AT86RF233](https://firefly-iot.com/product/firefly-arduino-shield-2-4ghz/)) for 6LoWPAN ND and Thread.
 * Ethernet cable and connection to the internet.
 
-## Supported Target hardware configurations
+## Supported target hardware configurations
 
  This example has been tested in following configuration
  * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
@@ -59,9 +59,9 @@ To configure the example application:
 1. [Set the client credentials](#client-credentials).
 1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change Ethernet settings](#ethernet-settings).
-1. [Change Wi-Fi settings](#wi-fi-settings).
+1. [Change WiFi settings](#wifi-settings).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
-1. [Change the socket type](#changing-socket-type). This step is optional.
+1. [Change the socket type](#changing-the-socket-type). This step is optional.
 
 ### Connection type
 
@@ -132,7 +132,7 @@ Alternatively, you can remove the link layer security from the `k64f-border-rout
 
 #### mbed gateway
 
-To connect the example application in 6LoWPAN ND or Thread mode to Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
+To connect the example application in 6LoWPAN ND or Thread mode to mbed Device Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
 
 1. Use an Ethernet cable to connect the mbed 6LoWPAN gateway router to the internet.
 2. Use a micro-USB cable to connect the mbed 6LoWPAN gateway router to your computer. The computer will list the router as removable storage.
@@ -141,7 +141,7 @@ To connect the example application in 6LoWPAN ND or Thread mode to Connector, yo
 	* For the **6LoWPAN ND** bootstrap, use `gateway6LoWPANDynamic.bin`.
 	* For the **Thread** bootstrap, use `gatewayThreadDynamic.bin`.
 
-	The dynamic binaries use IPv6 autoconfiguration and enable the client to connect to the Connector service. The static binaries create a site-local IPv6 network and packets cannot be routed outside.
+	The dynamic binaries use IPv6 autoconfiguration and enable the client to connect to the mbed Device Connector service. The static binaries create a site-local IPv6 network and packets cannot be routed outside.
 
 4. Copy the gateway binary file to the mbed 6LoWPAN gateway router to flash the device. The device reboots automatically after flashing. If that does not happen, press the **Reset** button on the board.
 
@@ -186,7 +186,7 @@ For running the example application using Ethernet, you need:
 - An Ethernet cable.
 - An Ethernet connection to the internet.
 
-### Wi-Fi settings
+### WiFi settings
 
 The example application uses ESP8266 WiFi Interface for managing the wireless connectivity. To run this application using WiFi, you need:
 
@@ -231,7 +231,6 @@ For example, NUCLEO_F401RE requires a different serial connection:
     }
 ```
 
-
 ### IP address setup
 
 This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6 by changing the `mbed_app.json` you make:
@@ -250,9 +249,9 @@ The example program should automatically get an IP address from the router when 
 
 If your network does not have DHCP enabled, you have to manually assign a static IP address to the board. We recommend having DHCP enabled to make everything run smoothly.
 
-### Changing socket type
+### Changing the socket type
 
-Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LowPan. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LoWPAN. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
@@ -313,7 +312,7 @@ To build the example using mbed CLI:
 
 Import this repository in the Online IDE and continue from step 3 onwards.
 
-### Compilation problems?		
+### Compilation problems		
 		
 If you encounter a problem like this when compiling the application:
 		
