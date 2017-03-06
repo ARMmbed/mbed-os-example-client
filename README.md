@@ -26,8 +26,8 @@ The application:
  * K64F (Ethernet)
  * NUCLEO_F429ZI (Ethernet)
  * UBLOX_EVK_ODIN_W2 (WiFi & Ethernet - use the supplied `configs/eth_v4.json` for Ethernet)
- * K64F + GROVE SEEED shield (Wifi)
- * NUCLEO_F429ZI + GROVE SEEED shield (Wifi)
+ * K64F + GROVE SEEED shield (WiFi)
+ * NUCLEO_F429ZI + GROVE SEEED shield (WiFi)
 
 Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). 
 
@@ -86,7 +86,7 @@ To register the application with the Connector service, you need to create and s
 
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver) and [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver) radio shields.
 
-To add the Atmel driver to you application from command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`.
+To add the Atmel driver to your application from the command line, call: `mbed add https://github.com/ARMmbed/atmel-rf-driver`.
 Please make sure that the `mbed_app.json` file points to the correct radio driver type:
 
 ```json
@@ -234,8 +234,7 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 ### IP address setup
 
-This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6
-by changing the mbed_app.json you make:
+This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6 by changing the `mbed_app.json` you make:
 ```
     "target_overrides": {
         "*": {
@@ -245,7 +244,7 @@ by changing the mbed_app.json you make:
             "mbed-trace.enable": 0
         }
 ```
-by modifying the ipv4-enable or ipv6-enable to true/false. Only one should be true.
+by modifying the `ipv4-enabled` or `ipv6-enabled` to `true/false`. Only one should be true.
 
 The example program should automatically get an IP address from the router when connected over Ethernet or WiFi.
 
