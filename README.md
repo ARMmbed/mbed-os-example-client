@@ -408,3 +408,8 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 
 To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
+## Known issues
+
+### mbed OS 5.4
+
+* [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
