@@ -1,0 +1,45 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "value": "ETHERNET"
+        },
+        "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20",
+        	"value": "ATMEL"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"SSID\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Password\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-trace.enable": 0
+        },
+        "NUCLEO_F401RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "NUCLEO_F411RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        }
+    }
+}
