@@ -15,8 +15,8 @@
             "target.features_add": ["NANOSTACK", "THREAD_ROUTER", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-mesh-api.thread-config-channel": 12,
-            "mbed-mesh-api.thread-config-panid": "0xDEFA",
+            "mbed-mesh-api.thread-config-channel": 22,
+            "mbed-mesh-api.thread-config-panid": "0x0700",
             "mbed-trace.enable": 0
         }
     }

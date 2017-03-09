@@ -110,27 +110,17 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
-<span class="notes">**Note:** If you are using the [k64f-border-router](https://github.com/ARMmbed/k64f-border-router) (that can be used only as a 6LoWPAN BR and only with FRDM-K64F), you need to enable another security feature. By default, the `k64f-border-router` uses `PSK` as security.</span>
+#### Border router
 
-You can enable the security here on your mbed-os-example-client application, for example:
+There are two options for border router.
 
-```json
-    "target_overrides": {
-        "*": {
-            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
-        }
-	}
-```
+##### Nanostack-border-router
 
-Alternatively, you can remove the link layer security from the `k64f-border-router`. To do that, change the [mbed_app.json](https://github.com/ARMmbed/k64f-border-router/blob/master/mbed_app.json) fetched from the `k64f-border-router` repository, for example: 
+ The [Nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router-private) can be configured and built for the 6LoWPAN ND or Thread mode.  
 
-```json
-    "config": {
-            "security-mode": "NONE",
-        }
-```
+##### mbed gateway
 
-#### mbed gateway
+The mbed gateway is a binary release only.
 
 To connect the example application in 6LoWPAN ND or Thread mode to mbed Device Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
 
@@ -283,13 +273,12 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. Copy the relevant example configuration file from configs/xxx.json to mbed_app.json and
-   [Configure](#application-setup) the client application.
-
 4. To build the application, select the hardware board and build the toolchain using the command:
 
-    ```
-    mbed compile -m K64F -t GCC_ARM -c
+	Specify the config file in the build command, for example for 6LoWPAN
+
+	```
+    mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
 
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
