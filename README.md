@@ -110,6 +110,16 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
+<span class="notes">**Note:** In case you want to use the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4), you need also to configure its MAC address in the `mbed_app.json` file, for example:</span>
+
+```json
+    "target_overrides": {
+        "*": {
+            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}"
+        },
+    }
+```
+
 #### Border router
 
 There are two options for border router.
