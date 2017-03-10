@@ -130,7 +130,7 @@ Alternatively, you can remove the link layer security from the `k64f-border-rout
         }
 ```
 
-<span class="notes">**Note:** In case you want to use the NUCLEO_F429ZI + X-NUCLEO-IDS01A4 target hardware configuration, you need also to use the [stm32-border-router](https://github.com/ARMmbed/stm32-border-router) (that can be used only as a 6LoWPAN BR and only with NUCLEO_F429ZI) as gateway router. In this case you need to enable another security feature. By default, the `stm32-border-router` uses `PSK` as security.</span>
+<span class="notes">**Note:** In case you want to use the NUCLEO_F429ZI + X-NUCLEO-IDS01A4 target hardware configuration, you need also to use the [stm32-border-router](https://github.com/ARMmbed/stm32-border-router) (that can be used only as a 6LoWPAN BR and only with NUCLEO_F429ZI) as gateway router. In this case, you need to enable another security feature. By default, the `stm32-border-router` uses `PSK` as security.</span>
 
 You can enable the security here on your mbed-os-example-client application, for example:
 
@@ -150,7 +150,7 @@ Alternatively, you can remove the link layer security from the `stm32-border-rou
         }
 ```
 
-Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4) you need also to configure its MAC address in the `mbed_app.json` file, e.g.:
+Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4) you need also to configure its MAC address in the `mbed_app.json` file, for example:
 ```json
     "target_overrides": {
         "*": {
