@@ -30,7 +30,7 @@ The application:
  * K64F + GROVE SEEED shield (WiFi)
  * NUCLEO_F429ZI + GROVE SEEED shield (WiFi)
 
-Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). 
+Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
 
 To see how different targets are built please see the supplied `build_all.sh script`.
 
@@ -110,56 +110,17 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
-<span class="notes">**Note:** If you are using the [k64f-border-router](https://github.com/ARMmbed/k64f-border-router) (that can be used only as a 6LoWPAN BR and only with FRDM-K64F), you need to enable another security feature. By default, the `k64f-border-router` uses `PSK` as security.</span>
+#### Border router
 
-You can enable the security here on your mbed-os-example-client application, for example:
+There are two options for border router.
 
-```json
-    "target_overrides": {
-        "*": {
-            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
-        }
-	}
-```
+##### Nanostack-border-router
 
-Alternatively, you can remove the link layer security from the `k64f-border-router`. To do that, change the [mbed_app.json](https://github.com/ARMmbed/k64f-border-router/blob/master/mbed_app.json) fetched from the `k64f-border-router` repository, for example: 
+ The [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) can be configured and built for the 6LoWPAN ND or Thread mode.  
 
-```json
-    "config": {
-            "security-mode": "NONE",
-        }
-```
+##### mbed gateway
 
-<span class="notes">**Note:** In case you want to use the NUCLEO_F429ZI + X-NUCLEO-IDS01A4 target hardware configuration, you need also to use the [stm32-border-router](https://github.com/ARMmbed/stm32-border-router) (that can be used only as a 6LoWPAN BR and only with NUCLEO_F429ZI) as gateway router. In this case you need to enable another security feature. By default, the `stm32-border-router` uses `PSK` as security.</span>
-
-You can enable the security here on your mbed-os-example-client application, for example:
-
-```json
-    "target_overrides": {
-        "*": {
-            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
-        }
-	}
-```
-
-Alternatively, you can remove the link layer security from the `stm32-border-router`. To do that, change the [mbed_app.json](https://github.com/ARMmbed/stm32-border-router/blob/master/mbed_app.json) fetched from the `stm32-border-router` repository, for example: 
-
-```json
-    "config": {
-            "security-mode": "NONE",
-        }
-```
-
-Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4) you need also to configure its MAC address in the `mbed_app.json` file, e.g.:
-```json
-    "target_overrides": {
-        "*": {
-            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}"
-        },
-    }
-```
-
-#### mbed gateway
+The mbed gateway is a binary release only.
 
 To connect the example application in 6LoWPAN ND or Thread mode to mbed Device Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
 
@@ -312,30 +273,29 @@ To build the example using mbed CLI:
     mbed import mbed-os-example-client
     ```
 
-3. Copy the relevant example configuration file from configs/xxx.json to mbed_app.json and
-   [Configure](#application-setup) the client application.
+3. To build the application, select the hardware board and build the toolchain using the command:
 
-4. To build the application, select the hardware board and build the toolchain using the command:
+	Specify the config file in the build command, for example for 6LoWPAN
 
     ```
-    mbed compile -m K64F -t GCC_ARM -c
+    mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
 
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
 
-5. Plug the Ethernet cable into the board if you are using Ethernet mode.
+4. Plug the Ethernet cable into the board if you are using Ethernet mode.
 
-6. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
+5. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
 
-7. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
+6. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
 
-8. Drag the binary `BUILD/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
+7. Drag the binary `BUILD/K64F/GCC_ARM/mbed-os-example-client.bin` to the board to flash the application.
 
-9. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
+8. The board is automatically programmed with the new binary. A flashing LED on it indicates that it is still working. When the LED stops blinking, the board is ready to work.
 
-10. Press the **Reset** button on the board to run the program.
+9. Press the **Reset** button on the board to run the program.
 
-11. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
+10. For verification, continue to the [Monitoring the application](#monitoring-the-application) chapter.
 
 **To build the example using the Online IDE:**
 
@@ -375,7 +335,7 @@ This should resolve the issue:
 ```		
 cp configs/eth-wifi-mbedignore ./.mbedignore		
 ```		
-
+ 		
 ## Monitoring the application
 
 The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor. The application uses baud rate 115200.
@@ -436,4 +396,9 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
 To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
- 		
+
+## Known issues
+
+### mbed OS 5.4
+
+* [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
