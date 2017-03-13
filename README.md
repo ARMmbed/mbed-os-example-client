@@ -110,13 +110,23 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
 
 6LoWPAN ND and Thread use IPv6 for connectivity. Therefore, you need to verify first that you have a working IPv6 connection. To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
+<span class="notes">**Note:** In case you want to use the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4), you need also to configure its MAC address in the `mbed_app.json` file, for example:</span>
+
+```json
+    "target_overrides": {
+        "*": {
+            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}"
+        },
+    }
+```
+
 #### Border router
 
 There are two options for border router.
 
 ##### Nanostack-border-router
 
- The [Nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router-private) can be configured and built for the 6LoWPAN ND or Thread mode.  
+ The [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) can be configured and built for the 6LoWPAN ND or Thread mode.  
 
 ##### mbed gateway
 
@@ -136,35 +146,6 @@ To connect the example application in 6LoWPAN ND or Thread mode to mbed Device C
 4. Copy the gateway binary file to the mbed 6LoWPAN gateway router to flash the device. The device reboots automatically after flashing. If that does not happen, press the **Reset** button on the board.
 
 You can view debug traces from the gateway with a serial port monitor. The gateway uses baud rate 460800. The gateway IPv6 address is correctly configured when the following trace is visible: `Eth bootstrap ready, IP=XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX`.
-
-<span class="notes">**Note:** In case you want to use the NUCLEO_F429ZI + X-NUCLEO-IDS01A4 target hardware configuration, you need also to use the [stm32-border-router](https://github.com/ARMmbed/stm32-border-router) (that can be used only as a 6LoWPAN BR and only with NUCLEO_F429ZI) as gateway router. In this case, you need to enable another security feature. By default, the `stm32-border-router` uses `PSK` as security.</span>
-
-You can enable the security here on your mbed-os-example-client application, for example:
-
-```json
-    "target_overrides": {
-        "*": {
-            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
-        }
-	}
-```
-
-Alternatively, you can remove the link layer security from the `stm32-border-router`. To do that, change the [mbed_app.json](https://github.com/ARMmbed/stm32-border-router/blob/master/mbed_app.json) fetched from the `stm32-border-router` repository, for example: 
-
-```json
-    "config": {
-            "security-mode": "NONE",
-        }
-```
-
-Furthermore, for the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4) you need also to configure its MAC address in the `mbed_app.json` file, for example:
-```json
-    "target_overrides": {
-        "*": {
-            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}"
-        },
-    }
-```
 
 #### Channel settings
 
