@@ -1,0 +1,26 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "MESH_LOWPAN_ND"
+        },
+        "mesh_radio_type": {
+        	"help": "options are ATMEL, MCR20, SPIRIT1",
+        	"value": "SPIRIT1"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "target_overrides": {
+        "*": {
+            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}",
+            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-convert-newlines": true,
+            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
+            "mbed-mesh-api.6lowpan-nd-channel-page": 2,
+            "mbed-mesh-api.6lowpan-nd-channel": 1,
+            "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)",
+            "mbed-trace.enable": 0
+        }
+    }
+}

@@ -31,14 +31,27 @@
 #define MBED_CONF_APP_ESP8266_RX MBED_CONF_APP_WIFI_RX
 #include "easy-connect/easy-connect.h"
 
+#ifdef TARGET_STM
+#define RED_LED (LED3)
+#define GREEN_LED (LED1)
+#define BLUE_LED (LED2)
+#define LED_ON (1)		     
+#else // !TARGET_STM
+#define RED_LED (LED1)
+#define GREEN_LED (LED2)
+#define BLUE_LED (LED3)			     
+#define LED_ON (0) 
+#endif // !TARGET_STM
+#define LED_OFF (!LED_ON)
+
 // Status indication
-DigitalOut red_led(LED1);
-DigitalOut green_led(LED2);
-DigitalOut blue_led(LED3);
+DigitalOut red_led(RED_LED);
+DigitalOut green_led(GREEN_LED);
+DigitalOut blue_led(BLUE_LED);
+
 Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
-
 }
 
 // These are example resource values for the Device Object
@@ -124,7 +137,7 @@ public:
     void blink(void *argument) {
         // read the value of 'Pattern'
         status_ticker.detach();
-        green_led = 1;
+        green_led = LED_OFF;
 
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource("5853");
@@ -180,7 +193,7 @@ private:
                 M2MObjectInstance* inst = led_object->object_instance();
                 M2MResource* led_res = inst->resource("5850");
                 led_res->send_delayed_post_response();
-                red_led = 1;
+                red_led = LED_OFF;
                 status_ticker.attach_us(blinky, 250000);
                 return;
             }
@@ -338,8 +351,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     srand(seed);
-    red_led = 1;
-    blue_led = 1;
+    red_led = LED_OFF;
+    blue_led = LED_OFF;
 
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
