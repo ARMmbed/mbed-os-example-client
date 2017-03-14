@@ -24,6 +24,7 @@ To configure the example application:
   * [Ethernet](#ethernet)
   * [Mesh (6LoWPAN and Thread)](#mesh)
   * [WiFi](#wifi)
+  * [Non listed boards](#non-listed-board-support)
 1. [Set the client credentials](#client-credentials).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-the-socket-type). This step is optional.
@@ -50,6 +51,7 @@ For running the example application using Ethernet, you need:
 * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
 * [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
 * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
+* Supported combinations of board and shields(#supported-combinations-of-board-and-shields)
 
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. 
 This example supports these shields:
@@ -91,6 +93,10 @@ To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your ne
         },
     }
 ```
+
+#### Supported combinations of board and shields
+
+See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
 
 #### Border router
 
@@ -211,15 +217,15 @@ This should resolve the issue:
 cp configs/eth-wifi-mbedignore ./.mbedignore 
 ```    
  
-Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
-
-To see how different targets are built please see the supplied `build_all.sh script`.
-
-## Requirements for non-K64F boards
-
-- This example requires TLS functionality to be enabled on mbed TLS. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
+### Non listed board support 
+Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it
+On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
   - To learn why entropy is required, read the [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
-- On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.
+Also, the complete example configuration of mbed Client, selected network interface and mbed OS components must fit into hardware's given memory size (Flash size and RAM size). 
+
+**NOTE** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.
+
+**NOTE** To see how different targets are built please see the supplied `build_all.sh script`.
 
 
 ### Client credentials
