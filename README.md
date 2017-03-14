@@ -20,16 +20,19 @@ The application:
 
 To configure the example application:
 
-1. [Select the network and board](#supported-target-hardware-configurations).
+1. [Select network and board](#select-network-and-board)
+  * [Ethernet](#ethernet)
+  * [Mesh (6LoWPAN and Thread)](#mesh)
+  * [WiFi](#wifi)
 1. [Set the client credentials](#client-credentials).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-the-socket-type). This step is optional.
 
-### Supported target hardware configurations
+### Select network and board
 
 This example supports following hardware-network combinations:
 
-**Ethernet**
+### Ethernet
 
 #### Supported boards
 * K64F
@@ -41,7 +44,7 @@ For running the example application using Ethernet, you need:
 - An Ethernet cable.
 - An Ethernet connection to the internet.
 
-**Mesh ( 6LoWPAN and Thread)**
+### Mesh
 
 #### Supported boards
 * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
@@ -148,7 +151,7 @@ With Thread, you can change the operating mode of the client from the default ro
     "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
 ```
 
-**WiFi**
+## WiFi
 
 #### Supported boards
 * UBLOX_EVK_ODIN_W2 . Check instructions for compilation [here](#compile-configuration-for-odin-wifi)
