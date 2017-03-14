@@ -20,17 +20,33 @@ The application:
 
 ## Supported target hardware configurations
 
- This example has been tested in following configuration
- * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
- * [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
- * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
- * K64F (Ethernet)
- * NUCLEO_F429ZI (Ethernet)
- * UBLOX_EVK_ODIN_W2 (WiFi & Ethernet - use the supplied `configs/eth_v4.json` for Ethernet)
- * K64F + GROVE SEEED shield (WiFi)
- * NUCLEO_F429ZI + GROVE SEEED shield (WiFi)
+This example has been tested in following configurations:
 
-Apart from this, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
+**Ethernet**
+
+* K64F
+* NUCLEO_F429ZI
+* UBLOX_EVK_ODIN_W2 (use the supplied `configs/eth_v4.json`)
+
+Continue to the [Ethernet-specific settings](#ethernet-settings).
+
+**Mesh**
+
+* K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
+* [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
+* NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
+
+Continue to the [6LoWPAN/Thread-specific settings](#6lowpan-nd-and-thread-settings).
+
+**WiFi**
+
+* UBLOX_EVK_ODIN_W2
+* K64F + GROVE SEEED shield (WiFi)
+* NUCLEO_F429ZI + GROVE SEEED shield (WiFi)
+
+Continue to the [WiFi-specific settings](#wifi-settings).
+ 
+Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it and the complete example configuration of mbed Client, selected network interface and mbed OS components fits into hardware's given memory size (Flash size and RAM size). See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
 
 To see how different targets are built please see the supplied `build_all.sh script`.
 
