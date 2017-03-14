@@ -41,8 +41,8 @@ Continue to the [6LoWPAN/Thread-specific settings](#6lowpan-nd-and-thread-settin
 **WiFi**
 
 * UBLOX_EVK_ODIN_W2
-* K64F + GROVE SEEED shield (WiFi)
-* NUCLEO_F429ZI + GROVE SEEED shield (WiFi)
+* K64F + GROVE SEEED shield
+* NUCLEO_F429ZI + GROVE SEEED shield
 
 Continue to the [WiFi-specific settings](#wifi-settings).
  
@@ -52,15 +52,9 @@ To see how different targets are built please see the supplied `build_all.sh scr
 
 ## Requirements for non-K64F boards
 
-*   This example requires TLS functionality to be enabled on mbed TLS.
-    On devices where hardware entropy is not present, TLS is disabled by default.
-    This would result in compile time failures or linking failures.
-
-    To learn why entropy is required, read the
-    [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
-
-*   On non-K64F boards, there is no unregistration functionality and
-    button presses are simulated through timer ticks incrementing every 15 seconds.
+- This example requires TLS functionality to be enabled on mbed TLS. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
+  - To learn why entropy is required, read the [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
+- On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.
 
 ## Required software
 
@@ -142,7 +136,7 @@ There are two options for border router.
 
 ##### Nanostack-border-router
 
- The [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) can be configured and built for the 6LoWPAN ND or Thread mode.  
+You can configure and build the [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) for the 6LoWPAN ND or Thread mode.  
 
 ##### mbed gateway
 
@@ -185,7 +179,7 @@ For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver)
 "mbed-mesh-api.6lowpan-nd-channel": 1
 ```
 
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All configurable settings can be found in the `mbed-os-example-client/mbed-os/features/FEATURE_IPV6/mbed-mesh-api/mbed_lib.json` file.
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All configurable settings are in the `mbed-os-example-client/mbed-os/features/FEATURE_IPV6/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
