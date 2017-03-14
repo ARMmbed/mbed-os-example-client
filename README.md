@@ -68,8 +68,8 @@ To configure the example application:
 
 1. [Select the connection type](#connection-type).
 1. [Set the client credentials](#client-credentials).
-1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change Ethernet settings](#ethernet-settings).
+1. [Change 6LoWPAN ND & Thread settings](#6lowpan-nd-and-thread-settings).
 1. [Change WiFi settings](#wifi-settings).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-the-socket-type). This step is optional.
@@ -92,6 +92,13 @@ To register the application with the Connector service, you need to create and s
 1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
 1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** to get new credentials for your device.
 1. Replace the contents in the `security.h` file of this project's directory with the content copied above.
+
+### Ethernet settings
+
+For running the example application using Ethernet, you need:
+
+- An Ethernet cable.
+- An Ethernet connection to the internet.
 
 ### 6LoWPAN ND and Thread settings
 
@@ -188,13 +195,6 @@ With Thread, you can change the operating mode of the client from the default ro
 ```json
     "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
 ```
-
-### Ethernet settings
-
-For running the example application using Ethernet, you need:
-
-- An Ethernet cable.
-- An Ethernet connection to the internet.
 
 ### WiFi settings
 
