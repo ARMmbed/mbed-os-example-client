@@ -36,6 +36,7 @@ This example supports following hardware-network combinations:
 ### Ethernet
 
 #### Supported boards
+
 * K64F
 * NUCLEO_F429ZI
 * UBLOX_EVK_ODIN_W2 (use the supplied `configs/eth_v4.json`)
@@ -48,18 +49,21 @@ For running the example application using Ethernet, you need:
 ### Mesh
 
 #### Supported boards
+
 * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
 * [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
 * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
-* Supported combinations of board and shields(#supported-combinations-of-board-and-shields)
+* [Supported combinations of board and shields](#supported-combinations-of-board-and-shields)
 
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. 
+
 This example supports these shields:
+
 * [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver)
 * [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver)
 * [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields. Check instructions for compilation [here](#compile-configuration-for-spirit1)
 
-To choose the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
+To select the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
 
 ```json
     "mesh_radio_type": {
@@ -74,7 +78,7 @@ Then you need to enable ARM IPv6/6LoWPAN stack. Edit the `mbed_app.json` file to
 "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
 ```
 
-If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROUTER configuration:
+If your connection type is `MESH_THREAD` then you may want to use the `THREAD_ROUTER` configuration:
 
 ```
 "target.features_add": ["NANOSTACK", "THREAD_ROUTER", "COMMON_PAL"],
@@ -83,8 +87,9 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
 Since 6LoWPAN ND and Thread use IPv6 for connectivity, you need to verify first that you have a working IPv6 connection. 
 To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your network.
 
-#### Compile configuration for Spirit1 
-<span class="notes">**Note:** In case you want to use the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4), you need also to configure its MAC address in the `mbed_app.json` file, for example:</span>
+#### Compile configuration for Spirit1
+
+<span class="notes">**Note:** In case you want to use the STM Spirit1 Sub-1 GHz RF expansion board (X-NUCLEO-IDS01A4), you also need to configure its MAC address in the `mbed_app.json` file, for example:</span>
 
 ```json
     "target_overrides": {
@@ -160,9 +165,10 @@ With Thread, you can change the operating mode of the client from the default ro
 ## WiFi
 
 #### Supported boards
-* UBLOX_EVK_ODIN_W2 . Check instructions for compilation [here](#compile-configuration-for-odin-wifi)
-* K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module
-* NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module
+
+* UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
+* K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -170,7 +176,7 @@ To run this application using ESP8266 WiFi Interface, you need:
 1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update).
 1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
 1. Attach the shield on your board.
-1. In the `mbed_app.json` file, change
+1. In the `mbed_app.json` file, change:
 
 ```json
     "network-interface": {
@@ -192,7 +198,7 @@ Provide your WiFi SSID and password here and leave `\"` in the beginning and end
     }
 ```
 
-<span class="notes">**Note:** Some devices do not support the Grove Shield or use the primary UART for USB communication. On such devices, the `mbed_app.json` should be modified to use the serial pins connected to the ESP8266.</span>
+<span class="notes">**Note:** Some devices do not support the Grove Shield or use the primary UART for USB communication. On such devices, modify the `mbed_app.json` to use the serial pins connected to the ESP8266.</span>
 
 For example, NUCLEO_F401RE requires a different serial connection:
 
@@ -218,27 +224,30 @@ cp configs/eth-wifi-mbedignore ./.mbedignore
 ```    
  
 ### Non listed board support 
-Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it
-On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
-  - To learn why entropy is required, read the [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
-Also, the complete example configuration of mbed Client, selected network interface and mbed OS components must fit into hardware's given memory size (Flash size and RAM size). 
 
-**NOTE** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.
+Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
 
-**NOTE** To see how different targets are built please see the supplied `build_all.sh script`.
+To learn why entropy is required, read the [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
+
+Also, the complete example configuration of mbed Client, the selected network interface and mbed OS components must fit into hardware's given memory size (Flash size and RAM size). 
+
+<span class="notes">**Note:** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.</span>
+
+<span class="notes">**Note:** To see how different targets are built please see the supplied `build_all.sh script`.</span>
 
 
 ### Client credentials
 
-To register the application with the Connector service, you need to create and set the client side certificate.
+To register the application with the mbed Device Connector service, you need to create and set the client side certificate.
 
 1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
 1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** to get new credentials for your device.
-1. Replace the contents in the `security.h` file of this project's directory with the content copied above.
+1. Replace the contents in the `security.h` file of this project's folder with the content copied above.
 
 ### IP address setup
 
 This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6 by changing the `mbed_app.json` you make:
+
 ```
     "target_overrides": {
         "*": {
@@ -248,6 +257,7 @@ This example uses IPv4 to communicate with the [mbed Device Connector Server](ht
             "mbed-trace.enable": 0
         }
 ```
+
 by modifying the `ipv4-enabled` or `ipv6-enabled` to `true/false`. Only one should be true.
 
 The example program should automatically get an IP address from the router when connected over Ethernet or WiFi.
@@ -354,8 +364,8 @@ handle_button_click, new value of counter is 1
 4. Press the **SW2** button on the device a number of times (make a note of how many times you did that).
 5. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
 6. Click the **Endpoint directory lookups** drop down menu.
-![](/docs/img/ep_lookup.PNG) 
-7. In the menu, click **GET** next to **Endpoint's resource representation**. Select your _endpoint_ and _resource-path_. For example, the _endpoint_ is the identifier of your endpoint that can be found in the `security.h` file as `MBED_ENDPOINT_NAME`. Choose `3200/0/5501`as a resource path and click **TEST API**. 
+  ![](/docs/img/ep_lookup.png) 
+7. In the menu, click **GET** next to **Endpoint's resource representation**. Select your _endpoint_ and _resource-path_. For example, the _endpoint_ is the identifier of your endpoint that can be found in the `security.h` file as `MBED_ENDPOINT_NAME`. Select `3200/0/5501`as a resource path and click **TEST API**. 
 8. The number of times you pressed **SW2** is shown.
 9. Press the **SW3** button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
 
