@@ -21,10 +21,10 @@ The application:
 To configure the example application:
 
 1. [Select network and board](#select-network-and-board)
-  * [Ethernet](#ethernet)
-  * [Mesh (6LoWPAN and Thread)](#mesh)
-  * [WiFi](#wifi)
-  * [Non listed boards](#non-listed-board-support)
+    * [Ethernet](#ethernet)
+    * [Mesh (6LoWPAN and Thread)](#mesh)
+    * [WiFi](#wifi)
+    * [Non listed boards](#non-listed-board-support)
 1. [Set the client credentials](#client-credentials).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
 1. [Change the socket type](#changing-the-socket-type). This step is optional.
@@ -364,7 +364,7 @@ handle_button_click, new value of counter is 1
 4. Press the **SW2** button on the device a number of times (make a note of how many times you did that).
 5. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
 6. Click the **Endpoint directory lookups** drop down menu.
-  ![](/docs/img/ep_lookup.png) 
+    ![](/docs/img/ep_lookup.PNG) 
 7. In the menu, click **GET** next to **Endpoint's resource representation**. Select your _endpoint_ and _resource-path_. For example, the _endpoint_ is the identifier of your endpoint that can be found in the `security.h` file as `MBED_ENDPOINT_NAME`. Select `3200/0/5501`as a resource path and click **TEST API**. 
 8. The number of times you pressed **SW2** is shown.
 9. Press the **SW3** button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
