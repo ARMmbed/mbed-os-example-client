@@ -85,7 +85,7 @@ To register the application with the Connector service, you need to create and s
 
 ### 6LoWPAN ND and Thread settings
 
-There are example settings under the configs directory, which provides the easiest way to start with the applications. The most relevant parameters are described in the following sections.
+There are example settings under the configs directory, which provide the easiest way to start with the applications. The [mbed-mesh-api](https://github.com/ARMmbed/mbed-os/tree/master/features/nanostack/FEATURE_NANOSTACK/mbed-mesh-api/mbed_lib.json) defines the defaults settings for applications. The most relevant parameters are described in more detail in the following sections.
 
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver), [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver), and [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields.
 
@@ -122,6 +122,8 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
     }
 ```
 
+For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
+ 
 #### Border router
 
 There are two options for border router.
@@ -148,30 +150,6 @@ To connect the example application in 6LoWPAN ND or Thread mode to mbed Device C
 4. Copy the gateway binary file to the mbed 6LoWPAN gateway router to flash the device. The device reboots automatically after flashing. If that does not happen, press the **Reset** button on the board.
 
 You can view debug traces from the gateway with a serial port monitor. The gateway uses baud rate 460800. The gateway IPv6 address is correctly configured when the following trace is visible: `Eth bootstrap ready, IP=XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX`.
-
-#### Channel settings
-
-The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `mbed_app.json` file in the main project directory. For example:
-
-```json
-    "target_overrides": {
-        "*": {
-            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
-            "mbed-mesh-api.6lowpan-nd-channel": 12,
-            "mbed-mesh-api.thread-config-channel-page": 0,
-            "mbed-mesh-api.thread-config-channel": 22
-        }
-    }
-```
-
-For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver) or AT86RF212B) use the following overrides, **6LoWPAN ND only**:
-
-```json
-"mbed-mesh-api.6lowpan-nd-channel-page": 2,
-"mbed-mesh-api.6lowpan-nd-channel": 1
-```
-
-For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). All configurable settings can be found in the `mbed-os-example-client/mbed-os/features/FEATURE_IPV6/mbed-mesh-api/mbed_lib.json` file.
 
 #### Thread-specific settings
 
