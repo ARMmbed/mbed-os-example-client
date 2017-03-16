@@ -85,6 +85,8 @@ To register the application with the Connector service, you need to create and s
 
 ### 6LoWPAN ND and Thread settings
 
+There are example settings under the configs directory, which provides the easiest way to start with the applications. The most relevant parameters are described in the following sections.
+
 First, you need to select the RF driver to be used by the 6LoWPAN/Thread stack. This example supports [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver), [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver), and [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields.
 
 To choose the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
@@ -157,7 +159,7 @@ The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](h
             "mbed-mesh-api.6lowpan-nd-channel-page": 0,
             "mbed-mesh-api.6lowpan-nd-channel": 12,
             "mbed-mesh-api.thread-config-channel-page": 0,
-            "mbed-mesh-api.thread-config-channel": 12
+            "mbed-mesh-api.thread-config-channel": 22
         }
     }
 ```
