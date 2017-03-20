@@ -122,6 +122,28 @@ If your connection type is `MESH_THREAD` then you may want to use the THREAD_ROU
     }
 ```
 
+#### Channel settings
+
+The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-os/tree/master/features/nanostack/FEATURE_NANOSTACK/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `.json` file. For example:
+
+```json
+    "target_overrides": {
+        "*": {
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-mesh-api.thread-config-channel-page": 0,
+            "mbed-mesh-api.thread-config-channel": 22
+        }
+    }
+```
+
+For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver) or AT86RF212B) use the following overrides, **6LoWPAN ND only**:
+
+```json
+"mbed-mesh-api.6lowpan-nd-channel-page": 2,
+"mbed-mesh-api.6lowpan-nd-channel": 1
+```
+
 For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
  
 #### Border router
