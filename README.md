@@ -392,3 +392,6 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 ### mbed OS 5.4
 
 * [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
+* [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
+
+Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
