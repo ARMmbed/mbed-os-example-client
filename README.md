@@ -185,8 +185,8 @@ To run this application using ESP8266 WiFi Interface, you need:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-        "value": "WIFI"
+        "help": "ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+        "value": "WIFI_ESP8266"
     }
 ```
 
@@ -220,13 +220,13 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 #### Compile configuration for ODIN WiFi
 
-To compile ODIN WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.     
+To compile ODIN WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
 
 This should resolve the issue:
 
-```     
+```
 cp configs/eth-wifi-mbedignore ./.mbedignore 
-```    
+```
  
 ### Non listed board support 
 
@@ -399,4 +399,4 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 * [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
 * [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
 
-Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
+Fix for those issues coming via; [mbed-os PR 3920](https://github.com/ARMmbed/mbed-os/pull/3920)
