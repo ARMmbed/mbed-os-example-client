@@ -18,6 +18,7 @@ try searching for duplicates before filing a new one.
 
 **Environment details**
 Describe against which environment you are testing.
+Compiler & other relevant tools - version information.
 
 **Expected Behavior**
 
