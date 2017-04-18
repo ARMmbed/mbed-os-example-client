@@ -95,6 +95,11 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
             execute ("sed -i '/6lowpan-nd-channel\":/a \"mbed-mesh-api.6lowpan-nd-panid-filter\": \"0xABBA\",' mbed_app.json")
           }
 
+          if ("${configName}" == "6lp" || "${configName}" == "thd") {
+            // Change socket mode to UDP
+            execute ("sed -i 's/M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP/M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP/' simpleclient.h")
+          }
+
           if ("${connectiontype}" == "MCR20") {
             // Replace default rf shield
             execute ("sed -i 's/\"value\": \"ATMEL\"/\"value\": \"MCR20\"/' mbed_app.json")
