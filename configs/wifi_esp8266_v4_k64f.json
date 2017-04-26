@@ -1,0 +1,53 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "WIFI_ESP8266"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"4tousnet\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"U!33p5k4rm\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config_Nrf52.h\"",        
+        "MBED_STACK_STATS_ENABLED=1",
+        "DISABLE_BLOCK_MESSAGE",
+        "DISABLE_DELAYED_RESPONSE",
+        "DISABLE_RESOURCE_TYPE",
+        "DISABLE_INTERFACE_DESCRIPTION",
+        "MEMORY_OPTIMIZED_API",
+        "MBED_HEAP_STATS_ENABLED=1",
+        "MBED_MEM_TRACING_ENABLED",         
+        "OS_MAINSTKSIZE=256",
+        "OS_IDLESTKSIZE=64",
+        "OS_STKSIZE=100",
+        "OS_TIMERS=0"],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["COMMON_PAL"],
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-convert-newlines": true,           
+            "mbed-trace.enable": 0
+        },
+        "NUCLEO_F401RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "NUCLEO_F411RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        }
+    }
+}

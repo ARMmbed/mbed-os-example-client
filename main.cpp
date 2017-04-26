@@ -44,6 +44,48 @@
 #endif // !TARGET_STM
 #define LED_OFF (!LED_ON)
 
+#ifdef MBED_HEAP_STATS_ENABLED
+#include "mbed_stats.h"
+#endif
+
+#ifdef MBED_MEM_TRACING_ENABLED
+#include "mbed_mem_trace.h"
+#endif
+
+#define TRACE_GROUP "main"
+volatile uint32_t last_alloc=0;
+
+uint32_t get_alloc_size() 
+{    
+	uint32_t ret=0;	
+    #ifdef MBED_HEAP_STATS_ENABLED
+	mbed_stats_heap_t stats;
+    mbed_stats_heap_get(&stats);
+    printf("current heap size size: %d\n\r" , stats.current_size);
+    printf("total heap size size: %d\n\r" , stats.total_size);
+    printf("Max heap size size: %d\n\r" , stats.max_size);
+	ret = stats.current_size-last_alloc;
+	last_alloc = stats.current_size;	
+    #endif
+	return ret;
+}
+
+
+void simple_test() {
+        
+        printf("very_simple_test\n\r");
+        printf("Simple test \n\r");
+        printf("M2MResource size %d\n", sizeof(M2MResource));
+        printf("M2MDevice size %d\n", sizeof(M2MDevice));
+        printf("M2MObject size %d\n", sizeof(M2MObject));
+        printf("M2MSecurity size %d\n", sizeof(M2MSecurity));
+        printf("M2MObjectInstance size %d\n", sizeof(M2MObjectInstance));
+        printf("M2MResourceInstance size %d\n", sizeof(M2MResourceInstance));
+        printf("M2MBase size %d\n", sizeof(M2MBase));
+       // printf("M2MReportHandler size %d\n", sizeof(M2MReportHandler));
+        printf("String size %d\n", sizeof(String));
+}
+
 // Status indication
 DigitalOut red_led(RED_LED);
 DigitalOut green_led(GREEN_LED);
@@ -122,7 +164,7 @@ public:
         // when a POST comes in, we want to execute the led_execute_callback
         led_res->set_execute_function(execute_callback(this, &LedResource::blink));
         // Completion of execute function can take a time, that's why delayed response is used
-        led_res->set_delayed_response(true);
+        //led_res->set_delayed_response(true);
         blink_args = new BlinkArgs();
     }
 
@@ -192,7 +234,7 @@ private:
                 // send delayed response after blink is done
                 M2MObjectInstance* inst = led_object->object_instance();
                 M2MResource* led_res = inst->resource("5850");
-                led_res->send_delayed_post_response();
+                //led_res->send_delayed_post_response();
                 red_led = LED_OFF;
                 status_ticker.attach_us(blinky, 250000);
                 return;
@@ -268,12 +310,14 @@ public:
         M2MObjectInstance* payload_inst = big_payload->create_object_instance();
         M2MResource* payload_res = payload_inst->create_dynamic_resource("1", "BigData",
             M2MResourceInstance::STRING, true /* observable */);
+        /*    
         payload_res->set_operation(M2MBase::GET_PUT_ALLOWED);
         payload_res->set_value((uint8_t*)"0", 1);
         payload_res->set_incoming_block_message_callback(
                     incoming_block_message_callback(this, &BigPayloadResource::block_message_received));
         payload_res->set_outgoing_block_message_callback(
                     outgoing_block_message_callback(this, &BigPayloadResource::block_message_requested));
+                    */
     }
 
     M2MObject* get_object() {
@@ -326,12 +370,62 @@ void button_clicked() {
     updates.release();
 }
 
+int stackIndex = 0;
+uint32_t StackReadings[100];
+uint32_t StackReadings2[100];
+
+void getStackUsage(char *str)
+{
+	osThreadId main_id = osThreadGetId();
+    osEvent info;
+    info = _osThreadGetInfo(osThreadGetId(), osThreadInfoStackSize);    
+	StackReadings[stackIndex*2] = (uint32_t) str;
+	StackReadings[stackIndex*2+1] = (uint32_t)info.value.v;
+    
+    info = _osThreadGetInfo(osThreadGetId(), osThreadInfoStackMax);    	
+	StackReadings2[stackIndex*2] = (uint32_t)info.value.v;
+	stackIndex++;
+}
+
 // Entry point to the program
 int main() {
 
-    unsigned int seed;
-    size_t len;
-
+    unsigned int seed=0;
+    size_t len=0;
+    /*
+    getStackUsage("1st: ");
+    printf("print test \r\n");
+    getStackUsage("2st: ");
+    printf("print test \r\n");
+    getStackUsage("3st: ");
+    
+    for (int i =0 ; i < stackIndex;i++)
+	{
+		uint32_t current = StackReadings[i*2+1];		
+		//printf("%s high watermark %li  usage %li\r\n",StackReadings[i*2],current,usage);
+	}
+    */
+    /*
+    char testi[1] = {'a'}; 
+    get_alloc_size();
+    M2MObject* object = M2MInterfaceFactory::create_object("3");
+    printf("object size %d \r\n", get_alloc_size());
+    M2MObjectInstance* inst = object->create_object_instance();
+    printf("object instance size %d \r\n", get_alloc_size());    
+    
+    M2MResource* res = inst->create_dynamic_resource("5", "", M2MResourceInstance::STRING, false);
+    printf("dyn resource %d \r\n", get_alloc_size());
+    M2MResource* res2 = inst->create_static_resource("6", "", M2MResourceInstance::STRING, (uint8_t*)testi, sizeof(testi), false);
+    printf("stat resource %d \r\n", get_alloc_size());
+    M2MResource* res3 = inst->create_dynamic_resource("4", "", M2MResourceInstance::INTEGER, false);
+    printf("dyn integer resource %d \r\n", get_alloc_size());
+    */
+    simple_test();
+    get_alloc_size();
+    uint32_t start = last_alloc;  
+    int ind=50;
+    
+    get_alloc_size();
 #ifdef MBEDTLS_ENTROPY_HARDWARE_ALT
     // Used to randomize source port
     mbedtls_hardware_poll(NULL, (unsigned char *) &seed, sizeof seed, &len);
@@ -413,10 +507,29 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
     registered = true;
-
+    
+   
+    tr_debug("total heap allocated: %d", (last_alloc-start));      
+        
     while (true) {
         updates.wait(25000);
         if(registered) {
+            #ifdef MBED_MEM_TRACING_ENABLED        
+             get_alloc_size();
+             for (int i =0 ; i < ind;i++)
+                {
+                 uint32_t* dummy;
+                 dummy = (uint32_t*)malloc(1024);
+                 if (dummy)
+                    printf("Mem allocated in kb %d addr %x \n", i, dummy);
+                else    
+                    ind=50;
+                }
+                
+                get_alloc_size();    
+    
+            mbed_mem_trace_set_callback(mbed_mem_trace_default_callback);
+            #endif
             if(!clicked) {
                 mbed_client.test_update_register();
             }

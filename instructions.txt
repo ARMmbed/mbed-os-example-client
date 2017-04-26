@@ -1,0 +1,34 @@
+Mbed tls configuration to be placed in the root directory
+
+mbedtls_mbed_client_config_Nrf52.h
+New application configuration to the configs directory.
+wifi_esp8266_v4_nrf52.json
+
+The fake entropy file to the root directory
+hw_fake_entropy.c
+Or let’s say that this is a very weak random number implementation.
+
+features/FEATURE_COMMON_PAL/nanostack-hal-mbed-cmsis-rtos/arm_hal_timer.cpp
+Change thread stack from 2 to 1kb
+static osThreadDef(timer_thread, osPriorityRealtime, /*1,*/ 1*1024);
+
+rtos/rtx/TARGET_CORTEX_M/RTX_CM_lib.h (line 457)
+Change ISR stack size from 2kb to 500 bytes
+#if !defined(ISR_STACK_SIZE)
+#define ISR_STACK_SIZE 500
+with gcc_arm compiler there might not be any benefit.
+
+rtos/rtx/TARGET_CORTEX_M/cmsis_os.h 
+Change main stack size from 4kb to 2kb by changing
+WORDS_STACK_SIZE 256
+
+Optional (this is a little bit risky, but it seemed to work) -> 
+features/FEATURE_COMMON_PAL/nanostack-hal-mbed-cmsis-rtos/mbed_lib.json
+Change event_loop_thread_stack_size  to 4kb
+"value": 4096
+
+Git Checkout memory_optimizations branch under mbed-client and mbed-client-c
+Then in .json
+"DISABLE_RESOURCE_TYPE",
+"DISABLE_INTERFACE_DESCRIPTION",
+"MEMORY_OPTIMIZED_API",

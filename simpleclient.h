@@ -61,7 +61,7 @@
     // WiFi or Ethernet supports both - TCP by default to avoid
     // NAT problems, but UDP will also work - IF you configure
     // your network right.
-    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 #endif
 
 
