@@ -310,7 +310,14 @@ To build the example using mbed CLI:
     ```
     mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
-
+    If you are using any of the following configuration remember to copy .mbedignore as well:
+    ```     
+    configs/eth_*
+    configs/wifi_*
+    ```         
+    ```     
+    cp configs/eth-wifi-mbedignore ./.mbedignore 
+    ```    
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
 
 4. Plug the Ethernet cable into the board if you are using Ethernet mode.
