@@ -98,15 +98,23 @@
 #define MBEDTLS_BASE64_C
 
 // Reduce IO buffer to save RAM, default is 16KB
-#define MBEDTLS_SSL_MAX_CONTENT_LEN 1024
+#define MBEDTLS_SSL_MAX_CONTENT_LEN 1*1024
 
 #define MBEDTLS_ASN1_PARSE_C
 #undef MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES
 
+//#define MBEDTLS_MEMORY_DEBUG
+//#define MBEDTLS_MEMORY_BACKTRACE
+
+//#undef MBEDTLS_ECP_DP_SECP384R1_ENABLED
+//#undef MBEDTLS_ECP_DP_CURVE25519_ENABLED
+#define MBEDTLS_MPI_WINDOW_SIZE 3
+#define MBEDTLS_MPI_MAX_SIZE 128
+
 // define to save 8KB RAM at the expense of ROM
 #define MBEDTLS_AES_ROM_TABLES
 #define MBEDTLS_ENTROPY_MAX_SOURCES 2
-#define MBEDTLS_ECP_WINDOW_SIZE            4 /**< Maximum window size used */
+#define MBEDTLS_ECP_WINDOW_SIZE            2 /**< Maximum window size used */
 #define MBEDTLS_ECP_FIXED_POINT_OPTIM      0 /**< Enable fixed-point speed-up */
 // Save ROM and a few bytes of RAM by specifying our own ciphersuite list
 #define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256

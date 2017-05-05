@@ -392,6 +392,7 @@ int main() {
 
     unsigned int seed=0;
     size_t len=0;
+    //malloc(1024*7);
     /*
     getStackUsage("1st: ");
     printf("print test \r\n");
@@ -510,26 +511,30 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     
    
     tr_debug("total heap allocated: %d", (last_alloc-start));      
-        
+
+    const uint32_t many_bytes = 512;
+    uint32_t* dummy;
+    uint32_t i=0;
+    bool doMemTesting=true;
     while (true) {
         updates.wait(25000);
         if(registered) {
-            #ifdef MBED_MEM_TRACING_ENABLED        
-             get_alloc_size();
-             for (int i =0 ; i < ind;i++)
-                {
-                 uint32_t* dummy;
-                 dummy = (uint32_t*)malloc(1024);
-                 if (dummy)
-                    printf("Mem allocated in kb %d addr %x \n", i, dummy);
-                else    
-                    ind=50;
-                }
-                
-                get_alloc_size();    
-    
-            mbed_mem_trace_set_callback(mbed_mem_trace_default_callback);
-            #endif
+        	get_alloc_size();
+        	while (doMemTesting) {
+				 dummy = (uint32_t*)malloc(many_bytes);
+				 if (dummy) {
+					 i++;
+					 //printf("addr %x \n", dummy);
+					 }
+				 else {
+					 doMemTesting=false;
+					 printf("Bytes allocated in total %d \n", i*many_bytes);
+					 get_alloc_size();
+				 	 }
+				 }
+
+            //mbed_mem_trace_set_callback(mbed_mem_trace_default_callback);
+            //#endif
             if(!clicked) {
                 mbed_client.test_update_register();
             }
