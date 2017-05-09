@@ -35,14 +35,16 @@
 #define RED_LED (LED3)
 #define GREEN_LED (LED1)
 #define BLUE_LED (LED2)
-#define LED_ON (1)		     
+#define LED_ON (1)
 #else // !TARGET_STM
 #define RED_LED (LED1)
 #define GREEN_LED (LED2)
-#define BLUE_LED (LED3)			     
-#define LED_ON (0) 
+#define BLUE_LED (LED3)
+#define LED_ON (0)
 #endif // !TARGET_STM
 #define LED_OFF (!LED_ON)
+
+#define BLINK_SIGNAL 0x1
 
 // Status indication
 DigitalOut red_led(RED_LED);
@@ -103,6 +105,7 @@ class LedResource {
 public:
     LedResource() {
         // create ObjectID with metadata tag of '3201', which is 'digital output'
+        blinky_thread.start(callback(this, &LedResource::do_blink));
         led_object = M2MInterfaceFactory::create_object("3201");
         M2MObjectInstance* led_inst = led_object->create_object_instance();
 
@@ -176,7 +179,7 @@ public:
             printf("Payload: %.*s\n", payload_length, payload);
         }
         // do_blink is called with the vector, and starting at -1
-        blinky_thread.start(callback(this, &LedResource::do_blink));
+        blinky_thread.signal_set(BLINK_SIGNAL);
     }
 
 private:
@@ -184,22 +187,25 @@ private:
     Thread blinky_thread;
     BlinkArgs *blink_args;
     void do_blink() {
-        for (;;) {
-            // blink the LED
-            red_led = !red_led;
-            // up the position, if we reached the end of the vector
-            if (blink_args->position >= blink_args->blink_pattern.size()) {
-                // send delayed response after blink is done
-                M2MObjectInstance* inst = led_object->object_instance();
-                M2MResource* led_res = inst->resource("5850");
-                led_res->send_delayed_post_response();
-                red_led = LED_OFF;
-                status_ticker.attach_us(blinky, 250000);
-                return;
-            }
-            // Wait requested time, then continue prosessing the blink pattern from next position.
-            Thread::wait(blink_args->blink_pattern.at(blink_args->position));
-            blink_args->position++;
+        for(;;) {
+            blinky_thread.signal_wait(BLINK_SIGNAL);
+	        for (;;) {
+	            // blink the LED
+	            red_led = !red_led;
+	            // up the position, if we reached the end of the vector
+	            if (blink_args->position >= blink_args->blink_pattern.size()) {
+	                // send delayed response after blink is done
+	                M2MObjectInstance* inst = led_object->object_instance();
+	                M2MResource* led_res = inst->resource("5850");
+	                led_res->send_delayed_post_response();
+	                red_led = LED_OFF;
+	                status_ticker.attach_us(blinky, 250000);
+	                break;
+	            }
+	            // Wait requested time, then continue prosessing the blink pattern from next position.
+	            Thread::wait(blink_args->blink_pattern.at(blink_args->position));
+	            blink_args->position++;
+	        }
         }
     }
 };
