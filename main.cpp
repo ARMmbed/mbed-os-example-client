@@ -358,12 +358,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     // Keep track of the main thread
     mainThread = osThreadGetId();
 
-    printf("\nStarting mbed Client example in ");
-#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
-    printf("IPv6 mode\n");
-#else
-    printf("IPv4 mode\n");
-#endif
+    printf("\nStarting mbed Client example\n");
 
     mbed_trace_init();
 

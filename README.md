@@ -313,12 +313,12 @@ To build the example using mbed CLI:
     
     If you are using either of the following configurations remember to copy .mbedignore as well:
     
-    ```     
+    ``` 
     configs/eth_*
     configs/wifi_*
-    ```  
+    ```
     
-    ```     
+    ```
     cp configs/eth-wifi-mbedignore ./.mbedignore 
     ```
     
@@ -351,7 +351,8 @@ The application prints debug messages over the serial port, so you can monitor i
 After connecting, you should see messages about connecting to mbed Device Connector:
 
 ```
-Starting mbed Client example in IPv4 mode
+Starting mbed Client example
+[EasyConnect] IPv4 mode
 [EasyConnect] Using Ethernet
 [EasyConnect] Connected to Network successfully
 [EasyConnect] IP address  192.168.8.110
