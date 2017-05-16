@@ -305,12 +305,23 @@ To build the example using mbed CLI:
 
 3. To build the application, select the hardware board and build the toolchain using the command:
 
-	Specify the config file in the build command, for example for 6LoWPAN
+    (Specify the config file in the build command, for example for 6LoWPAN)
 
     ```
     mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
-
+    
+    If you are using either of the following configurations remember to copy .mbedignore as well:
+    
+    ``` 
+    configs/eth_*
+    configs/wifi_*
+    ```
+    
+    ```
+    cp configs/eth-wifi-mbedignore ./.mbedignore 
+    ```
+    
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
 
 4. Plug the Ethernet cable into the board if you are using Ethernet mode.
@@ -340,7 +351,8 @@ The application prints debug messages over the serial port, so you can monitor i
 After connecting, you should see messages about connecting to mbed Device Connector:
 
 ```
-Starting mbed Client example in IPv4 mode
+Starting mbed Client example
+[EasyConnect] IPv4 mode
 [EasyConnect] Using Ethernet
 [EasyConnect] Connected to Network successfully
 [EasyConnect] IP address  192.168.8.110
