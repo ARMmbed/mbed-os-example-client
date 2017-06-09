@@ -105,7 +105,7 @@ To do that, ping the Connector IPv6 address `2607:f0d0:2601:52::20` from your ne
 
 #### Channel settings
 
-The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-os/tree/master/features/nanostack/FEATURE_NANOSTACK/mbed-mesh-api) to match the mbed gateway settings. The application can override these settings by adding them to the `.json` file. For example:
+The default 2.4GHz channel settings are already defined by the [mbed-mesh-api](https://github.com/ARMmbed/mbed-os/tree/master/features/nanostack/FEATURE_NANOSTACK/mbed-mesh-api) to match the Border Router settings. The application can override these settings by adding them to the `.json` file. For example:
 
 ```json
     "target_overrides": {
@@ -138,11 +138,11 @@ There are two options for border router.
 
 ##### Nanostack-border-router
 
-You can configure and build the [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) for the 6LoWPAN ND or Thread mode.  
+You can configure and build the [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) for the 6LoWPAN ND or Thread mode.
 
 ##### mbed gateway
 
-The mbed gateway is a binary release only.
+The mbed gateway is a binary release only. Please note, the mbed gateway will not be supported after the mbed-os 5.5 release.
 
 To connect the example application in 6LoWPAN ND or Thread mode to mbed Device Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
 
