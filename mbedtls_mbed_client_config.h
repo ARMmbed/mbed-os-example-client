@@ -106,6 +106,9 @@
 // Save ROM and a few bytes of RAM by specifying our own ciphersuite list
 #define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
 
+// Add debug information
+#define MBEDTLS_DEBUG_C
+
 #include "mbedtls/check_config.h"
 
 #endif /* MBEDTLS_CUSTOM_CONFIG_H */
