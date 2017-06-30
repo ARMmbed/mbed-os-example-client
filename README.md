@@ -185,7 +185,7 @@ To run this application using ESP8266 WiFi Interface, you need:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
+        "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
         "value": "WIFI"
     }
 ```
