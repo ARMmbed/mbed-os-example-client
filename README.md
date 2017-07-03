@@ -37,9 +37,10 @@ This example supports following hardware-network combinations:
 
 #### Supported boards
 
-* K64F
-* NUCLEO_F429ZI
-* UBLOX_EVK_ODIN_W2 (use the supplied `configs/eth_v4.json`)
+* [FRDM-K64F](https://developer.mbed.org/platforms/FRDM-K64F/)
+* [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/)
+* [UBLOX_EVK_ODIN_W2](https://developer.mbed.org/platforms/ublox-EVK-ODIN-W2/) (use the supplied `configs/eth_v4.json`)
+* [REALTEK RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) (use the supplied `configs/wifi_realtek_v4.json`, remember to update [DAPLINK](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).)
 
 For running the example application using Ethernet, you need:
 
@@ -152,9 +153,10 @@ With Thread, you can change the operating mode of the client from the default ro
 
 #### Supported boards
 
-* UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
+* UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-and-realtek-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* REALTEK RTL8195AM with built-in WiFi. Check instructions for compilation [here](#compile-configuration-for-odin-and-realtek-wifi).
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -162,14 +164,15 @@ To run this application using ESP8266 WiFi Interface, you need:
 1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update).
 1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
 1. Attach the shield on your board.
-1. In the `mbed_app.json` file, change:
+1. In the `mbed_app.json` file, change `network-interface` parameter to match your WiFi, for example for ESP8266:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-        "value": "WIFI"
+        "help": "options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_REALTEK, MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI_ESP8266"
     }
 ```
+You can use values `WIFI_ODIN` for ODIN UBLOX EVK W2 and `WIFI_REALTEK` for Realtek RTL8195AM.
 
 Provide your WiFi SSID and password here and leave `\"` in the beginning and end of your SSID and password (as shown in the example below). Otherwise, the example cannot pick up the SSID and password in correct format.
 
@@ -199,16 +202,17 @@ For example, NUCLEO_F401RE requires a different serial connection:
     }
 ```
 
-#### Compile configuration for ODIN WiFi
+#### Compile configuration for ODIN and Realtek WiFi
 
-To compile ODIN WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.     
+To compile ODIN and Realtek WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
 
 This should resolve the issue:
 
-```     
+```bash
 cp configs/eth-wifi-mbedignore ./.mbedignore 
-```    
- 
+```
+
+
 ### Non listed board support 
 
 Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
