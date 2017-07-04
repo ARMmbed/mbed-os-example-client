@@ -153,10 +153,10 @@ With Thread, you can change the operating mode of the client from the default ro
 
 #### Supported boards
 
-* UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-and-realtek-wifi).
+* UBLOX_EVK_ODIN_W2 with built-in WiFi. Please read [instructions for compilation](#compile-configuration-for-odin-and-realtek-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-* REALTEK RTL8195AM with built-in WiFi. Check instructions for compilation [here](#compile-configuration-for-odin-and-realtek-wifi).
+* REALTEK RTL8195AM with built-in WiFi. Please read [instructions for compilation](#compile-configuration-for-odin-and-realtek-wifi).
 
 To run this application using ESP8266 WiFi Interface, you need:
 
