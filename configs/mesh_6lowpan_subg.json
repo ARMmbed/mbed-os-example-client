@@ -1,7 +1,7 @@
 {
     "config": {
         "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_REALTEK, MESH_LOWPAN_ND, MESH_THREAD",
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND, MESH_THREAD",
             "value": "MESH_LOWPAN_ND"
         },
         "mesh_radio_type": {
