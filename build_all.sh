@@ -64,7 +64,7 @@ cp ./BUILD/NUCLEO_F429ZI/$TOOL/mbed-os-example-client.bin f429zi-$TOOL-Thread.bi
 
 
 echo WIFI - RTW for REALTEK_RTL8195AM
-cp configs/wifi_realtek_v4.json ./mbed_app.json
+cp configs/wifi_rtw_v4.json ./mbed_app.json
 mbed compile -m REALTEK_RTL8195AM -t $TOOL
 cp ./BUILD/REALTEK_RTL8195AM/$TOOL/mbed-os-example-client.bin realtek-rtl8195am-$TOOL-wifi-v4.bin
 
