@@ -33,6 +33,8 @@
             "platform.stdio-convert-newlines": true,
             "mbed-mesh-api.6lowpan-nd-channel-page": 0,
             "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-client.reconnection-count": 3,
+            "mbed-client.reconnection-interval": 5,
             "mbed-trace.enable": 0
         },
         "NUCLEO_F401RE": {
