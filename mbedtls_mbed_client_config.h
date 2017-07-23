@@ -60,8 +60,6 @@
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_SHA256_C
 #define MBEDTLS_SSL_COOKIE_C
-#define MBEDTLS_SSL_CLI_C
-#define MBEDTLS_SSL_SRV_C
 #define MBEDTLS_SSL_TLS_C
 
 // XXX mbedclient needs these: mbedtls_x509_crt_free, mbedtls_x509_crt_init, mbedtls_x509_crt_parse
@@ -69,13 +67,9 @@
 #define MBEDTLS_X509_CRT_PARSE_C
 
 // XXX: clean these up!!
-#define MBEDTLS_SHA512_C
-#define MBEDTLS_ECDH_C
 #define MBEDTLS_GCM_C
-
 #define MBEDTLS_ECDH_C
 #define MBEDTLS_ECDSA_C
-#define MBEDTLS_X509_CRT_PARSE_C
 
 // Remove RSA, save 20KB at total
 #undef MBEDTLS_RSA_C
@@ -91,6 +85,11 @@
 #undef MBEDTLS_ERROR_STRERROR_DUMMY
 #undef MBEDTLS_VERSION_FEATURES
 #undef MBEDTLS_DEBUG_C
+
+// Remove unused features, save 26KB of ROM
+#undef MBEDTLS_SSL_CLI_C
+#undef MBEDTLS_SSL_SRV_C
+#undef MBEDTLS_SHA512_C
 
 // needed for parsing the certificates
 #define MBEDTLS_PEM_PARSE_C
