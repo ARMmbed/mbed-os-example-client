@@ -5,7 +5,7 @@
             "value": "MESH_THREAD"
         },
         "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20",
+        	"help": "options are ATMEL, MCR20, EFR32",
         	"value": "ATMEL"
         }
     },
