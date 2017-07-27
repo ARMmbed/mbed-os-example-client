@@ -6,7 +6,7 @@
         },
         "mesh_radio_type": {
         	"help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
-        	"value": "EFR32"
+        	"value": "ATMEL"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
