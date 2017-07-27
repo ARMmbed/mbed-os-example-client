@@ -21,9 +21,8 @@ The application:
 To configure the example application:
 
 1. [Select network and board](#select-network-and-board)
-    * [Ethernet](#ethernet)
-    * [Mesh (6LoWPAN and Thread)](#mesh)
     * [WiFi](#wifi)
+    * [Mesh (6LoWPAN and Thread)](#mesh)
     * [Non listed boards](#non-listed-board-support)
 1. [Set the client credentials](#client-credentials).
 1. [Set up an IP address](#ip-address-setup). This step is optional.
@@ -33,19 +32,68 @@ To configure the example application:
 
 This example supports following hardware-network combinations:
 
-### Ethernet
+| Board                                                                        | Ethernet          | WiFi                           | Mesh config | Special notes |
+|------------------------------------------------------------------------------|----------------------------------------------------|-------------|---------------|
+|[FRDM-K64F](https://developer.mbed.org/platforms/FRDM-K64F/)                  | `mbed_app.json`   | `configs/wifi_esp8266_v4.json` <br>GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module | multiple    | -             |
+|[NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/)       | `mbed_app.json`   | `configs/wifi_esp8266_v4.json`<br>GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module | multiple    | -             |
+|[UBLOX_EVK_ODIN_W2](https://developer.mbed.org/platforms/ublox-EVK-ODIN-W2/)  | `mbed_app.json`   | `configs/wifi_odin_v4.json`<br>Using built-in WiFi   |             | Ethernet requires EMAC override. |
+|[REALTEK RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/)  | no ethernet       | `configs/wifi_rtw_v4.json`<br>Using built-in WiFi     |             | You *must* update [DAPLINK](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).) |
+
+We recommend updating the DAPLINK firmware of the boards before using them.
+
+## WiFi
 
 #### Supported boards
 
-* [FRDM-K64F](https://developer.mbed.org/platforms/FRDM-K64F/)
-* [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/)
-* [UBLOX_EVK_ODIN_W2](https://developer.mbed.org/platforms/ublox-EVK-ODIN-W2/) (use the supplied `configs/eth_v4.json`)
-* [REALTEK RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) (use the supplied `configs/wifi_realtek_v4.json`, remember to update [DAPLINK](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).)
+* K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* UBLOX_EVK_ODIN_W2 with built-in WiFi.
+* REALTEK RTL8195AM with built-in WiFi. 
 
-For running the example application using Ethernet, you need:
+To run this application using ESP8266 WiFi Interface, you need:
 
-- An Ethernet cable.
-- An Ethernet connection to the internet.
+1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update).
+1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
+1. Attach the shield on your board.
+1. In the `mbed_app.json` file, change `network-interface` parameter to match your WiFi, for example for ESP8266:
+
+```json
+    "network-interface": {
+        "help": "options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI_ESP8266"
+    }
+```
+You can use values `WIFI_ODIN` for ODIN UBLOX EVK W2 and `WIFI_RTW` for Realtek RTL8195AM.
+
+Provide your WiFi SSID and password here and leave `\"` in the beginning and end of your SSID and password (as shown in the example below). Otherwise, the example cannot pick up the SSID and password in correct format.
+
+```json
+    "wifi-ssid": {
+        "help": "WiFi SSID",
+        "value": "\"SSID\""
+    },
+    "wifi-password": {
+        "help": "WiFi Password",
+        "value": "\"Password\""
+    }
+```
+
+<span class="notes">**Note:** Some devices do not support the Grove Shield or use the primary UART for USB communication. On such devices, modify the `mbed_app.json` to use the serial pins connected to the ESP8266.</span>
+
+For example, NUCLEO_F401RE requires a different serial connection:
+
+```json
+    "wifi-tx": {
+        "help": "TX pin for serial connection to external device",
+        "value": "PA_11"
+    },
+    "wifi-rx": {
+        "help": "RX pin for serial connection to external device",
+        "value": "PA_12"
+    }
+```
+
 
 ### Mesh
 
@@ -128,7 +176,7 @@ For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver)
 
 For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
  
-=======
+
 #### Supported combinations of board and shields
 
 See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
@@ -149,68 +197,6 @@ With Thread, you can change the operating mode of the client from the default ro
     "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
 ```
 
-## WiFi
-
-#### Supported boards
-
-* UBLOX_EVK_ODIN_W2 with built-in WiFi. Please read [instructions for compilation](#compile-configuration-for-odin-and-realtek-wifi).
-* K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-* NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-* REALTEK RTL8195AM with built-in WiFi. Please read [instructions for compilation](#compile-configuration-for-odin-and-realtek-wifi).
-
-To run this application using ESP8266 WiFi Interface, you need:
-
-1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update).
-1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
-1. Attach the shield on your board.
-1. In the `mbed_app.json` file, change `network-interface` parameter to match your WiFi, for example for ESP8266:
-
-```json
-    "network-interface": {
-        "help": "options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_REALTEK, MESH_LOWPAN_ND,MESH_THREAD.",
-        "value": "WIFI_ESP8266"
-    }
-```
-You can use values `WIFI_ODIN` for ODIN UBLOX EVK W2 and `WIFI_REALTEK` for Realtek RTL8195AM.
-
-Provide your WiFi SSID and password here and leave `\"` in the beginning and end of your SSID and password (as shown in the example below). Otherwise, the example cannot pick up the SSID and password in correct format.
-
-```json
-    "wifi-ssid": {
-        "help": "WiFi SSID",
-        "value": "\"SSID\""
-    },
-    "wifi-password": {
-        "help": "WiFi Password",
-        "value": "\"Password\""
-    }
-```
-
-<span class="notes">**Note:** Some devices do not support the Grove Shield or use the primary UART for USB communication. On such devices, modify the `mbed_app.json` to use the serial pins connected to the ESP8266.</span>
-
-For example, NUCLEO_F401RE requires a different serial connection:
-
-```json
-    "wifi-tx": {
-        "help": "TX pin for serial connection to external device",
-        "value": "PA_11"
-    },
-    "wifi-rx": {
-        "help": "RX pin for serial connection to external device",
-        "value": "PA_12"
-    }
-```
-
-#### Compile configuration for ODIN and Realtek WiFi
-
-To compile ODIN and Realtek WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
-
-This should resolve the issue:
-
-```bash
-cp configs/eth-wifi-mbedignore ./.mbedignore 
-```
 
 
 ### Non listed board support 
@@ -295,17 +281,7 @@ To build the example using mbed CLI:
     ```
     mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
-    
-    If you are using either of the following configurations remember to copy .mbedignore as well:
-    
-    ``` 
-    configs/eth_*
-    configs/wifi_*
-    ```
-    
-    ```
-    cp configs/eth-wifi-mbedignore ./.mbedignore 
-    ```
+   
     
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
 
@@ -391,9 +367,5 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 
 ## Known issues
 
-### mbed OS 5.4
 
-* [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
-* [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
 
-Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
