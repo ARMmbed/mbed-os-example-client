@@ -37,7 +37,7 @@
 // Defines the size of blockwise CoAP messages that client can handle.
 // The values that can be defined uust be 2^x and x is at least 4.
 // Suitable values: 0, 16, 32, 64, 128, 256, 512 and 1024
-#define SN_COAP_MAX_BLOCKWISE_PAYLOAD_SIZE  1024
+#define SN_COAP_MAX_BLOCKWISE_PAYLOAD_SIZE  512
 
 // Many pure LWM2M servers doen't accept 'obs' text in registration message.
 // While using Client against such servers, this flag can be set to define to
