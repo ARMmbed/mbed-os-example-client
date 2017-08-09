@@ -367,28 +367,40 @@ Registered object succesfully!
 
 <span class="notes">**Note:** Device name is the endpoint name you will need later on when [testing the application](https://github.com/ARMmbed/mbed-os-example-client#testing-the-application).</span>
 
-When you press the **SW2** button on your board you should see messages about the value changes:
+When you press the **BUTTON1** button on your board you should see messages about the value changes:
 
 ```
 handle_button_click, new value of counter is 1
 ```
+## Which button is BUTTON1 or BUTTON2?
 
+The abstract button definitions are not printed on the boards. The easiest way to find out which button is which is to grep the code. Example below finds the `BUTTON1` for K64F.
+
+```bash
+<shell: mbed-os-example-client/> cd mbed-os
+<shell: mbed-os-example-client/mbed-os>$ git grep BUTTON1 |grep -i K64F
+targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K64F/TARGET_FRDM/PinNames.h:    BUTTON1 = SW2,
+```
+
+I.e. we can deduce that BUTTON1 is the button labeled SW2 in the actual physical board.
+
+ 
 ## Testing the application
 
 1. Flash the application.
 2. Verify that the registration succeeded. You should see `Registered object successfully!` printed to the serial port.
 3. On mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
-4. Press the **SW2** button on the device a number of times (make a note of how many times you did that).
+4. Press the **BUTTON1** button on the device a number of times (make a note of how many times you did that).
 5. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
 6. Click the **Endpoint directory lookups** drop down menu.
     ![](/docs/img/ep_lookup.PNG) 
 7. In the menu, click **GET** next to **Endpoint's resource representation**. Select your _endpoint_ and _resource-path_. For example, the _endpoint_ is the identifier of your endpoint that can be found in the `security.h` file as `MBED_ENDPOINT_NAME`. Select `3200/0/5501`as a resource path and click **TEST API**. 
-8. The number of times you pressed **SW2** is shown.
-9. Press the **SW3** button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
+8. The number of times you pressed **BUTTON1** is shown.
+9. Press the **BUTTON2** button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
 
-<span class="notes">**Note:** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.</span>
+<span class="notes">**Note:** On boards without BUTTON2 there is no unregistration functionality. Boards without buttons the button presses are simulated through timer ticks incrementing every 15 seconds. Please note the actual printout on the board for the BUTTON1 and BUTTON2 changes a lot - you need map that out from the mbed OS board files.</span>
 
-![SW2 pressed five times, as shown by the API Console](clicks.png)
+![BUTTON1 pressed five times, as shown by the API Console](clicks.png)
 
 <span class="tips">**Tip:** If you get an error, for example `Server Response: 410 (Gone)`, clear your browser's cache, log out, and log back in.</span>
 
@@ -398,13 +410,17 @@ handle_button_click, new value of counter is 1
 
 The application exposes three [resources](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model):
 
-1. `3200/0/5501`. Number of presses of **SW2** (GET).
+1. `3200/0/5501`. Number of presses of **BUTTON1** (GET).
 2. `3201/0/5850`. Blink function, blinks **LED1** when executed (POST).
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
 To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
 ## Known issues
+
+### mbed OS 5.5
+
+* [UBLOX_EVK_ODIN_W2]: BUTTON1 and BUTTON2 definitions are missing from board file.
 
 ### mbed OS 5.4
 
