@@ -68,17 +68,55 @@ struct MbedClientDevice device = {
 MbedClient mbed_client(device);
 
 
-// In case of K64F board , there is button resource available
-// to change resource value and unregister
-#ifdef TARGET_K64F
-// Set up Hardware interrupt button.
-InterruptIn obs_button(SW2);
-InterruptIn unreg_button(SW3);
-#else
-//In non K64F boards , set up a timer to simulate updating resource,
-// there is no functionality to unregister.
-Ticker timer;
-#endif
+/**
+ * User interaction handler / simulator. Sets up physical button handlers and a ticker
+ * for regular updates for the resources.
+ *
+ * BUTTON1 and BUTTON2 are mapped to actual buttons in the hardware abstraction code.
+ */
+class InteractionProvider {
+
+public:
+	InteractionProvider(Semaphore& updates_sem) : counter_btn(BUTTON1),
+												  unreg_btn(BUTTON2),
+												  updates(updates_sem) {
+
+		// Set up handler functions for the interaction buttons
+		counter_btn.fall(this, &InteractionProvider::counter_button_handler);
+		unreg_btn.fall(this, &InteractionProvider::unreg_button_handler);
+
+	    // Use the counter button handler to send an update of endpoint resource values
+		// to connector every 15 seconds periodically.
+	    timer.attach(this, &InteractionProvider::counter_button_handler, 15.0);
+	}
+
+	// flags for interaction, these are read from outside interrupt context
+	volatile bool registered = false;
+	volatile bool clicked = false;
+
+private:
+
+	void unreg_button_handler() {
+	    registered = false;
+	    updates.release();
+	}
+
+	void counter_button_handler() {
+	    clicked = true;
+	    updates.release();
+	}
+
+	// physical buttons for counter and unregistration
+	InterruptIn counter_btn;
+	InterruptIn unreg_btn;
+
+	// time-based event source for regular resource updates
+	Ticker timer;
+
+	// Network interaction must be performed outside of interrupt context
+	Semaphore& updates;
+
+};
 
 /*
  * Arguments for running "blink" in it's own thread.
@@ -316,21 +354,8 @@ private:
     M2MObject*  big_payload;
 };
 
-// Network interaction must be performed outside of interrupt context
-Semaphore updates(0);
-volatile bool registered = false;
-volatile bool clicked = false;
-osThreadId mainThread;
 
-void unregister() {
-    registered = false;
-    updates.release();
-}
 
-void button_clicked() {
-    clicked = true;
-    updates.release();
-}
 
 // debug printf function
 void trace_printer(const char* str) {
@@ -367,7 +392,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
-    mainThread = osThreadGetId();
+    osThreadId mainThread = osThreadGetId();
 
     printf("\nStarting mbed Client example\n");
 
@@ -386,18 +411,11 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
 
-#ifdef TARGET_K64F
-    // On press of SW3 button on K64F board, example application
-    // will call unregister API towards mbed Device Connector
-    //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
-    unreg_button.fall(&unregister);
+    // Network interaction must be performed outside of interrupt context
+    Semaphore updates(0);
 
-    // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(&button_clicked);
-#else
-    // Send update of endpoint resource values to connector every 15 seconds periodically
-    timer.attach(&button_clicked, 15.0);
-#endif
+    InteractionProvider interaction_provider(updates);
+
 
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(MBED_SERVER_ADDRESS, network);
@@ -420,19 +438,19 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
-    registered = true;
+    interaction_provider.registered = true;
 
     while (true) {
         updates.wait(25000);
-        if(registered) {
-            if(!clicked) {
+        if(interaction_provider.registered) {
+            if(!interaction_provider.clicked) {
                 mbed_client.test_update_register();
             }
         }else {
             break;
         }
-        if(clicked) {
-            clicked = false;
+        if(interaction_provider.clicked) {
+            interaction_provider.clicked = false;
             button_resource.handle_button_click();
         }
     }
