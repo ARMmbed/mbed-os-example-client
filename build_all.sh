@@ -11,6 +11,7 @@ mbed compile -m K64F -t $TOOL
 cp BUILD/K64F/$TOOL/mbed-os-example-client.bin k64f-$TOOL-eth-v4.bin
 mbed compile -m NUCLEO_F429ZI -t $TOOL
 cp ./BUILD/NUCLEO_F429ZI/$TOOL/mbed-os-example-client.bin f429zi-$TOOL-eth-v4.bin
+cp configs/eth_odin_v4.json ./mbed_app.json
 mbed compile -m UBLOX_EVK_ODIN_W2 -t $TOOL
 cp ./BUILD/UBLOX_EVK_ODIN_W2/$TOOL/mbed-os-example-client.bin ublox-odin-$TOOL-eth-v4.bin
 
@@ -21,6 +22,7 @@ mbed compile -m K64F -t $TOOL
 cp BUILD/K64F/$TOOL/mbed-os-example-client.bin k64f-$TOOL-eth-v6.bin
 mbed compile -m NUCLEO_F429ZI -t $TOOL
 cp ./BUILD/NUCLEO_F429ZI/$TOOL/mbed-os-example-client.bin f429zi-$TOOL-eth-v4.bin
+cp configs/eth_odin_v6.json ./mbed_app.json
 mbed compile -m UBLOX_EVK_ODIN_W2 -t $TOOL
 cp ./BUILD/UBLOX_EVK_ODIN_W2/$TOOL/mbed-os-example-client.bin ublox-odin-$TOOL-eth-v6.bin
 

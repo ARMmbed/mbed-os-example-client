@@ -67,23 +67,29 @@ struct MbedClientDevice device = {
 // Instantiate the class which implements LWM2M Client API (from simpleclient.h)
 MbedClient mbed_client(device);
 
+// Set up a button interrupt for user interaction
+#ifdef MBED_CONF_APP_BUTTON1
+	InterruptIn counter_btn(MBED_CONF_APP_BUTTON1);
+#endif
+
 
 /**
- * User interaction handler / simulator. Sets up physical button handlers and a ticker
+ * User interaction handler / simulator. Sets up physical button handler and a ticker
  * for regular updates for the resources.
  *
- * BUTTON1 and BUTTON2 are mapped to actual buttons in the hardware abstraction code.
+ * MBED_CONF_APP_BUTTON1 is mapped to actual button pin the mbed_app.json file, where you need to
+ * specify board-specific values or leave them undefined if the board does not have buttons.
  */
 class InteractionProvider {
 
 public:
-	InteractionProvider(Semaphore& updates_sem) : counter_btn(BUTTON1),
-												  unreg_btn(BUTTON2),
-												  updates(updates_sem) {
+	InteractionProvider(Semaphore& updates_sem) : updates(updates_sem) {
 
-		// Set up handler functions for the interaction buttons
+		// Set up handler function for the interaction button, if available
+
+#ifdef MBED_CONF_APP_BUTTON1
 		counter_btn.fall(this, &InteractionProvider::counter_button_handler);
-		unreg_btn.fall(this, &InteractionProvider::unreg_button_handler);
+#endif
 
 	    // Use the counter button handler to send an update of endpoint resource values
 		// to connector every 15 seconds periodically.
@@ -105,10 +111,6 @@ private:
 	    clicked = true;
 	    updates.release();
 	}
-
-	// physical buttons for counter and unregistration
-	InterruptIn counter_btn;
-	InterruptIn unreg_btn;
 
 	// time-based event source for regular resource updates
 	Ticker timer;

@@ -7,6 +7,10 @@
         "mesh_radio_type": {
         	"help": "options are ATMEL, MCR20, EFR32",
         	"value": "ATMEL"
+        },
+        "button1": {
+        	"help": "Use BUTTON1 from PinNames.h by default",
+        	"value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
