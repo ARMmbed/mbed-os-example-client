@@ -78,12 +78,15 @@ MbedClient mbed_client(device);
  * for regular updates for the resources.
  *
  * MBED_CONF_APP_BUTTON1 is mapped to actual button pin the mbed_app.json file, where you need to
- * specify board-specific values or leave them undefined if the board does not have buttons.
+ * specify board-specific value or leave it undefined if the board does not have buttons.
  */
 class InteractionProvider {
 
 public:
 	InteractionProvider(Semaphore& updates_sem) : updates(updates_sem) {
+
+	    timer_ticked = false;
+	    clicked = false;
 
 		// Set up handler function for the interaction button, if available
 
@@ -97,8 +100,8 @@ public:
 	}
 
 	// flags for interaction, these are read from outside interrupt context
-	volatile bool timer_ticked = false;
-	volatile bool clicked = false;
+	volatile bool timer_ticked;
+	volatile bool clicked;
 
 
 private:
