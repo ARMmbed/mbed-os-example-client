@@ -292,11 +292,7 @@ public:
 
             // up counter
             counter++;
-    #ifdef TARGET_K64F
             printf("handle_button_click, new value of counter is %d\n", counter);
-    #else
-            printf("simulate button_click, new value of counter is %d\n", counter);
-    #endif
             // serialize the value of counter as a string, and tell connector
             char buffer[20];
             int size = sprintf(buffer,"%d",counter);
