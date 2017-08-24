@@ -1,10 +1,13 @@
 properties ([[$class: 'ParametersDefinitionProperty', parameterDefinitions: [
-  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build']
+  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build. To access mbed-os PR use format "pull/PR number/head"']
   ]]])
 
 try {
   echo "Verifying build with mbed-os version ${mbed_os_revision}"
   env.MBED_OS_REVISION = "${mbed_os_revision}"
+  if (mbed_os_revision.matches('pull/\\d+/head')) {
+    echo "Revision is a Pull Request"
+  }
 } catch (err) {
   def mbed_os_revision = "latest"
   echo "Verifying build with mbed-os version ${mbed_os_revision}"
@@ -103,7 +106,13 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
           // Set mbed-os to revision received as parameter
           execute ("mbed deploy --protocol ssh")
           dir("mbed-os") {
-            execute ("git checkout ${env.MBED_OS_REVISION}")
+            if (env.MBED_OS_REVISION.matches('pull/\\d+/head')) {
+                // Use mbed-os PR and switch to branch created
+                execute("git fetch origin ${env.MBED_OS_REVISION}:_PR_")
+                execute("git checkout _PR_")
+              } else {
+                execute ("git checkout ${env.MBED_OS_REVISION}")
+            }
           }
           execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c --app-config ${config_file}")
         }
