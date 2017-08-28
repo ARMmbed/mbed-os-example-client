@@ -1,10 +1,13 @@
 properties ([[$class: 'ParametersDefinitionProperty', parameterDefinitions: [
-  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build']
+  [$class: 'StringParameterDefinition', name: 'mbed_os_revision', defaultValue: 'latest', description: 'Revision of mbed-os to build. To access mbed-os PR use format "pull/PR number/head"']
   ]]])
 
 try {
   echo "Verifying build with mbed-os version ${mbed_os_revision}"
   env.MBED_OS_REVISION = "${mbed_os_revision}"
+  if (mbed_os_revision.matches('pull/\\d+/head')) {
+    echo "Revision is a Pull Request"
+  }
 } catch (err) {
   def mbed_os_revision = "latest"
   echo "Verifying build with mbed-os version ${mbed_os_revision}"
@@ -72,32 +75,29 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
         deleteDir()
         dir("mbed-os-example-client") {
           checkout scm
+          def config_file = "mbed_app.json"
 
           if ("${configName}" == "thd") {
-            // Change device type to Thread router
-            execute("sed -i 's/\"NANOSTACK\", \"LOWPAN_ROUTER\", \"COMMON_PAL\"/\"NANOSTACK\", \"THREAD_ROUTER\", \"COMMON_PAL\"/' mbed_app.json")
-            // Change connection type to thread
-            execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_THREAD\"/' mbed_app.json")
-            // Reuse 6lowpan channel to Thread channel
-            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.thread-config-channel\": 18/' mbed_app.json")
-            // Reuse 6lowpan channel page to Thread PANID
-            execute("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel-page\": 0/\"mbed-mesh-api.thread-config-panid\": \"0xBAAB\"/' mbed_app.json")
+            config_file = "./configs/mesh_thread.json"
+            // Update Thread channel and PANID
+            execute("sed -i 's/\"mbed-mesh-api.thread-config-channel\": 22/\"mbed-mesh-api.thread-config-channel\": 18/' ${config_file}")
+            execute("sed -i 's/\"mbed-mesh-api.thread-config-panid\": \"0x0700\"/\"mbed-mesh-api.thread-config-panid\": \"0xBAAB\"/' ${config_file}")
+   
           }
 
           if ("${configName}" == "6lp") {
-            // Change connection type to 6LoWPAN
-            execute ("sed -i 's/\"value\": \"ETHERNET\"/\"value\": \"MESH_LOWPAN_ND\"/' mbed_app.json")
+            config_file = "./configs/mesh_6lowpan.json"
 
             // Change channel for HW tests
-            execute ("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.6lowpan-nd-channel\": 17/' mbed_app.json")
+            execute ("sed -i 's/\"mbed-mesh-api.6lowpan-nd-channel\": 12/\"mbed-mesh-api.6lowpan-nd-channel\": 17/' ${config_file}")
 
             //Use PANID filter
-            execute ("sed -i '/6lowpan-nd-channel\":/a \"mbed-mesh-api.6lowpan-nd-panid-filter\": \"0xABBA\",' mbed_app.json")
+            execute ("sed -i '/6lowpan-nd-channel\":/a \"mbed-mesh-api.6lowpan-nd-panid-filter\": \"0xABBA\",' ${config_file}")
           }
 
           if ("${connectiontype}" == "MCR20") {
             // Replace default rf shield
-            execute ("sed -i 's/\"value\": \"ATMEL\"/\"value\": \"MCR20\"/' mbed_app.json")
+            execute ("sed -i 's/\"value\": \"ATMEL\"/\"value\": \"MCR20\"/' ${config_file}")
           }
 
           // Copy security.h to build
@@ -106,9 +106,15 @@ def buildStep(target, compilerLabel, toolchain, configName, connectiontype) {
           // Set mbed-os to revision received as parameter
           execute ("mbed deploy --protocol ssh")
           dir("mbed-os") {
-            execute ("git checkout ${env.MBED_OS_REVISION}")
+            if (env.MBED_OS_REVISION.matches('pull/\\d+/head')) {
+                // Use mbed-os PR and switch to branch created
+                execute("git fetch origin ${env.MBED_OS_REVISION}:_PR_")
+                execute("git checkout _PR_")
+              } else {
+                execute ("git checkout ${env.MBED_OS_REVISION}")
+            }
           }
-          execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c")
+          execute ("mbed compile --build out/${target}_${toolchain}_${configName}_${connectiontype}/ -m ${target} -t ${toolchain} -c --app-config ${config_file}")
         }
         archive '**/mbed-os-example-client.bin'
         step([$class: 'WsCleanup'])
