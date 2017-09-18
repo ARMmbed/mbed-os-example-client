@@ -10,11 +10,11 @@
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
-            "value": "\"SSID\""
+            "value": "\"username\""
         },
         "wifi-password": {
             "help": "WiFi Password",
-            "value": "\"Password\""
+            "value": "\"password\""
         },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
@@ -25,15 +25,17 @@
             "value": "D0"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
+               "MBED_CLOUD_CLIENT_USER_CONFIG_FILE=\"mbed_cloud_client_user_config.h\"",
+               "MBED_CLIENT_USER_CONFIG_FILE=\"mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "target.features_add": ["COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
-            "mbed-mesh-api.6lowpan-nd-channel": 12,
-            "mbed-trace.enable": 0
+            "nanostack-hal.event_loop_thread_stack_size": 2572,
+            "mbed-client.event-loop-size": 512,
+            "mbed-trace.enable": null
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",

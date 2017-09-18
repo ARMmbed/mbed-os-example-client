@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MBED_CLIENT_CONFIG_H
-#define MBED_CLIENT_CONFIG_H
-
 
 // Defines the number of times client should try re-connection towards
 // Server in case of connectivity loss , also defines the number of CoAP
@@ -46,7 +43,13 @@
 
 // Disable Bootstrap functionality in client in order to reduce code size, if bootstrap
 // functionality is not required.
-#undef M2M_CLIENT_DISABLE_BOOTSTRAP_FEATURE
+#define MBED_CLIENT_DISABLE_BOOTSTRAP_FEATURE
 
-#endif // MBED_CLIENT_CONFIG_H
+#undef MBED_CLOUD_CLIENT_UPDATE_BUFFER
+
+#undef MBED_CLOUD_CLIENT_SUPPORT_UPDATE
+
+#undef MBED_CLIENT_DYNMEM_LIB
+
+#define DISABLE_BLOCK_MESSAGE
 

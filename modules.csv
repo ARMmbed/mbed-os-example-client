@@ -1,0 +1,25 @@
+easy-connect,           ./easy-connect/
+factory_client,         ./mbed-cloud-client-internal/factory-configuration-client/
+mbed-cloud-client,      ./mbed-cloud-client-internal/
+mbed-client,            ./mbed-cloud-client-internal/mbed-client/
+mbed-client-c,          ./mbed-cloud-client-internal/mbed-client/mbed-client-c/
+mbed-client-classic,    ./mbed-cloud-client-internal/mbed-client/mbed-client-classic/
+mbed-client-mbed-tls,    ./mbed-cloud-client-internal/mbed-client/mbed-client-mbed-tls/
+mbed-client-pal,        ./mbed-cloud-client-internal/mbed-client-pal/
+mbed-client-randlib,    ./mbed-cloud-client-internal/mbed-client-randlib/, ./mbed-os/features/FEATURE_COMMON_PAL/mbed-client-randlib/
+mbed-coap,              ./mbed-cloud-client-internal/mbed-coap/, ./mbed-os/features/FEATURE_COMMON_PAL/mbed-coap/
+mbed-trace,             ./mbed-cloud-client-internal/mbed-trace/,./mbed-os/features/FEATURE_COMMON_PAL/mbed-trace/
+nanostack-libservice,   ./mbed-cloud-client-internal/nanostack-libservice/ , ./mbed-os/features/FEATURE_COMMON_PAL/nanostack-libservice/
+ns-hal-pal,             ./mbed-cloud-client-internal/ns-hal-pal/,./mbed-os/features/FEATURE_COMMON_PAL/nanostack-hal-mbed-cmsis-rtos/
+sal-stack-nanostack-eventloop, ./mbed-cloud-client-internal/sal-stack-nanostack-eventloop/ , ./mbed-os/features/FEATURE_COMMON_PAL/sal-stack-nanostack-eventloop/
+update-client-hub,      ./mbed-cloud-client-internal/update-client-hub/
+mbed-os,                ./mbed-os/
+mbedtls,                ./mbed-os/features/mbedtls/
+pal-platform,           ./pal-platform/
+sd-driver,              ./sd-driver/
+clib,                   ../clib/
+stdlib,                 ../../stdlib/
+fplib,                  ../fplib/
+mathlib,                ../mathlib/
+application,            ./main.cpp,./source/,./platform/,./mbed_cloud_dev_credentials.c,./update_default_resources.c,./update_ui_example.cpp
+##uncategorized##,      .

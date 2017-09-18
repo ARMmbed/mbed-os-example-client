@@ -17,6 +17,7 @@
 #ifndef __SIMPLECLIENT_H__
 #define __SIMPLECLIENT_H__
 
+#include "mbed-client/m2mcorememory.h"
 #include "mbed-client/m2minterfacefactory.h"
 #include "mbed-client/m2mdevice.h"
 #include "mbed-client/m2minterfaceobserver.h"
@@ -27,7 +28,13 @@
 #include "mbed-client/m2mconfig.h"
 #include "mbed-client/m2mblockmessage.h"
 #include "security.h"
+#ifndef __linux__
 #include "mbed.h"
+#include "memory_tests.h"
+#else
+#include <stdio.h>
+#endif
+
 
 #define ETHERNET        1
 #define WIFI            2
@@ -38,6 +45,8 @@
 #define SPIRIT1         7
 
 #define STRINGIFY(s) #s
+
+static uint8_t CORE_MEMORY_POOL[10000];
 
 // Check if using mesh networking, define helper
 #if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
@@ -61,8 +70,13 @@
     // WiFi or Ethernet supports both - TCP by default to avoid
     // NAT problems, but UDP will also work - IF you configure
     // your network right.
-    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 #endif
+
+const unsigned char psk[] = {0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x31,0x32,0x33,0x34,0x35,0x36};
+const size_t psk_len = sizeof( psk );
+const unsigned char psk_identity[] = {0x0F,0x0F};
+const size_t psk_identity_len = sizeof( psk_identity );
 
 
 // MBED_DOMAIN and MBED_ENDPOINT_NAME come
@@ -74,6 +88,29 @@ struct MbedClientDevice {
     const char* ModelNumber;
     const char* SerialNumber;
 };
+
+void device_certificate(const uint8_t *& data, uint32_t &length) {
+//        data = CERT;
+//        length = sizeof(CERT);
+           data = psk_identity;
+           length = psk_identity_len;
+}
+
+void server_certificate(const uint8_t *& data, uint32_t &length) {
+//        data = SERVER_CERT;
+//        length = sizeof(SERVER_CERT);
+
+        data = psk_identity;
+        length = psk_identity_len;
+}
+
+void device_key(const uint8_t *& data, uint32_t &length) {
+//        data = KEY;
+//        length = sizeof(KEY);
+
+        data = psk;
+        length = psk_len;
+}
 
 /*
 * Wrapper for mbed client stack that handles all callbacks, error handling, and
@@ -99,15 +136,20 @@ public:
         _value = 0;
         _object = NULL;
         _device = device;
+        //pal_init();
+#ifdef MBED_CLIENT_DYNMEM_LIB
+        M2MCoreMemory::init(CORE_MEMORY_POOL,10000);
+#endif
     }
 
     // de-constructor for MbedClient object, you can ignore this
     ~MbedClient() {
-        if(_interface) {
-            delete _interface;
-        }
+        M2MDevice::delete_instance();
         if(_register_security){
             delete _register_security;
+        }
+        if(_interface) {
+            delete _interface;
         }
     }
 
@@ -121,17 +163,17 @@ public:
     *  setup its name, resource type, life time, connection mode,
     *  Currently only LwIPv4 is supported.
     */
-    void create_interface(const char *server_address,
+    bool create_interface(const char *server_address,
                           void *handler=NULL) {
     // Randomizing listening port for Certificate mode connectivity
-    _server_address = server_address;
+    memcpy(_server_address, server_address, strlen(server_address));
     uint16_t port = 0; // Network interface will randomize with port 0
 
     // create mDS interface object, this is the base object everything else attaches to
     _interface = M2MInterfaceFactory::create_interface(*this,
                                                       MBED_ENDPOINT_NAME,       // endpoint name string
                                                       "test",                   // endpoint type string
-                                                      100,                      // lifetime
+                                                      1000,                      // lifetime
                                                       port,                     // listen port
                                                       MBED_DOMAIN,              // domain string
                                                       SOCKET_MODE,              // binding mode
@@ -143,6 +185,9 @@ public:
 
     if(_interface) {
         _interface->set_platform_network_handler(handler);
+        return true;
+    } else {
+        return false;
     }
 
     }
@@ -173,11 +218,19 @@ public:
         // make sure security ObjectID/ObjectInstance was created successfully
         if(security) {
             // Add ResourceID's and values to the security ObjectID/ObjectInstance
-            security->set_resource_value(M2MSecurity::M2MServerUri, _server_address);
-            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Certificate);
-            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT) - 1);
-            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT) - 1);
-            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY) - 1);
+            security->set_resource_value(M2MSecurity::M2MServerUri, (const uint8_t*)_server_address, strlen(_server_address));
+            security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Psk);
+//            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT)-1);
+//            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT)-1);
+//            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY)-1);
+
+            security->set_resource_value(M2MSecurity::ServerPublicKey, psk_identity,psk_identity_len);
+            security->set_resource_value(M2MSecurity::PublicKey, psk_identity,psk_identity_len);
+            security->set_resource_value(M2MSecurity::Secretkey, psk,psk_len);
+
+//            security->set_device_certificate(device_certificate);
+//            security->set_server_certificate(server_certificate);
+//            security->set_device_key(device_key);
         }
         return security;
     }
@@ -189,14 +242,15 @@ public:
     M2MDevice* create_device_object() {
         // create device objectID/ObjectInstance
         M2MDevice *device = M2MInterfaceFactory::create_device();
-        // make sure device object was created successfully
-        if(device) {
-            // add resourceID's to device objectID/ObjectInstance
-            device->create_resource(M2MDevice::Manufacturer, _device.Manufacturer);
-            device->create_resource(M2MDevice::DeviceType, _device.Type);
-            device->create_resource(M2MDevice::ModelNumber, _device.ModelNumber);
-            device->create_resource(M2MDevice::SerialNumber, _device.SerialNumber);
+        if(!device) {
+            return NULL;
         }
+        // make sure device object was created successfully
+        // add resourceID's to device objectID/ObjectInstance
+        device->create_resource(M2MDevice::Manufacturer, _device.Manufacturer);
+        device->create_resource(M2MDevice::DeviceType, _device.Type);
+        device->create_resource(M2MDevice::ModelNumber, _device.ModelNumber);
+        device->create_resource(M2MDevice::SerialNumber, _device.SerialNumber);
         return device;
     }
 
@@ -239,6 +293,10 @@ public:
         _registered = true;
         _unregistered = false;
         trace_printer("Registered object successfully!");
+        test_unregister();
+#ifndef __linux__
+        heap_stats();
+#endif
     }
 
     //Callback from mbed client stack when the unregistration
@@ -307,6 +365,7 @@ public:
             default:
                 break;
         }
+        printf("Error details : %s\r\n\n",_interface->error_description());
     }
 
     /* Callback from mbed client stack if any value has changed
@@ -316,13 +375,14 @@ public:
     *       Object = 0x0, Resource = 0x1, ObjectInstance = 0x2, ResourceInstance = 0x3
     */
     void value_updated(M2MBase *base, M2MBase::BaseType type) {
+        path_buffer buffer;
+         base->uri_path(buffer);
         printf("\r\nPUT Request Received!");
-        printf("\r\nName :'%s', \r\nPath : '%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
-               base->name(),
-               base->uri_path(),
-               type,
-               base->resource_type()
-               );
+        printf("\r\nName :'%d', \r\nPath : '%s', \r\nType : '%d' (0 for Object, 1 for Resource), \r\nType : '%s'\r\n",
+               base->name_id(),
+               buffer.c_str(),
+               type
+               ,base->resource_type());
     }
 
     /*
@@ -357,7 +417,7 @@ private:
     volatile bool            _unregistered;
     int                      _value;
     struct MbedClientDevice  _device;
-    String                   _server_address;
+    char                    _server_address[128];
 };
 
 #endif // __SIMPLECLIENT_H__
