@@ -1,0 +1,6 @@
+pal-platform/*
+__x86_x64_NativeLinux_mbedtls/*
+mbed-cloud-client-internal/factory-configurator-client/*
+mbed-cloud-client-internal/mbed-client-pal/*
+mbed-cloud-client-internal/update-client-hub/*
+mbed-cloud-client-internal/source/*
