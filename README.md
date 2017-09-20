@@ -307,7 +307,7 @@ To build the example using mbed CLI:
 
 4. Plug the Ethernet cable into the board if you are using Ethernet mode.
 
-5. If you are using 6LoWPAN ND or Thread mode, connect and power on the gateway first.
+5. If you are using 6LoWPAN ND or Thread mode, connect and power on the Border Router first.
 
 6. Plug the micro-USB cable into the **OpenSDA** port. The board is listed as a mass-storage device.
 
