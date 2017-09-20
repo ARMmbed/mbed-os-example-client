@@ -293,7 +293,7 @@ public:
         _registered = true;
         _unregistered = false;
         trace_printer("Registered object successfully!");
-        test_unregister();
+       // test_unregister();
 #ifndef __linux__
         heap_stats();
 #endif

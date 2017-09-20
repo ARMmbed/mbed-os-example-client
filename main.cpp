@@ -60,9 +60,10 @@ void blinky() {
 #else
 #include <stdio.h>
 #include <unistd.h>
-//#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
-#define MBED_SERVER_ADDRESS "coap://10.45.3.39:5684"
+#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
 #endif
+
+#define TRACE_GROUP "main"
 
 // These are example resource values for the Device Object
 struct MbedClientDevice device = {
@@ -269,6 +270,8 @@ public:
             token = (uint8_t*)malloc(param->get_token_length());
             memcpy(token, param->get_token(), param->get_token_length());
             token_length = param->get_token_length();
+            printf("Token Length %d\n", token_length);
+            tr_debug("Token (%s)", tr_array(token, token_length));
 
         }
 #ifndef __linux__
@@ -302,9 +305,7 @@ private:
 #ifdef __linux__
                 usleep(1000);
 #endif
-#ifndef DISABLE_DELAYED_RESPONSE
-                led_res->send_post_response(token, token_length);
-#endif
+            led_res->send_post_response(token, token_length);
 #ifndef __linux__
                 red_led = LED_OFF;
                 status_ticker.attach_us(blinky, 250000);
@@ -331,7 +332,7 @@ static void *linux_blink(void* arg) {
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* led_res = inst->resource(5850);
         usleep(3000);
-        led_res->send_delayed_post_response();
+        led_res->send_post_response(led_res->token, led_res->token_length);
         return NULL;
     }
 }
@@ -585,16 +586,16 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 #endif
 
     // we create our button and LED resources
-//    ButtonResource button_resource;
-//    LedResource led_resource;
-//    BigPayloadResource big_payload_resource;
+    ButtonResource button_resource;
+    LedResource led_resource;
+    BigPayloadResource big_payload_resource;
 
-//    if(!button_resource.allocate_resources() ||
-//       !led_resource.allocate_resources() ||
-//       !big_payload_resource.allocate_resources()) {
-//        printf("\nResource Allocation failed - exiting application...\n");
-//        return -1;
-//    }
+    if(!button_resource.allocate_resources() ||
+       !led_resource.allocate_resources() ||
+       !big_payload_resource.allocate_resources()) {
+        printf("\nResource Allocation failed - exiting application...\n");
+        return -1;
+    }
 #ifndef __linux__
 
     printf("\nAfter creating mbedClient Resources\n");
@@ -632,9 +633,9 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     // Add objects to list
     object_list.push_back(device_object);
-//    object_list.push_back(button_resource.get_object());
-//    object_list.push_back(led_resource.get_object());
-//    object_list.push_back(big_payload_resource.get_object());
+    object_list.push_back(button_resource.get_object());
+    object_list.push_back(led_resource.get_object());
+    object_list.push_back(big_payload_resource.get_object());
 
     // Set endpoint registration object
     mbed_client.set_register_object(register_object);
@@ -661,7 +662,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
         }
         if(clicked) {
             clicked = false;
-        //    button_resource.handle_button_click();
+            button_resource.handle_button_click();
         }
     }
 #else
