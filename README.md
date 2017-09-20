@@ -140,25 +140,6 @@ There are two options for border router.
 
 You can configure and build the [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) for the 6LoWPAN ND or Thread mode.
 
-##### mbed gateway
-
-The mbed gateway is a binary release only. Please note, the mbed gateway will not be supported after the mbed-os 5.5 release.
-
-To connect the example application in 6LoWPAN ND or Thread mode to mbed Device Connector, you need to set up an mbed 6LoWPAN gateway router as follows:
-
-1. Use an Ethernet cable to connect the mbed 6LoWPAN gateway router to the internet.
-2. Use a micro-USB cable to connect the mbed 6LoWPAN gateway router to your computer. The computer will list the router as removable storage.
-3. The firmware for the gateway is located in the `GW_Binary` folder in the root of this example. Select the binary matching your application bootstrap mode:
-
-    * For the **6LoWPAN ND** bootstrap, use `gateway6LoWPANDynamic.bin`.
-    * For the **Thread** bootstrap, use `gatewayThreadDynamic.bin`.
-
-    The dynamic binaries use IPv6 autoconfiguration and enable the client to connect to the mbed Device Connector service. The static binaries create a site-local IPv6 network and packets cannot be routed outside.
-
-4. Copy the gateway binary file to the mbed 6LoWPAN gateway router to flash the device. The device reboots automatically after flashing. If that does not happen, press the **Reset** button on the board.
-
-You can view debug traces from the gateway with a serial port monitor. The gateway uses baud rate 460800. The gateway IPv6 address is correctly configured when the following trace is visible: `Eth bootstrap ready, IP=XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX:XXXX`.
-
 #### Thread-specific settings
 
 With Thread, you can change the operating mode of the client from the default router mode to a sleepy end device by adding the following override to the `mbed_app.json` file:
