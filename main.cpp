@@ -652,7 +652,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
 #ifndef __linux__
     while (true) {
-        updates.wait(25000);
+        updates.wait(10000);
         if(registered) {
             if(!clicked) {
                 mbed_client.test_update_register();
