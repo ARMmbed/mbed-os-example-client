@@ -12,9 +12,9 @@
  * This is dummy HW entropy for testing hardwares that do not have real HW entropy.
  * Code is copied from coap-service that adds weak entropy and initializes randLib.
  */
-#ifdef TARGET_NRF52_DK
+#if defined (TARGET_NRF52_DK) || defined(TARGET_UBLOX_C027)
 
-#define TRACE_GROUP "hwpoll"
+#define TRACE_GROUP "hwpl"
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen)
 {
     (void)data;
