@@ -25,8 +25,8 @@
             "help": "The password string to use for this APN, set to 0 if none",
             "value": 0
         },
-        "UART_TX_BC95": "PC_1",
-        "UART_RX_BC95": "PC_0"
+        "UART_TX_BC95": "NC",
+        "UART_RX_BC95": "NC"
 	},
 	"macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
@@ -38,6 +38,14 @@
             "platform.stdio-convert-newlines": true,
             "platform.stdio-baud-rate": 115200,
             "platform.default-serial-baud-rate": 115200            
-        }          
+         },
+        "K64F": {
+            "UART_TX_BC95": "PTC17",
+        	"UART_RX_BC95": "PTC16"
+        },
+        "NUCLEO_L486RG": {
+            "UART_TX_BC95": "PC_1",
+        	"UART_RX_BC95": "PC_0"
+        }
     }
 }
