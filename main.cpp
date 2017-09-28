@@ -151,9 +151,7 @@ public:
  */
 class LedResource {
 public:
-    LedResource():
-    token(NULL),
-    token_length(0){
+    LedResource(){
     }
 
     bool allocate_resources() {
@@ -200,19 +198,10 @@ public:
         // when a POST comes in, we want to execute the led_execute_callback
         led_res->set_execute_function(execute_callback(this, &LedResource::blink));
         // Completion of execute function can take a time, that's why delayed response is used
-        blink_args = new BlinkArgs();
-        if(!blink_args) {
-            delete led_object;
-            return false;
-        }
         return true;
     }
 
     ~LedResource() {
-        if(token){
-            free(token);
-        }
-        delete blink_args;
         delete led_object;
     }
 
@@ -236,21 +225,9 @@ public:
         uint32_t sizeIn;
         res->get_value(buffIn, sizeIn);
 
-        // turn the buffer into a string, and initialize a vector<int> on the heap
-        std::string s((char*)buffIn, sizeIn);
+        printf("led_execute_callback pattern=%s\n", (const char*)buffIn);
         free(buffIn);
-        printf("led_execute_callback pattern=%s\n", s.c_str());
 
-        // our pattern is something like 500:200:500, so parse that
-        std::size_t found = s.find_first_of(":");
-        while (found!=std::string::npos) {
-            blink_args->blink_pattern.push_back(atoi((const char*)s.substr(0,found).c_str()));
-            s = s.substr(found+1);
-            found=s.find_first_of(":");
-            if(found == std::string::npos) {
-                blink_args->blink_pattern.push_back(atoi((const char*)s.c_str()));
-            }
-        }
         // check if POST contains payload
         if (argument) {
             M2MResource::M2MExecuteParameter* param = (M2MResource::M2MExecuteParameter*)argument;
@@ -263,81 +240,21 @@ public:
             if(payload) {
                 printf("Payload: %.*s\n", payload_length, payload);
             }
+            uint8_t *token = (uint8_t*)malloc(param->get_token_length());
+            memcpy(token, param->get_token(), param->get_token_length());
+            uint8_t token_length = param->get_token_length();
+            res->send_post_response(token, token_length);
             if(token) {
                 free(token);
-                token = NULL;
             }
-            token = (uint8_t*)malloc(param->get_token_length());
-            memcpy(token, param->get_token(), param->get_token_length());
-            token_length = param->get_token_length();
-            printf("Token Length %d\n", token_length);
-            tr_debug("Token (%s)", tr_array(token, token_length));
-
         }
-#ifndef __linux__
-        // do_blink is called with the vector, and starting at -1
-        blinky_thread.start(callback(this, &LedResource::do_blink));
-#else
-        pthread_create(&blinky_thread, NULL, &linux_blink, this);
-#endif
+
     }
 
 private:
     M2MObject* led_object;
-#ifndef __linux__
-    Thread blinky_thread;
-#endif
     BlinkArgs *blink_args;
-public:
-    uint8_t *token;
-    uint8_t token_length;
-
-    void do_blink() {
-        for (;;) {
-#ifndef __linux__
-            // blink the LED
-            red_led = !red_led;
-#endif
-            // up the position, if we reached the end of the vector
-            if (blink_args->position >= blink_args->blink_pattern.size()) {
-                // send delayed response after blink is done
-                M2MObjectInstance* inst = led_object->object_instance();
-                M2MResource* led_res = inst->resource(5850);
-#ifdef __linux__
-                usleep(1000);
-#endif
-            led_res->send_post_response(token, token_length);
-#ifndef __linux__
-                red_led = LED_OFF;
-                status_ticker.attach_us(blinky, 250000);
-#endif
-                return;
-            }
-#ifndef __linux
-            // Wait requested time, then continue prosessing the blink pattern from next position.
-            Thread::wait(blink_args->blink_pattern.at(blink_args->position));
-#endif
-            blink_args->position++;
-        }
-
-    }
 };
-
-#ifdef __linux__
-
-static void *linux_blink(void* arg) {
-    LedResource * led_res = (LedResource*)arg;
-    M2MObject *led_object = led_res->get_object();
-    for (;;) {
-        // send delayed response
-        M2MObjectInstance* inst = led_object->object_instance();
-        M2MResource* led_res1 = inst->resource(5850);
-        usleep(3000);
-        led_res1->send_post_response(led_res->token, led_res->token_length);
-        return NULL;
-    }
-}
-#endif
 
 /*
  * The button contains one property (click count).
