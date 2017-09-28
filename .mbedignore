@@ -1,6 +1,10 @@
 pal-platform/*
 __x86_x64_NativeLinux_mbedtls/*
 mbed-cloud-client-internal/factory-configurator-client/*
-mbed-cloud-client-internal/mbed-client-pal/*
 mbed-cloud-client-internal/update-client-hub/*
+mbed-cloud-client-internal/mbed-client-pal/Source/Port/Reference-Impl/Lib_Specific/mbedTLS/Crypto/*
+mbed-cloud-client-internal/mbed-client-pal/Source/PAL-Impl/Modules/Crypto/*
 mbed-cloud-client-internal/source/*
+easy-connect/atmel-rf-driver/*
+easy-connect/mcr20a-rf-driver/*
+easy-connect/stm-spirit1-rf-driver/*

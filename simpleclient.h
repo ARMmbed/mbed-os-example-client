@@ -89,29 +89,6 @@ struct MbedClientDevice {
     const char* SerialNumber;
 };
 
-void device_certificate(const uint8_t *& data, uint32_t &length) {
-//        data = CERT;
-//        length = sizeof(CERT);
-           data = psk_identity;
-           length = psk_identity_len;
-}
-
-void server_certificate(const uint8_t *& data, uint32_t &length) {
-//        data = SERVER_CERT;
-//        length = sizeof(SERVER_CERT);
-
-        data = psk_identity;
-        length = psk_identity_len;
-}
-
-void device_key(const uint8_t *& data, uint32_t &length) {
-//        data = KEY;
-//        length = sizeof(KEY);
-
-        data = psk;
-        length = psk_len;
-}
-
 /*
 * Wrapper for mbed client stack that handles all callbacks, error handling, and
 * other shenanigans to make the mbed client stack easier to use.
@@ -220,17 +197,10 @@ public:
             // Add ResourceID's and values to the security ObjectID/ObjectInstance
             security->set_resource_value(M2MSecurity::M2MServerUri, (const uint8_t*)_server_address, strlen(_server_address));
             security->set_resource_value(M2MSecurity::SecurityMode, M2MSecurity::Psk);
-//            security->set_resource_value(M2MSecurity::ServerPublicKey, SERVER_CERT, sizeof(SERVER_CERT)-1);
-//            security->set_resource_value(M2MSecurity::PublicKey, CERT, sizeof(CERT)-1);
-//            security->set_resource_value(M2MSecurity::Secretkey, KEY, sizeof(KEY)-1);
 
             security->set_resource_value(M2MSecurity::ServerPublicKey, psk_identity,psk_identity_len);
             security->set_resource_value(M2MSecurity::PublicKey, psk_identity,psk_identity_len);
             security->set_resource_value(M2MSecurity::Secretkey, psk,psk_len);
-
-//            security->set_device_certificate(device_certificate);
-//            security->set_server_certificate(server_certificate);
-//            security->set_device_key(device_key);
         }
         return security;
     }
@@ -293,7 +263,6 @@ public:
         _registered = true;
         _unregistered = false;
         trace_printer("Registered object successfully!");
-       // test_unregister();
 #ifndef __linux__
         heap_stats();
 #endif
@@ -417,7 +386,7 @@ private:
     volatile bool            _unregistered;
     int                      _value;
     struct MbedClientDevice  _device;
-    char                    _server_address[128];
+    char                    _server_address[64];
 };
 
 #endif // __SIMPLECLIENT_H__

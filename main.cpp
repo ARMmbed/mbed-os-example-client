@@ -288,6 +288,7 @@ private:
     Thread blinky_thread;
 #endif
     BlinkArgs *blink_args;
+public:
     uint8_t *token;
     uint8_t token_length;
 
@@ -330,9 +331,9 @@ static void *linux_blink(void* arg) {
     for (;;) {
         // send delayed response
         M2MObjectInstance* inst = led_object->object_instance();
-        M2MResource* led_res = inst->resource(5850);
+        M2MResource* led_res1 = inst->resource(5850);
         usleep(3000);
-        led_res->send_post_response(led_res->token, led_res->token_length);
+        led_res1->send_post_response(led_res->token, led_res->token_length);
         return NULL;
     }
 }
@@ -514,13 +515,17 @@ void button_clicked() {
 #endif
 }
 
+static int8_t counter;
+
 // Entry point to the program
 int main() {
 #ifdef MBED_MEM_TRACING_ENABLED
     mem_stat_init();
 #endif
 
+#ifndef __linux__
     m2mobject_stats();
+#endif
     unsigned int seed;
     size_t len;
 
@@ -665,9 +670,15 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
             button_resource.handle_button_click();
         }
     }
-#else
+#else    
+    counter = 0;
     while(!mbed_client.unregister_successful()) {
+        counter++;
         sleep(1);
+        if(counter == 10) {
+          counter = 0;
+          mbed_client.test_update_register();
+        }
     }
 #endif
 
