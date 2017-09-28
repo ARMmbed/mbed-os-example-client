@@ -28,12 +28,8 @@
 #include "mbed-client/m2mconfig.h"
 #include "mbed-client/m2mblockmessage.h"
 #include "security.h"
-#ifndef __linux__
 #include "mbed.h"
 #include "memory_tests.h"
-#else
-#include <stdio.h>
-#endif
 
 
 #define ETHERNET        1
@@ -113,8 +109,8 @@ public:
         _value = 0;
         _object = NULL;
         _device = device;
-        //pal_init();
 #ifdef MBED_CLIENT_DYNMEM_LIB
+        pal_init();
         M2MCoreMemory::init(CORE_MEMORY_POOL,10000);
 #endif
     }
@@ -263,9 +259,7 @@ public:
         _registered = true;
         _unregistered = false;
         trace_printer("Registered object successfully!");
-#ifndef __linux__
         heap_stats();
-#endif
     }
 
     //Callback from mbed client stack when the unregistration

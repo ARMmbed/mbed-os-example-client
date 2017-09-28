@@ -24,7 +24,6 @@
 #include "mbedtls_mbed_client_config.h"
 
 #include "security.h"
-#ifndef __linux__
 #include "memory_tests.h"
 #include "mbed.h"
 
@@ -57,11 +56,6 @@ Ticker status_ticker;
 void blinky() {
     green_led = !green_led;
 }
-#else
-#include <stdio.h>
-#include <unistd.h>
-#define MBED_SERVER_ADDRESS "coap://api.connector.mbed.com:5684"
-#endif
 
 #define TRACE_GROUP "main"
 
@@ -77,7 +71,6 @@ struct MbedClientDevice device = {
 MbedClient mbed_client(device);
 
 
-#ifndef __linux__
 // In case of K64F board , there is button resource available
 // to change resource value and unregister
 #ifdef TARGET_K64F
@@ -95,54 +88,6 @@ Ticker timer;
 //#include "memory_statistics.h"
 extern "C" void mem_stat_init();
 #endif
-
-#else
-
-pthread_t blinky_thread;
-
-static void *linux_blink(void* arg);
-#endif//__linux__
-
-#ifdef __cplusplus
-    extern "C" {
-#endif
-void custom_memory_free(void *ptr) {
-    M2MCoreMemory::memory_free(ptr);
-}
-#ifdef __cplusplus
-    }
-#endif
-
-#ifdef __cplusplus
-    extern "C" {
-#endif
-void *custom_memory_calloc(size_t num, size_t size) {
-
-    void* ptr = M2MCoreMemory::memory_temp_alloc(num * size);
-    memset(ptr, 0, num * size);
-    return ptr;
-}
-#ifdef __cplusplus
-    }
-#endif
-
-
-/*
- * Arguments for running "blink" in it's own thread.
- */
-class BlinkArgs {
-public:
-    BlinkArgs() {
-        clear();
-    }
-    void clear() {
-        position = 0;
-        blink_pattern.clear();
-    }
-    uint16_t position;
-    std::vector<uint32_t> blink_pattern;
-};
-
 
 /*
  * The Led contains one property (pattern) and a function (blink).
@@ -211,14 +156,8 @@ public:
 
     void blink(void *argument) {
         // read the value of 'Pattern'
-#ifndef __linux__
-        status_ticker.detach();
-        green_led = LED_OFF;
-#endif
         M2MObjectInstance* inst = led_object->object_instance();
         M2MResource* res = inst->resource(5853);
-        // Clear previous blink data
-        blink_args->clear();
 
         // values in mbed Client are all buffers, and we need a vector of int's
         uint8_t* buffIn = NULL;
@@ -253,7 +192,6 @@ public:
 
 private:
     M2MObject* led_object;
-    BlinkArgs *blink_args;
 };
 
 /*
@@ -313,15 +251,11 @@ public:
 
             // up counter
             counter++;
-#ifndef __linux__
     #ifdef TARGET_K64F
             printf("handle_button_click, new value of counter is %d\n", counter);
     #else
             printf("simulate button_click, new value of counter is %d\n", counter);
     #endif
-#else
-            printf("simulate button_click, new value of counter is %d\n", counter);
-#endif
             // serialize the value of counter as a string, and tell connector
             char buffer[20];
             int size = sprintf(buffer,"%d",counter);
@@ -409,27 +343,21 @@ private:
     M2MObject*  big_payload;
 };
 
-#ifndef __linux__
 // Network interaction must be performed outside of interrupt context
 Semaphore updates(0);
 osThreadId mainThread;
-#endif
 
 volatile bool registered = false;
 volatile bool clicked = false;
 
 void unregister() {
     registered = false;
-#ifndef __linux__
     updates.release();
-#endif
 }
 
 void button_clicked() {
     clicked = true;
-#ifndef __linux__
     updates.release();
-#endif
 }
 
 static int8_t counter;
@@ -446,7 +374,6 @@ int main() {
     unsigned int seed;
     size_t len;
 
-#ifndef __linux__
 #ifdef MBEDTLS_ENTROPY_HARDWARE_ALT
     // Used to randomize source port
     mbedtls_hardware_poll(NULL, (unsigned char *) &seed, sizeof seed, &len);
@@ -465,10 +392,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
 #endif
 
-#endif //#ifndef __linux__
-
     srand(seed);
-#ifndef __linux__
     red_led = LED_OFF;
     blue_led = LED_OFF;
 
@@ -478,34 +402,25 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     printf("\nStarting mbed Client example\n");
     heap_stats();
-#endif
 
     mbed_trace_init();
 
 
-#ifndef __linux__
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
         printf("\nConnection to Network Failed - exiting application...\n");
         return -1;
     }
     heap_stats();
-#else
-    void *network = NULL;
-    unsigned int net=0xFFFFFFFF;
-    network = &net;
-#endif
 
     // Create endpoint interface to manage register and unregister
     if(!mbed_client.create_interface(MBED_SERVER_ADDRESS, network)) {
         printf("\nCannot create mbedClient interface - exiting application...\n");
         return -1;
     }
-#ifndef __linux__
 
     printf("\nAfter creating mbedClient Interface\n");
     heap_stats();
-#endif
 
     // we create our button and LED resources
     ButtonResource button_resource;
@@ -518,7 +433,6 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
         printf("\nResource Allocation failed - exiting application...\n");
         return -1;
     }
-#ifndef __linux__
 
     printf("\nAfter creating mbedClient Resources\n");
     heap_stats();
@@ -536,15 +450,11 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     timer.attach(&button_clicked, 15.0);
 #endif
 
-#endif // #ifndef __linux__
-
     // Create Objects of varying types, see simpleclient.h for more details on implementation.
     M2MSecurity* register_object = mbed_client.create_register_object(); // server object specifying connector info
     M2MDevice*   device_object   = mbed_client.create_device_object();   // device resources object
-#ifndef __linux__
     printf("\nAfter creating mbedClient Device and Register object\n");
     heap_stats();
-#endif
 
     if(!register_object || !device_object) {
          printf("\nCannot create Regsiter or Device Object- exiting application...\n");
@@ -564,15 +474,12 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
-#ifndef __linux__
 
     printf("\nAfter calling mbedClient register\n");
     heap_stats();
-#endif
 
     registered = true;
 
-#ifndef __linux__
     while (true) {
         updates.wait(10000);
         if(registered) {
@@ -587,20 +494,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
             button_resource.handle_button_click();
         }
     }
-#else    
-    counter = 0;
-    while(!mbed_client.unregister_successful()) {
-        counter++;
-        sleep(1);
-        if(counter == 10) {
-          counter = 0;
-          mbed_client.test_update_register();
-        }
-    }
-#endif
 
-#ifndef __linux__
     mbed_client.test_unregister();
     status_ticker.detach();
-#endif
 }

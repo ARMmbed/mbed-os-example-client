@@ -29,7 +29,6 @@
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"",
-               "MBED_CLOUD_CLIENT_USER_CONFIG_FILE=\"mbed_cloud_client_user_config.h\"",
                "MBED_CLIENT_USER_CONFIG_FILE=\"mbed_client_config.h\""],
     "target_overrides": {
         "*": {
