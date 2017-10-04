@@ -5,8 +5,8 @@
             "value": "ETHERNET"
         },
         "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
-        	"value": "ATMEL"
+            "help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
+            "value": "ATMEL"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
@@ -44,7 +44,11 @@
             "wifi-rx": "PA_12"
         },
         "UBLOX_EVK_ODIN_W2": {
-        "target.device_has_remove": ["EMAC"]
+            "target.device_has_remove": ["EMAC"]
+        },
+        "UBLOX_C030_U201": {
+            "lwip.ppp-enabled": true,
+            "ppp-cell-iface.apn-lookup": true
         }
     }
 }
