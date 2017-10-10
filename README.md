@@ -128,7 +128,7 @@ For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver)
 
 For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
  
-=======
+
 #### Supported combinations of board and shields
 
 See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
@@ -156,6 +156,7 @@ With Thread, you can change the operating mode of the client from the default ro
 * UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/)+ [WIFI-X-NUCLEO-IDW01M1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/)
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -167,8 +168,8 @@ To run this application using ESP8266 WiFi Interface, you need:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-        "value": "WIFI"
+        "help": "options are ETHERNET,WIFI_ESP8266, WIFI_IDW01M1, WIFI_ODIN ,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI_ESP8266"
     }
 ```
 
@@ -202,13 +203,27 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 #### Compile configuration for ODIN WiFi
 
-To compile ODIN WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.     
+To compile ODIN WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
 
 This should resolve the issue:
 
-```     
+``` bash
+cp configs/wifi_odin_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi details>
 cp configs/eth-wifi-mbedignore ./.mbedignore 
-```    
+```
+
+#### Compile configuration for Nucleo F401RE  and X-Nucleo WiFi
+
+To compile Nucleo X WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
+
+This should resolve the issue:
+
+``` bash
+cp configs/wifi_idw01m1_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi details>
+cp configs/wifi-idw01m1-mbedignore ./.mbedignore 
+```
  
 ### Non listed board support 
 
@@ -268,7 +283,7 @@ Possible socket types per connection:
 | Network  interface                    | UDP   | TCP | 
 | ------------------------------|:-----:|:-----:|
 | Ethernet (IPv4)               |   X   |   X   | 
-| Ethernet (IPv6)               |   X   |       | 
+| Ethernet (IPv6)               |   X   |   X  | 
 | Wifi (IPv4)                   |   X   |   X   |
 | Wifi (IPv6) - Not supported   |       |       |
 | 6LoWPAN/Thread (IPv6)         |   X   |       |
