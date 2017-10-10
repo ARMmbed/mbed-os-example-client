@@ -9,7 +9,7 @@
         	"value": "SPIRIT1"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "SPIRIT1_SPI_SCLK=D3"],
     "target_overrides": {
         "*": {
             "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}",
@@ -20,7 +20,8 @@
             "mbed-mesh-api.6lowpan-nd-channel-page": 2,
             "mbed-mesh-api.6lowpan-nd-channel": 1,
             "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)",
-            "mbed-trace.enable": 1
+            "mbed-trace.enable": 1,
+	    "mbed-mesh-api.heap-size": "((32*1024) - 1 - 0x188)"
         }
     }
 }
