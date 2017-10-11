@@ -30,6 +30,9 @@
             "mbed-trace.enable": 0,
             "wifi-tx": "PA_9",
             "wifi-rx": "PA_10"
+        },
+        "idw0x11": {
+            "expansion.board": "IDW01M1"
         }
     }
 }

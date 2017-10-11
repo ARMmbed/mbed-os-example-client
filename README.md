@@ -65,7 +65,7 @@ This example supports these shields:
 
 * [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver)
 * [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver)
-* [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields. Check instructions for compilation [here](#compile-configuration-for-spirit1)
+* [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields. Check instructions for compilation [here](#compile-configuration-for-spirit1).
 
 To select the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
 
@@ -156,7 +156,7 @@ With Thread, you can change the operating mode of the client from the default ro
 * UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-* [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/)+ [WIFI-X-NUCLEO-IDW01M1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/)
+* [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) + [WIFI-X-NUCLEO-IDW01M1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -224,7 +224,22 @@ cp configs/wifi_idw01m1_v4.json mbed_app.json
 <use your favourite editor to modify mbed_app.json for WiFi details>
 cp configs/wifi-idw01m1-mbedignore ./.mbedignore 
 ```
- 
+
+Depending on which Wifi-module you have, you might have to change the module type in the `.json`file `target-overrides` section. 
+
+``` json
+        "idw0x11": {
+            "expansion.board": "IDW01M1"
+        }
+```
+Options are: `IDW01M1` is the Morph form-factor board and `IDW04A1` is the Arduino form-factor board. The label is clearly printed on the PCB.
+
+If you have issues with the `IDW04A1` board you might have to define also a macro `IDW04A1_WIFI_HW_BUG_WA`. This can be added to the same `.json`file to the `macros:` section.
+
+``` json
+   "macros": [...,"IDW04A1_WIFI_HW_BUG_WA"],
+```
+
 ### Non listed board support 
 
 Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
