@@ -122,7 +122,8 @@ For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver)
 
 ```json
 "mbed-mesh-api.6lowpan-nd-channel-page": 2,
-"mbed-mesh-api.6lowpan-nd-channel": 1
+"mbed-mesh-api.6lowpan-nd-channel": 1,
+"mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)"
 ```
 
 For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 

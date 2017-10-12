@@ -126,7 +126,7 @@ public:
         blink_args = new BlinkArgs();
 
         // betzw: Start blinky thread
-        blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started one!
+        blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started once!
     }
 
     ~LedResource() {
@@ -179,7 +179,7 @@ public:
             printf("Payload: %.*s\n", payload_length, payload);
         }
         // do_blink is called with the vector, and starting at -1
-        // blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started one!
+        // blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started once!
         blinky_thread.signal_set(1);
     }
 

@@ -32,17 +32,3 @@ yotta_targets/
 build/
 .yotta.json
 source/security.h
-
-# betzw
-mbed-os/*
-sal-stack-nanostack-private/*
-atmel-rf-driver/*
-esp8266-driver/*
-BUILD/*
-stm-spirit1-rf-driver/*
-stm-spirit1-rf-driver
-mbed-client/*
-mbed-os/*
-mbed-os
-mcr20a-rf-driver/*
-pal/*

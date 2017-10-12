@@ -57,11 +57,11 @@
 
 //Select binding mode: UDP or TCP -- note - Mesh networking is IPv6 UDP ONLY
 #ifdef MESH
-	M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
+    M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 #else
-	// WiFi or Ethernet supports both - TCP by default to avoid
-	// NAT problems, but UDP will also work - IF you configure
-	// your network right.
+    // WiFi or Ethernet supports both - TCP by default to avoid
+    // NAT problems, but UDP will also work - IF you configure
+    // your network right.
     M2MInterface::BindingMode SOCKET_MODE = M2MInterface::TCP;
 #endif
 
