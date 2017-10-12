@@ -1,27 +1,54 @@
 {
     "config": {
         "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "MESH_LOWPAN_ND"
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
+            "value": "ETHERNET"
         },
         "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20, SPIRIT1",
-        	"value": "SPIRIT1"
+            "help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
+            "value": "ATMEL"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"SSID\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Password\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "SPIRIT1_SPI_SCLK=D3"],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}",
             "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
-            "mbed-mesh-api.6lowpan-nd-channel-page": 2,
-            "mbed-mesh-api.6lowpan-nd-channel": 1,
-            "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)",
-            "mbed-trace.enable": 1,
-	    "mbed-mesh-api.heap-size": "((32*1024) - 1 - 0x188)"
+            "mbed-mesh-api.6lowpan-nd-channel-page": 0,
+            "mbed-mesh-api.6lowpan-nd-channel": 12,
+            "mbed-trace.enable": 0
+        },
+        "NUCLEO_F401RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "NUCLEO_F411RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "UBLOX_EVK_ODIN_W2": {
+            "target.device_has_remove": ["EMAC"]
+        },
+        "UBLOX_C030_U201": {
+            "lwip.ppp-enabled": true,
+            "ppp-cell-iface.apn-lookup": true
         }
     }
 }
