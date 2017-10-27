@@ -24,8 +24,9 @@ def targets = [
 // Map toolchains to compilers
 def toolchains = [
   ARM: "armcc",
+  ARMC6: "armc6",
   GCC_ARM: "arm-none-eabi-gcc",
-  IAR: "iar_arm"
+  IAR: "IAR8-linux"
   ]
 
 def configurations = [
