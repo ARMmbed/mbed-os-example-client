@@ -1,0 +1,35 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_IDW0XX1, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "WIFI_IDW0XX1"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"SSID\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Password\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES","MBEDTLS_TEST_NULL_ENTROPY"],
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["COMMON_PAL"],
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-convert-newlines": true,
+            "mbed-trace.enable": 0,
+            "wifi-tx": "PA_9",
+            "wifi-rx": "PA_10"
+        }
+    }
+}

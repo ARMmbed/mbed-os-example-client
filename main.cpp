@@ -124,6 +124,9 @@ public:
         // Completion of execute function can take a time, that's why delayed response is used
         led_res->set_delayed_response(true);
         blink_args = new BlinkArgs();
+
+        // betzw: Start blinky thread
+        blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started once!
     }
 
     ~LedResource() {
@@ -176,7 +179,8 @@ public:
             printf("Payload: %.*s\n", payload_length, payload);
         }
         // do_blink is called with the vector, and starting at -1
-        blinky_thread.start(callback(this, &LedResource::do_blink));
+        // blinky_thread.start(callback(this, &LedResource::do_blink)); // betzw - NOTE: threads can only be started once!
+        blinky_thread.signal_set(1);
     }
 
 private:
@@ -184,6 +188,7 @@ private:
     Thread blinky_thread;
     BlinkArgs *blink_args;
     void do_blink() {
+    	blinky_thread.signal_wait(0);
         for (;;) {
             // blink the LED
             red_led = !red_led;
@@ -195,9 +200,11 @@ private:
                 led_res->send_delayed_post_response();
                 red_led = LED_OFF;
                 status_ticker.attach_us(blinky, 250000);
-                return;
+                // betzw - WAS: return;
+                blinky_thread.signal_wait(0);
+                continue;
             }
-            // Wait requested time, then continue prosessing the blink pattern from next position.
+            // Wait requested time, then continue processing the blink pattern from next position.
             Thread::wait(blink_args->blink_pattern.at(blink_args->position));
             blink_args->position++;
         }
@@ -326,6 +333,11 @@ void button_clicked() {
     updates.release();
 }
 
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
+}
+
 // Entry point to the program
 int main() {
 
@@ -361,6 +373,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     printf("\nStarting mbed Client example\n");
 
     mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
+    mbed_trace_config_set(TRACE_MODE_COLOR | TRACE_ACTIVE_LEVEL_INFO | TRACE_CARRIAGE_RETURN);
 
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
