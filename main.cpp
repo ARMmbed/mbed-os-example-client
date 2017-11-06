@@ -171,7 +171,7 @@ public:
             uint16_t object_instance_id = param->get_argument_object_instance_id();
             String resource_name = param->get_argument_resource_name();
             int payload_length = param->get_argument_value_length();
-            uint8_t* payload = param->get_argument_value();
+            const uint8_t* payload = param->get_argument_value();
             printf("Resource: %s/%d/%s executed\n", object_name.c_str(), object_instance_id, resource_name.c_str());
             printf("Payload: %.*s\n", payload_length, payload);
         }
