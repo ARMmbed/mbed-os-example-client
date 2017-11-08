@@ -59,3 +59,10 @@ mbed compile -m K64F -t $TOOL
 cp BUILD/K64F/$TOOL/mbed-os-example-client.bin k64f-$TOOL-Thread.bin
 mbed compile -m NUCLEO_F429ZI -t $TOOL
 cp ./BUILD/NUCLEO_F429ZI/$TOOL/mbed-os-example-client.bin f429zi-$TOOL-Thread.bin
+
+echo WiFi-X-Nucleo
+cp configs/wifi_idw01m1_v4.json mbed_app.json
+cp configs/wifi-idw01m1-mbedignore .mbedignore
+mbed compile -m NUCLEO_F401RE -t $TOOL
+cp ./BUILD/NUCLEO_F401RE/GCC_ARM/mbed-os-example-client.bin f401re-$TOOL-WifiXNucleo.bin
+

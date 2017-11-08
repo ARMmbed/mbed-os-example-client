@@ -65,7 +65,7 @@ This example supports these shields:
 
 * [AT86RF233/212B](https://github.com/ARMmbed/atmel-rf-driver)
 * [NXP-MCR20a](https://github.com/ARMmbed/mcr20a-rf-driver)
-* [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields. Check instructions for compilation [here](#compile-configuration-for-spirit1)
+* [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) (*a.k.a.* Spirit1) radio shields. Check instructions for compilation [here](#compile-configuration-for-spirit1).
 
 To select the radio shield make sure that the `mbed_app.json` file points to the correct radio driver type:
 
@@ -122,12 +122,13 @@ For sub-GHz shields ([Spirit1](https://github.com/ARMmbed/stm-spirit1-rf-driver)
 
 ```json
 "mbed-mesh-api.6lowpan-nd-channel-page": 2,
-"mbed-mesh-api.6lowpan-nd-channel": 1
+"mbed-mesh-api.6lowpan-nd-channel": 1,
+"mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)"
 ```
 
 For more information about the radio shields, see [the related documentation](docs/radio_module_identify.md). 
  
-=======
+
 #### Supported combinations of board and shields
 
 See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed-os-example-mesh-minimal/blob/master/Hardware.md) for known combinations of development boards and RF shields that have been tested with mesh networking stack.
@@ -155,6 +156,7 @@ With Thread, you can change the operating mode of the client from the default ro
 * UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
+* [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) + [WIFI-X-NUCLEO-IDW01M1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -166,8 +168,8 @@ To run this application using ESP8266 WiFi Interface, you need:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD.",
-        "value": "WIFI"
+        "help": "options are ETHERNET,WIFI_ESP8266, WIFI_IDW01M1, WIFI_ODIN ,MESH_LOWPAN_ND,MESH_THREAD.",
+        "value": "WIFI_ESP8266"
     }
 ```
 
@@ -201,14 +203,43 @@ For example, NUCLEO_F401RE requires a different serial connection:
 
 #### Compile configuration for ODIN WiFi
 
-To compile ODIN WiFi configuration, you need to tell mbed NOT to compile the related files. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.     
+To compile ODIN WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
 
 This should resolve the issue:
 
-```     
+``` bash
+cp configs/wifi_odin_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi details>
 cp configs/eth-wifi-mbedignore ./.mbedignore 
-```    
- 
+```
+
+#### Compile configuration for Nucleo F401RE  and X-Nucleo WiFi
+
+To compile Nucleo X WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
+
+This should resolve the issue:
+
+``` bash
+cp configs/wifi_idw01m1_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi details>
+cp configs/wifi-idw01m1-mbedignore ./.mbedignore 
+```
+
+Depending on which Wifi-module you have, you might have to change the module type in the `.json`file `target-overrides` section. 
+
+``` json
+        "idw0x11": {
+            "expansion.board": "IDW01M1"
+        }
+```
+Options are: `IDW01M1` is the Morph form-factor board and `IDW04A1` is the Arduino form-factor board. The label is clearly printed on the PCB.
+
+If you have issues with the `IDW04A1` board you might have to define also a macro `IDW04A1_WIFI_HW_BUG_WA`. This can be added to the same `.json`file to the `macros:` section.
+
+``` json
+   "macros": [...,"IDW04A1_WIFI_HW_BUG_WA"],
+```
+
 ### Non listed board support 
 
 Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
@@ -267,7 +298,7 @@ Possible socket types per connection:
 | Network  interface                    | UDP   | TCP | 
 | ------------------------------|:-----:|:-----:|
 | Ethernet (IPv4)               |   X   |   X   | 
-| Ethernet (IPv6)               |   X   |       | 
+| Ethernet (IPv6)               |   X   |   X  | 
 | Wifi (IPv4)                   |   X   |   X   |
 | Wifi (IPv6) - Not supported   |       |       |
 | 6LoWPAN/Thread (IPv6)         |   X   |       |
@@ -387,9 +418,3 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 
 ## Known issues
 
-### mbed OS 5.4
-
-* [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
-* [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
-
-Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
