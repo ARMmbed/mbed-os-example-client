@@ -1,20 +1,20 @@
-# Getting started with mbed Client on mbed OS
+# Getting started with Mbed Client on Mbed OS
 
-This is the mbed Client example for mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
+This is the Mbed Client example for Mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with Mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with Mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
 
 ## Required software
 
-* [ARM mbed account](https://developer.mbed.org/account/login/?next=/).
-* [mbed-cli](https://github.com/ARMmbed/mbed-cli) - to build the example programs. To learn how to build mbed OS applications with mbed-cli, see [the user guide](https://github.com/ARMmbed/mbed-cli/blob/master/README.md).
+* [Arm Mbed account](https://os.mbed.com/account/login/?next=/).
+* [mbed-cli](https://github.com/ARMmbed/mbed-cli) - to build the example programs. To learn how to build Mbed OS applications with mbed-cli, see [the user guide](https://github.com/ARMmbed/mbed-cli/blob/master/README.md).
 * [Serial port monitor](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
 The application:
 
 * Connects to network with WiFi, Ethernet, 6LoWPAN ND or Thread connection.
-* Registers with mbed Device Connector.
-* Gives mbed Device Connector access to its resources (read and write).
-* Records the number of clicks on the device’s button and sends the number to mbed Device Connector.
-* Lets you control the blink pattern of the LED on the device (through mbed Device Connector).
+* Registers with Mbed Device Connector.
+* Gives Mbed Device Connector access to its resources (read and write).
+* Records the number of clicks on the device’s button and sends the number to Mbed Device Connector.
+* Lets you control the blink pattern of the LED on the device (through Mbed Device Connector).
 
 ## Application setup
 
@@ -55,7 +55,7 @@ defines the defaults settings for applications. The most relevant parameters are
 #### Supported boards
 
 * K64F + NXP MCR20 15.4 shield (mesh `NANOSTACK_FULL` mode)
-* [NUCLEO_F429ZI](https://developer.mbed.org/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
+* [NUCLEO_F429ZI](https://os.mbed.com/platforms/ST-Nucleo-F429ZI/) + [X-NUCLEO-IDS01A4](https://github.com/ARMmbed/stm-spirit1-rf-driver) Spirit1 6LoWPAN expansion board (mesh `LOWPAN_ROUTER` mode)
 * NUCLEO_F429ZI + ATMEL AT233 15.4 shield (mesh `LOWPAN_ROUTER` mode)
 * [Supported combinations of board and shields](#supported-combinations-of-board-and-shields)
 
@@ -159,8 +159,8 @@ With Thread, you can change the operating mode of the client from the default ro
 To run this application using ESP8266 WiFi Interface, you need:
 
 1. An [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-1. Updated [Espressif Firmware](https://developer.mbed.org/teams/ESP8266/wiki/Firmware-Update).
-1. Mount the WiFi module onto [K64F Grove Shield v2](https://developer.mbed.org/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
+1. Updated [Espressif Firmware](https://os.mbed.com/teams/ESP8266/wiki/Firmware-Update).
+1. Mount the WiFi module onto [K64F Grove Shield v2](https://os.mbed.com/platforms/FRDM-K64F/#supported-seeed-studio-grove-extension).
 1. Attach the shield on your board.
 1. In the `mbed_app.json` file, change:
 
@@ -211,11 +211,11 @@ cp configs/eth-wifi-mbedignore ./.mbedignore
  
 ### Non listed board support 
 
-Apart from the listed configurations, this example can work on other mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
+Apart from the listed configurations, this example can work on other Mbed OS supported hardware boards which support any of the given network interface including Ethernet, WiFi, Mesh (6LoWPAN) or Thread, provided the configuration fulfills condition that the target hardware has TLS entropy implemented for it. On devices where hardware entropy is not present, TLS is disabled by default. This would result in compile time failures or linking failures.
 
 To learn why entropy is required, read the [TLS Porting guide](https://docs.mbed.com/docs/mbed-os-handbook/en/5.2/advanced/tls_porting/).
 
-Also, the complete example configuration of mbed Client, the selected network interface and mbed OS components must fit into hardware's given memory size (Flash size and RAM size). 
+Also, the complete example configuration of Mbed Client, the selected network interface and Mbed OS components must fit into hardware's given memory size (Flash size and RAM size). 
 
 <span class="notes">**Note:** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.</span>
 
@@ -224,15 +224,15 @@ Also, the complete example configuration of mbed Client, the selected network in
 
 ### Client credentials
 
-To register the application with the mbed Device Connector service, you need to create and set the client side certificate.
+To register the application with the Mbed Device Connector service, you need to create and set the client side certificate.
 
-1. Go to [mbed Device Connector](https://connector.mbed.com) and log in with your mbed account.
-1. On mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** to get new credentials for your device.
+1. Go to [Mbed Device Connector](https://connector.mbed.com) and log in with your Mbed account.
+1. On Mbed Device Connector, go to [My Devices > Security credentials](https://connector.mbed.com/#credentials) and click the **Get my device security credentials** to get new credentials for your device.
 1. Replace the contents in the `security.h` file of this project's folder with the content copied above.
 
 ### IP address setup
 
-This example uses IPv4 to communicate with the [mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6 by changing the `mbed_app.json` you make:
+This example uses IPv4 to communicate with the [Mbed Device Connector Server](https://api.connector.mbed.com) except for 6LoWPAN ND and Thread. However, you can easily change it to IPv6 by changing the `mbed_app.json` you make:
 
 ```
     "target_overrides": {
@@ -252,7 +252,7 @@ If your network does not have DHCP enabled, you have to manually assign a static
 
 ### Changing the socket type
 
-Your device can connect to mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LoWPAN. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
+Your device can connect to Mbed Device Connector via UDP or TCP binding mode. The default and only allowed value is UDP for Thread and 6LoWPAN. TCP is the default for other connections. The binding mode cannot be changed in 6LoWPAN ND or Thread mode.
 
 To change the binding mode:
 
@@ -274,7 +274,7 @@ Possible socket types per connection:
 
 ## Building the example
 
-To build the example using mbed CLI:
+To build the example using Mbed CLI:
 
 1. Open a command line tool and navigate to the project’s directory.
 
@@ -327,9 +327,9 @@ Import this repository in the Online IDE and continue from step 3 onwards.
 
 The application prints debug messages over the serial port, so you can monitor its activity with a serial port monitor. The application uses baud rate 115200.
 
-<span class="notes">**Note:** Instructions to set this up are located [here](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).</span>
+<span class="notes">**Note:** Instructions to set this up are located [here](https://os.mbed.com/handbook/SerialPC#host-interface-and-terminal-applications).</span>
 
-After connecting, you should see messages about connecting to mbed Device Connector:
+After connecting, you should see messages about connecting to Mbed Device Connector:
 
 ```
 Starting mbed Client example
@@ -358,14 +358,14 @@ handle_button_click, new value of counter is 1
 
 1. Flash the application.
 2. Verify that the registration succeeded. You should see `Registered object successfully!` printed to the serial port.
-3. On mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
+3. On Mbed Device Connector, go to [My devices > Connected devices](https://connector.mbed.com/#endpoints). Your device should be listed here.
 4. Press the **SW2** button on the device a number of times (make a note of how many times you did that).
 5. Go to [Device Connector > API Console](https://connector.mbed.com/#console).
 6. Click the **Endpoint directory lookups** drop down menu.
     ![](/docs/img/ep_lookup.PNG) 
 7. In the menu, click **GET** next to **Endpoint's resource representation**. Select your _endpoint_ and _resource-path_. For example, the _endpoint_ is the identifier of your endpoint that can be found in the `security.h` file as `MBED_ENDPOINT_NAME`. Select `3200/0/5501`as a resource path and click **TEST API**. 
 8. The number of times you pressed **SW2** is shown.
-9. Press the **SW3** button to unregister from mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
+9. Press the **SW3** button to unregister from Mbed Device Connector. You should see `Unregistered Object Successfully` printed to the serial port and the LED starts blinking. This will also stop your application. Press the **Reset** button to run the program again.
 
 <span class="notes">**Note:** On non-K64F boards, there is no unregistration functionality and button presses are simulated through timer ticks incrementing every 15 seconds.</span>
 
@@ -383,11 +383,11 @@ The application exposes three [resources](https://docs.mbed.com/docs/mbed-device
 2. `3201/0/5850`. Blink function, blinks **LED1** when executed (POST).
 3. `3201/0/5853`. Blink pattern, used by the blink function to determine how to blink. In the format of `1000:500:1000:500:1000:500` (PUT).
 
-To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
+To learn how to get notifications when resource 1 changes, or how to use resources 2 and 3, read the [Mbed Device Connector Quick Start](https://github.com/ARMmbed/mbed-connector-api-node-quickstart).
 
 ## Known issues
 
-### mbed OS 5.4
+### Mbed OS 5.4
 
 * [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
 * [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
