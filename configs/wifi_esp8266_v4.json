@@ -1,7 +1,7 @@
 {
     "config": {
         "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND, MESH_THREAD",
             "value": "WIFI_ESP8266"
         },
         "wifi-ssid": {
@@ -24,7 +24,7 @@
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
-            "target.features_add": ["COMMON_PAL"],
+            "target.features_add": ["NANOSTACK", "COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
             "mbed-trace.enable": 0
