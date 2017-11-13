@@ -361,7 +361,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     printf("\nStarting mbed Client example\n");
 
     mbed_trace_init();
-
+    mbed_trace_config_set(TRACE_MODE_COLOR | TRACE_ACTIVE_LEVEL_INFO | TRACE_CARRIAGE_RETURN);
+ 
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
         printf("\nConnection to Network Failed - exiting application...\n");
