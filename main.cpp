@@ -197,7 +197,7 @@ private:
                 status_ticker.attach_us(blinky, 250000);
                 return;
             }
-            // Wait requested time, then continue prosessing the blink pattern from next position.
+            // Wait requested time, then continue processing the blink pattern from next position.
             Thread::wait(blink_args->blink_pattern.at(blink_args->position));
             blink_args->position++;
         }
@@ -326,6 +326,11 @@ void button_clicked() {
     updates.release();
 }
 
+// debug printf function
+void trace_printer(const char* str) {
+    printf("%s\r\n", str);
+}
+
 // Entry point to the program
 int main() {
 
@@ -361,6 +366,8 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     printf("\nStarting mbed Client example\n");
 
     mbed_trace_init();
+    mbed_trace_print_function_set(trace_printer);
+    mbed_trace_config_set(TRACE_MODE_COLOR | TRACE_ACTIVE_LEVEL_INFO | TRACE_CARRIAGE_RETURN);
 
     NetworkInterface* network = easy_connect(true);
     if(network == NULL) {
