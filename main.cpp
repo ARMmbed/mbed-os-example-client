@@ -67,18 +67,62 @@ struct MbedClientDevice device = {
 // Instantiate the class which implements LWM2M Client API (from simpleclient.h)
 MbedClient mbed_client(device);
 
-
-// In case of K64F board , there is button resource available
-// to change resource value and unregister
-#ifdef TARGET_K64F
-// Set up Hardware interrupt button.
-InterruptIn obs_button(SW2);
-InterruptIn unreg_button(SW3);
-#else
-//In non K64F boards , set up a timer to simulate updating resource,
-// there is no functionality to unregister.
-Ticker timer;
+// Set up a button interrupt for user interaction
+#ifdef MBED_CONF_APP_BUTTON1
+	InterruptIn counter_btn(MBED_CONF_APP_BUTTON1);
 #endif
+
+
+/**
+ * User interaction handler / simulator. Sets up physical button handler and a ticker
+ * for regular updates for the resources.
+ *
+ * MBED_CONF_APP_BUTTON1 is mapped to actual button pin the mbed_app.json file, where you need to
+ * specify board-specific value or leave it undefined if the board does not have buttons.
+ */
+class InteractionProvider {
+
+public:
+	InteractionProvider(Semaphore& updates_sem) : updates(updates_sem) {
+
+	    timer_ticked = false;
+	    clicked = false;
+
+		// Set up handler function for the interaction button, if available
+
+#ifdef MBED_CONF_APP_BUTTON1
+		counter_btn.fall(this, &InteractionProvider::counter_button_handler);
+#endif
+
+	    // Use the counter button handler to send an update of endpoint resource values
+		// to connector every 15 seconds periodically.
+	    timer.attach(this, &InteractionProvider::timer_handler, 15.0);
+	}
+
+	// flags for interaction, these are read from outside interrupt context
+	volatile bool timer_ticked;
+	volatile bool clicked;
+
+
+private:
+
+	void timer_handler() {
+	    timer_ticked = true;
+	    updates.release();
+	}
+
+	void counter_button_handler() {
+	    clicked = true;
+	    updates.release();
+	}
+
+	// time-based event source for regular resource updates
+	Ticker timer;
+
+	// Network interaction must be performed outside of interrupt context
+	Semaphore& updates;
+
+};
 
 /*
  * Arguments for running "blink" in it's own thread.
@@ -248,11 +292,7 @@ public:
 
             // up counter
             counter++;
-    #ifdef TARGET_K64F
             printf("handle_button_click, new value of counter is %d\n", counter);
-    #else
-            printf("simulate button_click, new value of counter is %d\n", counter);
-    #endif
             // serialize the value of counter as a string, and tell connector
             char buffer[20];
             int size = sprintf(buffer,"%d",counter);
@@ -266,6 +306,61 @@ private:
     M2MObject* btn_object;
     uint16_t counter;
 };
+
+/*
+ * The timer contains one property: counter.
+ * When `handle_timer_tick` is executed, the counter updates.
+ */
+class TimerResource {
+public:
+    TimerResource(): counter(0) {
+        // create ObjectID with metadata tag of '3200', which is 'digital input'
+        btn_object = M2MInterfaceFactory::create_object("3200");
+        M2MObjectInstance* btn_inst = btn_object->create_object_instance();
+        // create resource with ID '5502', which is digital input counter
+        M2MResource* btn_res = btn_inst->create_dynamic_resource("5502", "Timer",
+            M2MResourceInstance::INTEGER, true /* observable */);
+        // we can read this value
+        btn_res->set_operation(M2MBase::GET_ALLOWED);
+        // set initial value (all values in mbed Client are buffers)
+        // to be able to read this data easily in the Connector console, we'll use a string
+        btn_res->set_value((uint8_t*)"0", 1);
+    }
+
+    ~TimerResource() {
+    }
+
+    M2MObject* get_object() {
+        return btn_object;
+    }
+
+    /*
+     * When the timer ticks, we read the current value of the click counter
+     * from mbed Device Connector, then up the value with one.l
+     */
+    void handle_timer_tick() {
+        if (mbed_client.register_successful()) {
+            M2MObjectInstance* inst = btn_object->object_instance();
+            M2MResource* res = inst->resource("5502");
+
+            // up counter
+            counter++;
+            printf("handle_timer_click, new value of counter is %d\n", counter);
+            // serialize the value of counter as a string, and tell connector
+            char buffer[20];
+            int size = sprintf(buffer,"%d",counter);
+            res->set_value((uint8_t*)buffer, size);
+        } else {
+            printf("handle_timer_tick, device not registered\n");
+        }
+    }
+
+private:
+    M2MObject* btn_object;
+    uint16_t counter;
+};
+
+
 
 class BigPayloadResource {
 public:
@@ -316,21 +411,8 @@ private:
     M2MObject*  big_payload;
 };
 
-// Network interaction must be performed outside of interrupt context
-Semaphore updates(0);
-volatile bool registered = false;
-volatile bool clicked = false;
-osThreadId mainThread;
 
-void unregister() {
-    registered = false;
-    updates.release();
-}
 
-void button_clicked() {
-    clicked = true;
-    updates.release();
-}
 
 // debug printf function
 void trace_printer(const char* str) {
@@ -367,7 +449,7 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
 
     status_ticker.attach_us(blinky, 250000);
     // Keep track of the main thread
-    mainThread = osThreadGetId();
+    osThreadId mainThread = osThreadGetId();
 
     printf("\nStarting mbed Client example\n");
 
@@ -381,23 +463,17 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
         return -1;
     }
 
-    // we create our button and LED resources
+    // we create our button, timer and LED resources
     ButtonResource button_resource;
     LedResource led_resource;
     BigPayloadResource big_payload_resource;
+    TimerResource timer_resource;
 
-#ifdef TARGET_K64F
-    // On press of SW3 button on K64F board, example application
-    // will call unregister API towards mbed Device Connector
-    //unreg_button.fall(&mbed_client,&MbedClient::test_unregister);
-    unreg_button.fall(&unregister);
+    // Network interaction must be performed outside of interrupt context
+    Semaphore updates(0);
 
-    // Observation Button (SW2) press will send update of endpoint resource values to connector
-    obs_button.fall(&button_clicked);
-#else
-    // Send update of endpoint resource values to connector every 15 seconds periodically
-    timer.attach(&button_clicked, 15.0);
-#endif
+    InteractionProvider interaction_provider(updates);
+
 
     // Create endpoint interface to manage register and unregister
     mbed_client.create_interface(MBED_SERVER_ADDRESS, network);
@@ -414,26 +490,31 @@ Add MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES and MBEDTLS_TEST_NULL_ENTROPY in mbed_app
     object_list.push_back(button_resource.get_object());
     object_list.push_back(led_resource.get_object());
     object_list.push_back(big_payload_resource.get_object());
+    object_list.push_back(timer_resource.get_object());
 
     // Set endpoint registration object
     mbed_client.set_register_object(register_object);
 
     // Register with mbed Device Connector
     mbed_client.test_register(register_object, object_list);
-    registered = true;
+    volatile bool registered = true;
 
     while (true) {
         updates.wait(25000);
         if(registered) {
-            if(!clicked) {
+            if(!interaction_provider.clicked) {
                 mbed_client.test_update_register();
             }
         }else {
             break;
         }
-        if(clicked) {
-            clicked = false;
+        if(interaction_provider.clicked) {
+            interaction_provider.clicked = false;
             button_resource.handle_button_click();
+        }
+        if(interaction_provider.timer_ticked) {
+            interaction_provider.timer_ticked = false;
+            timer_resource.handle_timer_tick();
         }
     }
 
