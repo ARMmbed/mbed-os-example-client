@@ -17,7 +17,8 @@
     "target_overrides": {
         "*": {
             "spirit1.mac-address": "{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7}",
-            "target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+            "target.features_add": ["NANOSTACK", "COMMON_PAL"],
+            "nanostack.configuration": "lowpan_router",
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
             "mbed-mesh-api.6lowpan-nd-security-mode": "PSK",
