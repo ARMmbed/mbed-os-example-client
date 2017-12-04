@@ -79,13 +79,15 @@ To select the radio shield make sure that the `mbed_app.json` file points to the
 Then you need to enable ARM IPv6/6LoWPAN stack. Edit the `mbed_app.json` file to add `NANOSTACK` feature with the particular configuration of the stack:
 
 ```
-"target.features_add": ["NANOSTACK", "LOWPAN_ROUTER", "COMMON_PAL"],
+"target.features_add": ["NANOSTACK", "COMMON_PAL"],
+"nanostack.configuration": "lowpan_router", 
 ```
 
 If your connection type is `MESH_THREAD` then you may want to use the `THREAD_ROUTER` configuration:
 
 ```
-"target.features_add": ["NANOSTACK", "THREAD_ROUTER", "COMMON_PAL"],
+"target.features_add": ["NANOSTACK", "COMMON_PAL"],
+"nanostack.configuration": "thread_router", 
 ```
 
 Since 6LoWPAN ND and Thread use IPv6 for connectivity, you need to verify first that you have a working IPv6 connection. 
@@ -134,10 +136,6 @@ See Mesh-minimal's [Notes on different hardware](https://github.com/ARMmbed/mbed
 
 #### Border router
 
-There are two options for border router.
-
-##### Nanostack-border-router
-
 You can configure and build the [nanostack-border-router](https://github.com/ARMmbed/nanostack-border-router) for the 6LoWPAN ND or Thread mode.
 
 #### Thread-specific settings
@@ -146,6 +144,10 @@ With Thread, you can change the operating mode of the client from the default ro
 
 ```json
     "mbed-mesh-api.thread-device-type": "MESH_DEVICE_TYPE_THREAD_SLEEPY_END_DEVICE"
+```
+The corresponding Nanostack configuration option is:
+```json
+    "nanostack.configuration": "thread_end_device"
 ```
 
 ## WiFi
