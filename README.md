@@ -156,6 +156,7 @@ With Thread, you can change the operating mode of the client from the default ro
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
+* [REALTEK_RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) + in-built WiFi. Please update the [DAPLINK]((https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).) 1st.
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -167,7 +168,7 @@ To run this application using ESP8266 WiFi Interface, you need:
 
 ```json
     "network-interface": {
-        "help": "options are ETHERNET,WIFI_ESP8266,WIFI_IDW0XX1,WIFI_ODIN,MESH_LOWPAN_ND,MESH_THREAD.",
+        "help": "options are ETHERNET, WIFI_ESP8266, WIFI_IDW0XX1, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND,MESH_THREAD.",
         "value": "WIFI_ESP8266"
     }
 ```
@@ -231,6 +232,16 @@ cp configs/mesh-mbedignore ./.mbedignore
 ```
 
 If you have issues with the `X-NUCLEO-IDW04A1` board, please double-check that macro `IDW04A1_WIFI_HW_BUG_WA` has been added to the `macros` section of the `mbed_app.json` file.
+
+#### Compile configuration for REALTEK_RTL8195AM (aka Realtek Ameba) board
+
+Use the supplied `configs/wifi_rtw_v4.json` file as the basis.
+
+``` bash
+cp configs/wifi_rtw_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi SSUD/Password>
+mbed compile -m REALTEK_RTL8195AM -t <your_toolchain>
+```
 
 ### Non listed board support 
 
@@ -410,9 +421,20 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 
 ## Known issues
 
-### Mbed OS 5.4
+1. Mutex issue using debug profile, issue #[303](https://github.com/ARMmbed/mbed-os-example-client/issues/303).
 
-* [UBLOX_EVK_ODIN_W2]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
-* [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
+### REALTEK_RTL8195AM
 
-Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
+Realtek RTL8195AM board does not have any LEDs that would be connected to the main MCU. The existing LEDs are all connected to the DAPLINK host processor. So, in order to get the LEDs working one has to connect an external LED, instead. The LED needs to be connected to GPIOB_4 and GND, please see pinout in [Realtek RTL8195AM-page](https://os.mbed.com/platforms/Realtek-RTL8195AM/#rtl8195am-pinout-right).
+
+The board does not have any buttons connected to the main MCU either, so that is why the button is mapped to `NC` (Not Connected) in the `wifi_rtw_v4.json`.
+
+Secondly, at least for now, this board is not fully without issues. The following issues have been raised in Mbed OS repository - please follow those for fixes.
+
+1. ISR overflow issues with this example - Mbed OS #[5640](https://github.com/ARMmbed/mbed-os/issues/5640).
+1. Compilation issues with on-line compiler - Mbed OS #[5626](https://github.com/ARMmbed/mbed-os/issues/5626).
+1. Stability issues - Mbed OS #[5056](https://github.com/ARMmbed/mbed-os/issues/5056).
+1. UVision support not complete - Mbed OS #[4651](https://github.com/ARMmbed/mbed-os/issues/4651).
+1. DAPLINK in REALTEK-RTL8195AM is a bit old - Mbed OS #[5643](https://github.com/ARMmbed/mbed-os/issues/5643).
+
+All of these issues are being worked on and fixes will come in, so please follow-up the related items.
