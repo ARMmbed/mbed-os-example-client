@@ -239,8 +239,8 @@ Use the supplied `configs/wifi_rtw_v4.json` file as the basis.
 
 ``` bash
 cp configs/wifi_rtw_v4.json mbed_app.json
-<use your favourite editor to modify mbed_app.json for WiFi SSUD/Password>
-mbed compile -m REALTEK_RTL8195AM -t <your_toolchain>
+<use your favourite editor to modify mbed_app.json for WiFi SSID/Password>
+mbed compile -m REALTEK_RTL8195AM -t <TOOLCHAIN>
 ```
 
 ### Non listed board support 
