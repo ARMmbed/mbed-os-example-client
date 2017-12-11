@@ -1,11 +1,11 @@
 # Getting started with Mbed Client on Mbed OS
 
-This is the Mbed Client example for Mbed OS (we also have one for [Linux](https://github.com/ARMmbed/mbed-client-linux-example)). It demonstrates how to register a device with Mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with Mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
+This is the Mbed Client example for Mbed OS. It demonstrates how to register a device with Mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with Mbed Device Connector, we recommend that you read [the introduction to the data model](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/#the-mbed-device-connector-data-model) first.
 
 ## Required software
 
 * [Arm Mbed account](https://os.mbed.com/account/login/?next=/).
-* [mbed-cli](https://github.com/ARMmbed/mbed-cli) - to build the example programs. To learn how to build Mbed OS applications with mbed-cli, see [the user guide](https://github.com/ARMmbed/mbed-cli/blob/master/README.md).
+* [Mbed CLI](https://os.mbed.com/docs/latest/tools/arm-mbed-cli.html) - to build the example programs. To learn how to build Mbed OS applications with mbed-cli, see [the user guide](https://github.com/ARMmbed/mbed-cli/blob/master/README.md).
 * [Serial port monitor](https://developer.mbed.org/handbook/SerialPC#host-interface-and-terminal-applications).
 
 The application:
@@ -418,3 +418,7 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 * [NUCLEO_F429ZI]: This example is not compiling with IAR. See [#194](https://github.com/ARMmbed/mbed-os-example-client/issues/194)
 
 Fix for those issues coming via; [mbed-os PR 3920] (https://github.com/ARMmbed/mbed-os/pull/3920)
+
+## Troubleshooting
+
+If you have problems, you can review the [documentation](https://os.mbed.com/docs/latest/tutorials/debugging.html) for suggestions on what could be wrong and how to fix it.
