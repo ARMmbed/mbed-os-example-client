@@ -29,8 +29,8 @@
             "platform.stdio-convert-newlines": true,
             "mbed-trace.enable": 0,
             "idw0xx1.expansion-board": "IDW04A1",
-	    "drivers.uart-serial-txbuf-size": 750,
-	    "drivers.uart-serial-rxbuf-size": 750
+	    "drivers.uart-serial-txbuf-size": 512,
+	    "drivers.uart-serial-rxbuf-size": 512
         }
     }
 }
