@@ -158,6 +158,7 @@ The corresponding Nanostack configuration option is:
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
+* [REALTEK_RTL8195AM](https://os.mbed.com/platforms/Realtek-RTL8195AM/). Check instructions for compilation [here](#compile-configuration-for-realtek-rtl8195am-wifi).
 
 To run this application using ESP8266 WiFi Interface, you need:
 
@@ -233,6 +234,18 @@ cp configs/mesh-mbedignore ./.mbedignore
 ```
 
 If you have issues with the `X-NUCLEO-IDW04A1` board, please double-check that macro `IDW04A1_WIFI_HW_BUG_WA` has been added to the `macros` section of the `mbed_app.json` file.
+
+#### Compile configuration for Realtek RTL8195AM WiFi
+
+To compile Realtek WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
+
+This should resolve the issue:
+
+``` bash
+cp configs/wifi_rtw_v4.json mbed_app.json
+<use your favourite editor to modify mbed_app.json for WiFi details>
+cp configs/mesh-mbedignore ./.mbedignore 
+```
 
 ### Non listed board support 
 
