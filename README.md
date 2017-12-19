@@ -424,6 +424,10 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 ## Known issues
 
 1. Mutex issue using debug profile, issue #[303](https://github.com/ARMmbed/mbed-os-example-client/issues/303).
+1. UDP connection fails with on-line compiler (ARM CC 5.06 update 3) #[357](https://github.com/ARMmbed/mbed-os-example-client/issues/357).
+1. K64F LWIP IPv6 not working with older than ARM CC 5.06 update 6 #[359](https://github.com/ARMmbed/mbed-os-example-client/issues/359).
+
+As ARM Compiler 5.06 update *3* has multiple compiler bugs (issues 2, 3 above), we recommend updating to [5.06 update 6](https://developer.arm.com/products/software-development-tools/compilers/arm-compiler/downloads/version-5).
 
 ### REALTEK_RTL8195AM
 
