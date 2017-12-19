@@ -29,25 +29,10 @@
 #include "security.h"
 #include "mbed.h"
 
-#define ETHERNET        1
-#define WIFI            2
-#define MESH_LOWPAN_ND  3
-#define MESH_THREAD     4
-#define ATMEL           5
-#define MCR20           6
-#define SPIRIT1         7
-#define EFR32           8
-
 #define STRINGIFY(s) #s
 
-// Check if using mesh networking, define helper
-#if MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-    #define MESH
-#elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    #define MESH
-#endif
-
-#if defined (MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
+// EASY_CONNECT_MESH coming via easy-connect
+#if defined (EASY_CONNECT_MESH) || (MBED_CONF_LWIP_IPV6_ENABLED==true)
     // Mesh is always IPV6 - also WiFi and ETH can be IPV6 if IPV6 is enabled
     M2MInterface::NetworkStack NETWORK_STACK = M2MInterface::LwIP_IPv6;
 #else
@@ -56,7 +41,7 @@
 #endif
 
 //Select binding mode: UDP or TCP -- note - Mesh networking is IPv6 UDP ONLY
-#ifdef MESH
+#if defined (EASY_CONNECT_MESH)
     M2MInterface::BindingMode SOCKET_MODE = M2MInterface::UDP;
 #else
     // WiFi or Ethernet supports both - TCP by default to avoid
