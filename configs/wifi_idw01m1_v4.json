@@ -21,7 +21,7 @@
             "value": "PA_10"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES","MBEDTLS_TEST_NULL_ENTROPY"],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
             "target.features_add": ["COMMON_PAL"],
