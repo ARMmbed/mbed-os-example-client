@@ -155,7 +155,7 @@ With Thread, you can change the operating mode of the client from the default ro
 * UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
-* [NUCLEO_F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
+* [NUCLEO_L476RG](https://os.mbed.com/platforms/ST-Nucleo-L476RG/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
 * [REALTEK_RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) + in-built WiFi. Please update the [DAPLINK]((https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).) 1st.
 
 To run this application using ESP8266 WiFi Interface, you need:
@@ -188,7 +188,7 @@ Provide your WiFi SSID and password here and leave `\"` in the beginning and end
 
 <span class="notes">**Note:** Some devices do not support the Grove Shield or use the primary UART for USB communication. On such devices, modify the `mbed_app.json` to use the serial pins connected to the ESP8266.</span>
 
-For example, NUCLEO_F401RE requires a different serial connection:
+For example, NUCLEO_L476RG requires a different serial connection:
 
 ```json
     "wifi-tx": {

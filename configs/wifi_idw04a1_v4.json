@@ -21,7 +21,7 @@
             "value": "D2"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES","MBEDTLS_TEST_NULL_ENTROPY", "IDW04A1_WIFI_HW_BUG_WA"],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "IDW04A1_WIFI_HW_BUG_WA"],
     "target_overrides": {
         "*": {
             "target.features_add": ["COMMON_PAL"],
