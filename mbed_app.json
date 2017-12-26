@@ -1,8 +1,8 @@
 {
     "config": {
         "network-interface":{
-            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
-            "value": "ETHERNET"
+            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ODIN, WIFI_WIZFI310, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
+            "value": "WIFI_WIZFI310"
         },
         "mesh_radio_type": {
             "help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
@@ -10,11 +10,11 @@
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
-            "value": "\"SSID\""
+            "value": "\"Dap\""
         },
         "wifi-password": {
             "help": "WiFi Password",
-            "value": "\"Password\""
+            "value": "\"00001111\""
         },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
@@ -37,8 +37,8 @@
             "mbed-trace.enable": 0
         },
         "NUCLEO_F401RE": {
-            "wifi-tx": "PA_11",
-            "wifi-rx": "PA_12"
+            "wifi-tx": "D8",
+            "wifi-rx": "D2"
         },
         "NUCLEO_F411RE": {
             "wifi-tx": "PA_11",
