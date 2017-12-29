@@ -2,6 +2,19 @@
 
 This is the Mbed Client example for Mbed OS. It demonstrates how to register a device with Mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with Mbed Device Connector, we recommend that you read [the introduction to the data model](https://cloud.mbed.com/docs/latest/legacy-products/mbed-device-connector-web-api.html#the-mbed-device-connector-data-model) first.
 
+## Table of Contents
+
+1. [Required software](#required-software).
+1. [Application setup](#application-setup).
+1. [Ethernet](#ethernet).
+1. [Mesh](#mesh).
+1. [WiFi](#wifi).
+1. [Building the example](#building-the-example).
+1. [Monitoring the application](#monitoring-the-application).
+1. [Testing the application](#testing-the-application).
+1. [Known issues](#known-issues).
+1. [Troubleshooting](#troubleshooting).
+
 ## Required software
 
 * [Arm Mbed account](https://os.mbed.com/account/login/?next=/).
@@ -426,7 +439,7 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 1. Mutex issue using debug profile, issue #[303](https://github.com/ARMmbed/mbed-os-example-client/issues/303).
 1. UDP connection fails with on-line compiler (ARM CC 5.06 update 3) #[357](https://github.com/ARMmbed/mbed-os-example-client/issues/357).
 
-As ARM Compiler 5.06 update *3* has multiple compiler bugs (issues 2, 3 above), we recommend updating to [5.06 update 6](https://developer.arm.com/products/software-development-tools/compilers/arm-compiler/downloads/version-5).
+As ARM Compiler 5.06 update *3* has multiple compiler bugs (issue 2 above), we recommend updating to [5.06 update 6](https://developer.arm.com/products/software-development-tools/compilers/arm-compiler/downloads/version-5).
 
 ### REALTEK_RTL8195AM
 
