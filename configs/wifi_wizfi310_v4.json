@@ -1,0 +1,47 @@
+{
+    "config": {
+        "network-interface":{
+            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_WIZFI310, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
+            "value": "WIFI_WIZFI310"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"DIR-815_Wiznet\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"0102030405\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D1"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D0"
+        },
+        "button1": {
+        	"help": "Use BUTTON1 from PinNames.h by default",
+        	"value": "BUTTON1"
+        }
+    },
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "target_overrides": {
+        "*": {
+            "drivers.uart-serial-rxbuf-size": 1024,
+            "target.features_add": ["COMMON_PAL"],
+            "platform.stdio-baud-rate": 115200,
+            "platform.stdio-convert-newlines": true,
+            "mbed-trace.enable": 0
+        },
+        "NUCLEO_F401RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        },
+        "NUCLEO_F411RE": {
+            "wifi-tx": "PA_11",
+            "wifi-rx": "PA_12"
+        }
+    }
+}
+
