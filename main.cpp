@@ -15,7 +15,6 @@
  */
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#include "simpleclient.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -30,6 +29,9 @@
 #define MBED_CONF_APP_ESP8266_TX MBED_CONF_APP_WIFI_TX
 #define MBED_CONF_APP_ESP8266_RX MBED_CONF_APP_WIFI_RX
 #include "easy-connect/easy-connect.h"
+
+// Should be defined after easy-connect.h
+#include "simpleclient.h"
 
 #ifdef TARGET_STM
 #define RED_LED (LED3)
