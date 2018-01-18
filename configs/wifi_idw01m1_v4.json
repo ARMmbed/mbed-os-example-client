@@ -21,7 +21,7 @@
             "value": "PA_10"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES","MBEDTLS_TEST_NULL_ENTROPY"],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
             "target.features_add": ["COMMON_PAL"],
@@ -29,8 +29,8 @@
             "platform.stdio-convert-newlines": true,
             "mbed-trace.enable": 0,
             "idw0xx1.expansion-board": "IDW01M1",
-	    "drivers.uart-serial-txbuf-size": 730,
-	    "drivers.uart-serial-rxbuf-size": 730
+	    "drivers.uart-serial-txbuf-size": 512,
+	    "drivers.uart-serial-rxbuf-size": 512
         }
     }
 }
