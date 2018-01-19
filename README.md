@@ -216,18 +216,6 @@ For example, NUCLEO_L476RG requires a different serial connection:
     }
 ```
 
-#### Compile configuration for ODIN WiFi
-
-To compile ODIN WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. An example file is available in the `configs` folder.
-
-This should resolve the issue:
-
-``` bash
-cp configs/wifi_odin_v4.json mbed_app.json
-<use your favourite editor to modify mbed_app.json for WiFi details>
-cp configs/mesh-mbedignore ./.mbedignore 
-```
-
 #### Compile configuration for STM `X-NUCLEO-IDW0XX1` WiFi expansion boards
 
 Currently, two STM WiFi expansion boards are available:
@@ -235,16 +223,6 @@ Currently, two STM WiFi expansion boards are available:
 - `X-NUCLEO-IDW04A1`, which is the Arduino form-factor board.
 
 The label is clearly printed on the PCB.
-
-To compile STM X-NUCLEO WiFi configuration, you need to tell mbed NOT to compile mesh files for example. To do that, set up a `.mbedignore` file. Example files are available in the `configs` folder.
-
-This should resolve the issue (example for `X-NUCLEO-IDW01M1`):
-
-``` bash
-cp configs/wifi_idw01m1_v4.json mbed_app.json
-<use your favourite editor to modify mbed_app.json for WiFi details>
-cp configs/mesh-mbedignore ./.mbedignore 
-```
 
 If you have issues with the `X-NUCLEO-IDW04A1` board, please double-check that macro `IDW04A1_WIFI_HW_BUG_WA` has been added to the `macros` section of the `mbed_app.json` file.
 
@@ -340,18 +318,7 @@ To build the example using Mbed CLI:
     ```
     mbed compile -m K64F -t GCC_ARM -c --app-config configs/6lowpan_Atmel_RF.json
     ```
-    
-    If you are using either of the following configurations remember to copy .mbedignore as well:
-    
-    ``` 
-    configs/eth_*
-    configs/wifi_*
-    ```
-    
-    ```
-    cp configs/eth-wifi-mbedignore ./.mbedignore 
-    ```
-    
+
     mbed CLI builds a binary file under the project’s `BUILD/` directory.
 
 4. Plug the Ethernet cable into the board if you are using Ethernet mode.
