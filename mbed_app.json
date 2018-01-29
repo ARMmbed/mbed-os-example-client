@@ -44,6 +44,9 @@
             "wifi-tx": "PA_11",
             "wifi-rx": "PA_12"
         },
+        "RZ_A1H": {
+            "target.macros_add": ["MBEDTLS_TEST_NULL_ENTROPY", "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES"]
+        },
         "UBLOX_EVK_ODIN_W2": {
             "target.device_has_remove": ["EMAC"]
         },
