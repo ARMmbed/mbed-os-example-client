@@ -171,6 +171,7 @@ The corresponding Nanostack configuration option is:
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * [NUCLEO_L476RG](https://os.mbed.com/platforms/ST-Nucleo-L476RG/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
+* [DISCO_L475VG_IOT01A](https://os.mbed.com/platforms/ST-Discovery-L475E-IOT01A/) + ISM43362 built-in module
 * [REALTEK_RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) + in-built WiFi. Please update the [DAPLINK]((https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).) 1st.
 
 To run this application using ESP8266 WiFi Interface, you need:
@@ -225,6 +226,17 @@ Currently, two STM WiFi expansion boards are available:
 The label is clearly printed on the PCB.
 
 If you have issues with the `X-NUCLEO-IDW04A1` board, please double-check that macro `IDW04A1_WIFI_HW_BUG_WA` has been added to the `macros` section of the `mbed_app.json` file.
+
+#### Compile configuration for STM `DISCO_L475VG_IOT01A` platform
+
+Use the supplied `configs/wifi_ism43362.json` file as a basis.
+
+``` bash
+cp configs/wifi_ism43362.json mbed_app.json
+cp configs/wifi_ism43362-ignore .mbedignore
+<use your favourite editor to modify mbed_app.json for WiFi SSID/Password>
+mbed compile -m DISCO_L475VG_IOT01A -t <TOOLCHAIN>
+```
 
 #### Compile configuration for REALTEK_RTL8195AM (aka Realtek Ameba) board
 
