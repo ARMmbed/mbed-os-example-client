@@ -233,7 +233,6 @@ Use the supplied `configs/wifi_ism43362.json` file as a basis.
 
 ``` bash
 cp configs/wifi_ism43362.json mbed_app.json
-cp configs/wifi_ism43362-ignore .mbedignore
 <use your favourite editor to modify mbed_app.json for WiFi SSID/Password>
 mbed compile -m DISCO_L475VG_IOT01A -t <TOOLCHAIN>
 ```
