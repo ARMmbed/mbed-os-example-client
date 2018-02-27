@@ -429,9 +429,7 @@ Secondly, at least for now, this board is not fully without issues. The followin
 
 1. ISR overflow issues with this example - Mbed OS #[5640](https://github.com/ARMmbed/mbed-os/issues/5640).
 1. Compilation issues with on-line compiler - Mbed OS #[5626](https://github.com/ARMmbed/mbed-os/issues/5626).
-1. Stability issues - Mbed OS #[5056](https://github.com/ARMmbed/mbed-os/issues/5056).
 1. UVision support not complete - Mbed OS #[4651](https://github.com/ARMmbed/mbed-os/issues/4651).
-1. DAPLINK in REALTEK-RTL8195AM is a bit old - Mbed OS #[5643](https://github.com/ARMmbed/mbed-os/issues/5643).
 
 All of these issues are being worked on and fixes will come in, so please follow-up the related items.
 
