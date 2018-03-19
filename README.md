@@ -419,6 +419,10 @@ To learn how to get notifications when resource 1 changes, or how to use resourc
 
 As ARM Compiler 5.06 update *3* has multiple compiler bugs (issue 2 above), we recommend updating to [5.06 update 6](https://developer.arm.com/products/software-development-tools/compilers/arm-compiler/downloads/version-5).
 
+### UBLOX_EVK_ODIN_W2
+
+Pre-built WiFi binaries are broken for UBLOX_EVK_ODIN_W2 between Mbed OS 5.7.5 to 5.7.x, issue [6003](ARMmbed/mbed-os#6003) (fixed to Mbed OS 5.8.0).
+
 ### REALTEK_RTL8195AM
 
 Realtek RTL8195AM board does not have any LEDs that would be connected to the main MCU. The existing LEDs are all connected to the DAPLINK host processor. So, in order to get the LEDs working one has to connect an external LED, instead. The LED needs to be connected to GPIOB_4 and GND, please see pinout in [Realtek RTL8195AM-page](https://os.mbed.com/platforms/Realtek-RTL8195AM/#rtl8195am-pinout-right).
