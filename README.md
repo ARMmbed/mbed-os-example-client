@@ -1,3 +1,9 @@
+## Legacy note!
+
+**Please note: this application is a legacy product and is no longer actively maintained**.
+
+However, there is a new reference example as part of Arm's [Mbed Cloud](https://cloud.mbed.com/docs/current) offering and the application code is available via [Mbed Cloud Client Example](https://github.com/ARMmbed/mbed-cloud-client-example) repository.
+
 # Getting started with Mbed Client on Mbed OS
 
 This is the Mbed Client example for Mbed OS. It demonstrates how to register a device with Mbed Device Connector, how to read and write values, and how to deregister. If you are unfamiliar with Mbed Device Connector, we recommend that you read [the introduction to the data model](https://cloud.mbed.com/docs/latest/legacy-products/mbed-device-connector-web-api.html#the-mbed-device-connector-data-model) first.
