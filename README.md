@@ -173,7 +173,7 @@ The corresponding Nanostack configuration option is:
 
 #### Supported boards
 
-* UBLOX_EVK_ODIN_W2. Check instructions for compilation [here](#compile-configuration-for-odin-wifi).
+* UBLOX_EVK_ODIN_W2.
 * K64F + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * [NUCLEO_L476RG](https://os.mbed.com/platforms/ST-Nucleo-L476RG/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
