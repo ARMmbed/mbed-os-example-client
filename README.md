@@ -438,7 +438,6 @@ The board does not have any buttons connected to the main MCU either, so that is
 Secondly, at least for now, this board is not fully without issues. The following issues have been raised in Mbed OS repository - please follow those for fixes.
 
 1. ISR overflow issues with this example - Mbed OS #[5640](https://github.com/ARMmbed/mbed-os/issues/5640).
-1. Compilation issues with on-line compiler - Mbed OS #[5626](https://github.com/ARMmbed/mbed-os/issues/5626).
 1. UVision support not complete - Mbed OS #[4651](https://github.com/ARMmbed/mbed-os/issues/4651).
 
 All of these issues are being worked on and fixes will come in, so please follow-up the related items.
