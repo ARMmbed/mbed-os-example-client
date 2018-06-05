@@ -77,9 +77,17 @@
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_X509_CRT_PARSE_C
 
-// Remove RSA, save 20KB at total
-#undef MBEDTLS_RSA_C
-#undef MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+// Remove RSA, save 20KB at total.
+// However, with Mbed OS 5.9 onwards - UBLOX_EVK_ODIN_W2 must have RSA!
+// A more abstract macro define added for that which you can trigger via
+// macros -part in the mbed_app.json.
+#if !defined(MBED_CONF_RSA_REQUIRED)
+    #undef MBEDTLS_RSA_C
+    #undef MBEDTLS_PK_RSA_ALT_SUPPORT
+    #undef MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+    #undef MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
+    #undef MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+#endif // !MBED_CONF_RSA_REQUIRED
 
 // Remove error messages, save 10KB of ROM
 #undef MBEDTLS_ERROR_C

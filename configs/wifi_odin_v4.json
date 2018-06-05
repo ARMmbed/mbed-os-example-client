@@ -17,7 +17,7 @@
         	"value": "BUTTON1"
         }
     },
-    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
+    "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBED_CONF_RSA_REQUIRED"],
     "target_overrides": {
         "*": {
             "target.features_add": ["LWIP", "COMMON_PAL"],
