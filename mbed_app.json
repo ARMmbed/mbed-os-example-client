@@ -1,7 +1,7 @@
 {
     "config": {
         "network-interface":{
-            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ODIN, WIFI_WIZFI310, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
+            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ISM43362, WIFI_ODIN, WIFI_WIZFI310, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
             "value": "ETHERNET"
         },
         "mesh_radio_type": {
@@ -35,6 +35,12 @@
             "mbed-mesh-api.6lowpan-nd-channel-page": 0,
             "mbed-mesh-api.6lowpan-nd-channel": 12,
             "mbed-trace.enable": 0
+        },
+        "DISCO_F413ZH": {
+            "network-interface": "WIFI_ISM43362"
+        },
+        "DISCO_L475VG_IOT01A": {
+            "network-interface": "WIFI_ISM43362"
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",
