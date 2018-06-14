@@ -178,6 +178,7 @@ The corresponding Nanostack configuration option is:
 * NUCLEO_F429ZI + GROVE SEEED shield using [ESP8266](https://en.wikipedia.org/wiki/ESP8266) WiFi module.
 * [NUCLEO_L476RG](https://os.mbed.com/platforms/ST-Nucleo-L476RG/) + [X-NUCLEO-IDW0XX1](https://github.com/ARMmbed/wifi-x-nucleo-idw01m1/).
 * [DISCO_L475VG_IOT01A](https://os.mbed.com/platforms/ST-Discovery-L475E-IOT01A/) + ISM43362 built-in module
+* [DISCO_F413ZH](https://os.mbed.com/platforms/ST-Discovery-F413H/) + ISM43362 built-in module
 * [REALTEK_RTL8195AM](https://developer.mbed.org/platforms/REALTEK-RTL8195AM/) + in-built WiFi. Please update the [DAPLINK]((https://developer.mbed.org/platforms/REALTEK-RTL8195AM/#daplink-firmware-update).) 1st.
 
 To run this application using ESP8266 WiFi Interface, you need:
@@ -233,13 +234,13 @@ The label is clearly printed on the PCB.
 
 If you have issues with the `X-NUCLEO-IDW04A1` board, please double-check that macro `IDW04A1_WIFI_HW_BUG_WA` has been added to the `macros` section of the `mbed_app.json` file.
 
-#### Compile configuration for STM `DISCO_L475VG_IOT01A` platform
+#### Compile configuration for ISM43362 (`DISCO_L475VG_IOT01A` and `DISCO_F413ZH` platforms)
 
-Use the supplied `configs/wifi_ism43362.json` file as a basis.
+[ISM43362 WiFi Inventek module](https://github.com/ARMmbed/wifi-ism43362)
+
+You only need to update mbed_app.json file for your local WiFi SSID and Password (WPA2)
 
 ``` bash
-cp configs/wifi_ism43362.json mbed_app.json
-<use your favourite editor to modify mbed_app.json for WiFi SSID/Password>
 mbed compile -m DISCO_L475VG_IOT01A -t <TOOLCHAIN>
 ```
 
