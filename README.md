@@ -428,7 +428,8 @@ As ARM Compiler 5.06 update *3* has multiple compiler bugs (issue 2 above), we r
 
 ### UBLOX_EVK_ODIN_W2
 
-Pre-built WiFi binaries are broken for UBLOX_EVK_ODIN_W2 between Mbed OS 5.7.5 to 5.7.x, issue [6003](ARMmbed/mbed-os#6003) (fixed to Mbed OS 5.8.0).
+* Pre-built WiFi binaries are broken for UBLOX_EVK_ODIN_W2 between Mbed OS 5.7.5 to 5.7.x, issue [6003](ARMmbed/mbed-os#6003) (fixed to Mbed OS 5.8.0).
+* UBLOX_EVK_ODIN_W2 hard-faults when compiled with Mbed OS 5.9 & IAR, issue [7173](https://github.com/ARMmbed/mbed-os/issues/7137).
 
 ### REALTEK_RTL8195AM
 
