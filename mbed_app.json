@@ -1,20 +1,8 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ISM43362, WIFI_ODIN, WIFI_WIZFI310, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
-            "value": "ETHERNET"
-        },
         "mesh_radio_type": {
             "help": "options are ATMEL, MCR20, SPIRIT1, EFR32",
             "value": "ATMEL"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
         },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
@@ -34,13 +22,28 @@
             "platform.stdio-convert-newlines": true,
             "mbed-mesh-api.6lowpan-nd-channel-page": 0,
             "mbed-mesh-api.6lowpan-nd-channel": 12,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.network-interface": "ETHERNET",
+            "easy-connect.network-interface-header": "\"EthernetInterface.h\"",
+            "easy-connect.network-interface-class": "EthernetInterface",
+            "easy-connect.network-interface-name": "\"EthernetInterface\""
         },
         "DISCO_F413ZH": {
-            "network-interface": "WIFI_ISM43362"
+            "easy-connect.network-interface": "WIFI_ISM43362",
+            "easy-connect.network-interface-header": "\"ISM43362Interface.h\"",
+            "easy-connect.network-interface-class": "ISM43362Interface",
+            "easy-connect.network-interface-name": "\"ISM43362Interface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\""
+
         },
         "DISCO_L475VG_IOT01A": {
-            "network-interface": "WIFI_ISM43362"
+            "easy-connect.network-interface": "WIFI_ISM43362",
+            "easy-connect.network-interface-header": "\"ISM43362Interface.h\"",
+            "easy-connect.network-interface-class": "ISM43362Interface",
+            "easy-connect.network-interface-name": "\"ISM43362Interface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\""
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",

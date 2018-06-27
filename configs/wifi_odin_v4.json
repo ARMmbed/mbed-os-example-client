@@ -1,20 +1,8 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "WIFI_ODIN"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        },
         "button1": {
-        	"help": "Use BUTTON1 from PinNames.h by default",
-        	"value": "BUTTON1"
+            "help": "Use BUTTON1 from PinNames.h by default",
+            "value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\"", "MBED_CONF_RSA_REQUIRED"],
@@ -25,7 +13,14 @@
             "platform.stdio-convert-newlines":true,
             "lwip.ipv4-enabled": true,
             "lwip.ipv6-enabled": false,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.wifi-type": "\"ODIN\"",
+            "easy-connect.network-interface": "WIFI_ODIN",
+            "easy-connect.network-interface-header": "\"OdinWiFiInterface.h\"",
+            "easy-connect.network-interface-class": "OdinWiFiInterface",
+            "easy-connect.network-interface-name": "\"OdinWiFiInterface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\""
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",

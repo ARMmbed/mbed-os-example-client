@@ -1,9 +1,5 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, WIFI_RTW, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
-            "value": "CELLULAR_ONBOARD"
-        },
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
@@ -13,7 +9,11 @@
             "platform.stdio-convert-newlines":true,
             "lwip.ipv4-enabled": true,
             "lwip.ipv6-enabled": false,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.network-interface": "CELLULAR_ONBOARD",
+            "easy-connect.network-interface-header": "\"OnboardCellularInterface.h\"",
+            "easy-connect.network-interface-class": "OnboardCellularInterface",
+            "easy-connect.network-interface-name": "\"OnboardCellularInterface\""
         },
         "UBLOX_C030_U201": {
             "lwip.ppp-enabled": true,

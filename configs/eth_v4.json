@@ -1,12 +1,8 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "ETHERNET"
-        },
         "button1": {
-        	"help": "Use BUTTON1 from PinNames.h by default",
-        	"value": "BUTTON1"
+            "help": "Use BUTTON1 from PinNames.h by default",
+            "value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
@@ -17,7 +13,11 @@
             "platform.stdio-convert-newlines": true,
             "lwip.ipv4-enabled": true,
             "lwip.ipv6-enabled": false,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.network-interface": "ETHERNET",
+            "easy-connect.network-interface-header": "\"EthernetInterface.h\"",
+            "easy-connect.network-interface-class": "EthernetInterface",
+            "easy-connect.network-interface-name": "\"EthernetInterface\""
         },
         "UBLOX_EVK_ODIN_W2": {
              "target.network-default-interface-type": "ETHERNET"

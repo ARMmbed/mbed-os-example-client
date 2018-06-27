@@ -1,16 +1,8 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "MESH_LOWPAN_ND"
-        },
-        "mesh_radio_type": {
-        	"help": "options are ATMEL, MCR20, SPIRIT1",
-        	"value": "SPIRIT1"
-        },
         "button1": {
-        	"help": "Use BUTTON1 from PinNames.h by default",
-        	"value": "BUTTON1"
+            "help": "Use BUTTON1 from PinNames.h by default",
+            "value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
@@ -25,7 +17,13 @@
             "mbed-mesh-api.6lowpan-nd-channel-page": 2,
             "mbed-mesh-api.6lowpan-nd-channel": 1,
             "mbed-mesh-api.6lowpan-nd-channel-mask": "(1<<1)",
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.network-interface": "MESH_LOWPAN_ND",
+            "easy-connect.mesh-radio-type": "SPIRIT1",
+            "easy-connect.mesh-type": "\"SPIRIT1\"",
+            "easy-connect.network-interface-header": "\"NanostackInterface.h\"",
+            "easy-connect.network-interface-class": "LoWPANNDInterface",
+            "easy-connect.network-interface-name": "\"LoWPANNDInterface\""
         }
     }
 }

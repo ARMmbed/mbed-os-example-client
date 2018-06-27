@@ -1,24 +1,17 @@
 {
-    "config": {
-        "network-interface":{
-            "value": "WIFI_ISM43362"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"PASSWORD\""
-        }
-    },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
     "target_overrides": {
         "*": {
             "target.features_add": ["COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.network-interface": "WIFI_ISM43362",
+            "easy-connect.network-interface-header": "\"ISM43362Interface.h\"",
+            "easy-connect.network-interface-class": "ISM43362Interface",
+            "easy-connect.network-interface-name": "\"ISM43362Interface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"PASSWORD\""
         }
     }
 }

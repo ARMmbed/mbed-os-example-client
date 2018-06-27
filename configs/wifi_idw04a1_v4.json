@@ -1,17 +1,5 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_IDW0XX1, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "WIFI_IDW0XX1"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
             "value": "D8"
@@ -29,8 +17,17 @@
             "platform.stdio-convert-newlines": true,
             "mbed-trace.enable": 0,
             "idw0xx1.expansion-board": "IDW04A1",
-	    "drivers.uart-serial-txbuf-size": 512,
-	    "drivers.uart-serial-rxbuf-size": 512
+            "drivers.uart-serial-txbuf-size": 512,
+            "drivers.uart-serial-rxbuf-size": 512,
+            "easy-connect.wifi-type": "\"IDW0XX1\"",
+            "easy-connect.network-interface": "WIFI_IDW0XX1",
+            "easy-connect.network-interface-header": "\"SpwfSAInterface.h\"",
+            "easy-connect.network-interface-class": "SpwfSAInterface",
+            "easy-connect.network-interface-name": "\"SpwfSAInterface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\"",
+            "idw0xx1.tx": "D8",
+            "idw0xx1.rx": "D2"
         }
     }
 }

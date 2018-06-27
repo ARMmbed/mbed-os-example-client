@@ -1,17 +1,5 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_IDW0XX1, WIFI_ESP8266, WIFI_ODIN, WIFI_WIZFI310, MESH_LOWPAN_ND, MESH_THREAD, CELLULAR_ONBOARD",
-            "value": "WIFI_WIZFI310"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
             "value": "D1"
@@ -21,8 +9,8 @@
             "value": "D0"
         },
         "button1": {
-        	"help": "Use BUTTON1 from PinNames.h by default",
-        	"value": "BUTTON1"
+            "help": "Use BUTTON1 from PinNames.h by default",
+            "value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
@@ -32,7 +20,14 @@
             "target.features_add": ["COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.wifi-type": "\"WizFi310\"",
+            "easy-connect.network-interface": "WIFI_WIZFI310",
+            "easy-connect.network-interface-header": "\"WizFi310Interface.h\"",
+            "easy-connect.network-interface-class": "WizFi310Interface",
+            "easy-connect.network-interface-name": "\"WizFi310Interface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\""
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",

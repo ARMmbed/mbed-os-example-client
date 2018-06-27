@@ -1,17 +1,5 @@
 {
     "config": {
-        "network-interface":{
-            "help": "Options are ETHERNET, WIFI_ESP8266, WIFI_ODIN, MESH_LOWPAN_ND, MESH_THREAD",
-            "value": "WIFI_ESP8266"
-        },
-        "wifi-ssid": {
-            "help": "WiFi SSID",
-            "value": "\"SSID\""
-        },
-        "wifi-password": {
-            "help": "WiFi Password",
-            "value": "\"Password\""
-        },
         "wifi-tx": {
             "help": "TX pin for serial connection to external device",
             "value": "D1"
@@ -21,8 +9,8 @@
             "value": "D0"
         },
         "button1": {
-        	"help": "Use BUTTON1 from PinNames.h by default",
-        	"value": "BUTTON1"
+            "help": "Use BUTTON1 from PinNames.h by default",
+            "value": "BUTTON1"
         }
     },
     "macros": ["MBEDTLS_USER_CONFIG_FILE=\"mbedtls_mbed_client_config.h\""],
@@ -32,7 +20,14 @@
             "target.features_add": ["COMMON_PAL"],
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-convert-newlines": true,
-            "mbed-trace.enable": 0
+            "mbed-trace.enable": 0,
+            "easy-connect.wifi-type": "\"ESP8266\"",
+            "easy-connect.network-interface": "WIFI_ESP8266",
+            "easy-connect.network-interface-header": "\"ESP8266Interface.h\"",
+            "easy-connect.network-interface-class": "ESP8266Interface",
+            "easy-connect.network-interface-name": "\"ESP8266Interface\"",
+            "easy-connect.wifi-ssid": "\"SSID\"",
+            "easy-connect.wifi-password": "\"Password\""
         },
         "NUCLEO_F401RE": {
             "wifi-tx": "PA_11",
